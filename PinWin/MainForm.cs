@@ -34,18 +34,10 @@ namespace PinWin
     private IntPtr GetFormFromPoint(int xPoint, int yPoint)
     {
       IntPtr foundWindowHandle = WinApi.GetWindowHandleFromPoint(xPoint, yPoint);
-      
-      IntPtr hWnd = foundWindowHandle;
-      while (hWnd != IntPtr.Zero)
-      {
-        IntPtr parentHandle = GetParent(hWnd);
-        if (parentHandle == IntPtr.Zero)
-        {
-          return hWnd;
-        }
-        hWnd = parentHandle;
-      }
 
+      var parentLookup = new WinApiParentLookup();
+      IntPtr hWnd = parentLookup.FindParent(foundWindowHandle);
+      
       return hWnd;
     }
   }
