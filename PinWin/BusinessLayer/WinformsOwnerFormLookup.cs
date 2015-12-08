@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace PinWin
+namespace PinWin.BusinessLayer
 {
   /// <summary>
   ///  Find owner form of a control.

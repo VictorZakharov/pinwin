@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using PinWin.BusinessLayer;
 
 namespace PinWin
 {
@@ -22,9 +23,7 @@ namespace PinWin
     /// </summary>
     private void btn_FindWindow_Click(object sender, EventArgs e)
     {
-      Point windowLocation = this.ReadPointFromUI();
-      IntPtr windowHandle = this.GetWindowAtScreenPoint(windowLocation);
-      this.DisplayIntPtrResult(windowHandle);
+      this.FindWindowAtPoint(AppLogic.GetWindowHandleAtScreenPoint);
     }
 
     /// <summary>
@@ -32,69 +31,45 @@ namespace PinWin
     /// </summary>
     private void btn_FindOwnerForm_Click(object sender, EventArgs e)
     {
-      Point windowLocation = this.ReadPointFromUI();
-      IntPtr formHandle = this.GetFormAtScreenPoint(windowLocation);
-      this.DisplayIntPtrResult(formHandle);
+      this.FindWindowAtPoint(AppLogic.GetFormHandleAtScreenPoint);
     }
 
     #region "Private methods"
-
     /// <summary>
-    ///  Get form handle which is a parent of winapi window found at specified coordinates.
+    ///  Find window at screen point using existing finder delegate.
     /// </summary>
-    /// <param name="point"></param>
-    private IntPtr GetFormAtScreenPoint(Point point)
+    /// <param name="handleFinderDelegate"></param>
+    private void FindWindowAtPoint(Func<Point, IntPtr> handleFinderDelegate)
     {
-      IntPtr foundWindowHandle = this.GetWindowAtScreenPoint(point);
-
-      var parentLookup = new WinApiOwnerFormLookup();
-      IntPtr formHandle = parentLookup.FindParent(foundWindowHandle);
-
-      return formHandle;
-    }
-
-    /// <summary>
-    ///  Get window handle which is found at specified coordinates.
-    /// </summary>
-    /// <param name="point"></param>
-    private IntPtr GetWindowAtScreenPoint(Point point)
-    {
-      return WinApi.WindowFromPoint(point);
-    }
-    
-    /// <summary>
-    ///  Output IntPtr result on screen.
-    /// </summary>
-    /// <param name="handle">Handle to be displayed.</param>
-    private void DisplayIntPtrResult(IntPtr handle)
-    {
-      string displayResult = this.IntPtrResultToString(handle);
-      txt_FormTitle.Text = displayResult;
-    }
-
-    /// <summary>
-    ///  Translates IntPtr value to string by reading window title, associated with provided handle.
-    /// </summary>
-    /// <param name="handle">Handle to be converted to string.</param>
-    private string IntPtrResultToString(IntPtr handle)
-    {
-      if (handle.ToInt32() == 0)
+      Nullable<Point> windowLocation = this.ReadPointFromUI();
+      if (windowLocation == null)
       {
-        return @"Not found";
+        MessageBox.Show(@"Invalid input");
+        return;
       }
-      
-      return WinApi.GetWindowTitle(handle);
+
+      IntPtr formHandle = handleFinderDelegate(windowLocation.Value);
+      string displayResult = formHandle.ToDisplayString();
+      txt_FormTitle.Text = displayResult;
     }
 
     /// <summary>
     ///  Read point data, X and Y, from user input on screen, and returns a Point object.
     /// </summary>
-    private Point ReadPointFromUI()
+    private Nullable<Point> ReadPointFromUI()
     {
-      int xPoint = Convert.ToInt32(txt_WindowX.Text);
-      int yPoint = Convert.ToInt32(txt_WindowY.Text);
+      try
+      {
+        int xPoint = Convert.ToInt32(txt_WindowX.Text);
+        int yPoint = Convert.ToInt32(txt_WindowY.Text);
 
-      return new Point(xPoint, yPoint);
+        return new Point(xPoint, yPoint);
+      }
+      catch (FormatException)
+      {
+        //input contained invalid characters
+        return null;
+      }
     }
 #endregion
   }

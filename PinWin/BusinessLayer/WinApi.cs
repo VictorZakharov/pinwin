@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace PinWin
+namespace PinWin.BusinessLayer
 {
   public class WinApi
   {
@@ -18,14 +18,16 @@ namespace PinWin
     public static string GetWindowTitle(IntPtr handle)
     {
       if (handle == IntPtr.Zero)
-        throw new ArgumentNullException("handle");
+      {
+        throw new ArgumentNullException(nameof(handle));
+      }
       int length = WinApi.SendMessageGetTextLength(handle, WM_GETTEXTLENGTH, IntPtr.Zero, IntPtr.Zero);
       if (length > 0 && length < int.MaxValue)
       {
         length++; // room for EOS terminator
-        StringBuilder sb = new StringBuilder(length);
-        WinApi.SendMessageGetText(handle, WM_GETTEXT, (IntPtr)sb.Capacity, sb);
-        return sb.ToString();
+        StringBuilder windowTitle = new StringBuilder(length);
+        WinApi.SendMessageGetText(handle, WM_GETTEXT, (IntPtr)windowTitle.Capacity, windowTitle);
+        return windowTitle.ToString();
       }
       return String.Empty;
     }

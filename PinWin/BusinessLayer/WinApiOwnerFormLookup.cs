@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace PinWin
+namespace PinWin.BusinessLayer
 {
   /// <summary>
   ///  Find owner form of a WinAPI window.

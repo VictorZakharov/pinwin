@@ -1,4 +1,4 @@
-﻿namespace PinWin
+﻿namespace PinWin.BusinessLayer
 {
   /// <summary>
   ///  Implements abstract definition of parent-child lookup logic
