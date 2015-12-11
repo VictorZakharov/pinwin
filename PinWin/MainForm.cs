@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Gma.UserActivityMonitor;
 using PinWin.BusinessLayer;
 
 namespace PinWin
@@ -34,11 +35,35 @@ namespace PinWin
       this.FindWindowAtPoint(AppLogic.GetFormHandleAtScreenPoint);
     }
 
+    /// <summary>
+    ///  Fire up single use global hook handler
+    ///  to process mouse click outside of this app.
+    /// </summary>
+    private void btn_CaptureClick_Click(object sender, EventArgs e)
+    {
+      HookManager.MouseClick += HookManager_MouseClick;
+    }
+
+    /// <summary>
+    ///  Single use global hook handler.
+    /// </summary>
+    private void HookManager_MouseClick(object sender, MouseEventArgs e)
+    {
+      try
+      {
+        this.ProcessGlobalMouseClick(e);
+      }
+      finally
+      {
+        //release global hook, subsequent events will not be fired
+        HookManager.MouseClick -= HookManager_MouseClick;
+      }
+    }
+
     #region "Private methods"
     /// <summary>
     ///  Find window at screen point using existing finder delegate.
     /// </summary>
-    /// <param name="handleFinderDelegate"></param>
     private void FindWindowAtPoint(Func<Point, IntPtr> handleFinderDelegate)
     {
       Nullable<Point> windowLocation = this.ReadPointFromUI();
@@ -71,6 +96,23 @@ namespace PinWin
         return null;
       }
     }
-#endregion
+
+    /// <summary>
+    ///  Process mouse click args from global handler and display result on screen.
+    /// </summary>
+    /// <param name="e">Mouse click event args from global handler.</param>
+    private void ProcessGlobalMouseClick(MouseEventArgs e)
+    {
+      txt_WindowX.Text = e.X.ToString();
+      txt_WindowY.Text = e.Y.ToString();
+
+      //prevent external application from processing click event
+      MouseEventExtArgs args = e as MouseEventExtArgs;
+      if (args != null)
+      {
+        args.Handled = true;
+      }
+    }
+    #endregion
   }
 }

@@ -36,11 +36,12 @@
       this.lbl_FormTitle = new System.Windows.Forms.Label();
       this.txt_FormTitle = new System.Windows.Forms.TextBox();
       this.btn_FindOwnerForm = new System.Windows.Forms.Button();
+      this.btn_CaptureClick = new System.Windows.Forms.Button();
       this.SuspendLayout();
       // 
       // btn_FindWindow
       // 
-      this.btn_FindWindow.Location = new System.Drawing.Point(180, 13);
+      this.btn_FindWindow.Location = new System.Drawing.Point(417, 47);
       this.btn_FindWindow.Name = "btn_FindWindow";
       this.btn_FindWindow.Size = new System.Drawing.Size(110, 23);
       this.btn_FindWindow.TabIndex = 0;
@@ -102,7 +103,7 @@
       // 
       // btn_FindOwnerForm
       // 
-      this.btn_FindOwnerForm.Location = new System.Drawing.Point(180, 42);
+      this.btn_FindOwnerForm.Location = new System.Drawing.Point(417, 76);
       this.btn_FindOwnerForm.Name = "btn_FindOwnerForm";
       this.btn_FindOwnerForm.Size = new System.Drawing.Size(110, 23);
       this.btn_FindOwnerForm.TabIndex = 5;
@@ -110,11 +111,22 @@
       this.btn_FindOwnerForm.UseVisualStyleBackColor = true;
       this.btn_FindOwnerForm.Click += new System.EventHandler(this.btn_FindOwnerForm_Click);
       // 
+      // btn_CaptureClick
+      // 
+      this.btn_CaptureClick.Location = new System.Drawing.Point(74, 70);
+      this.btn_CaptureClick.Name = "btn_CaptureClick";
+      this.btn_CaptureClick.Size = new System.Drawing.Size(101, 23);
+      this.btn_CaptureClick.TabIndex = 6;
+      this.btn_CaptureClick.Text = "From mouse Click";
+      this.btn_CaptureClick.UseVisualStyleBackColor = true;
+      this.btn_CaptureClick.Click += new System.EventHandler(this.btn_CaptureClick_Click);
+      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(588, 207);
+      this.Controls.Add(this.btn_CaptureClick);
       this.Controls.Add(this.btn_FindOwnerForm);
       this.Controls.Add(this.txt_FormTitle);
       this.Controls.Add(this.lbl_FormTitle);
@@ -140,6 +152,7 @@
     private System.Windows.Forms.Label lbl_FormTitle;
     private System.Windows.Forms.TextBox txt_FormTitle;
     private System.Windows.Forms.Button btn_FindOwnerForm;
+    private System.Windows.Forms.Button btn_CaptureClick;
   }
 }
 
