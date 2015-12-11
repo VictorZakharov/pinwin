@@ -9,3 +9,9 @@ If someone likes my application as much, and one day we get in era of 3D non-win
 
 This project is also a chance for me to learn GitHub, which today everybody is raving about. :)
 My experience with version control systems was Visual Source Safe, then Subversion (TortoiseSVN + VisualSVN server + AnkhSVN), then TFS, and I'm really a fan of Subversion among those listed. We'll see how GitHub ranks in this competition after this project is completed.
+
+-
+
+Since today (Dec 11, 2015), this project is using [classes from George Mamaladze](http://www.codeproject.com/Articles/7294/Processing-Global-Mouse-and-Keyboard-Hooks-in-C) for processing global hooks.
+
+And help from fellow members on StackOverflow, such as [this answer](http://stackoverflow.com/questions/17897646/gma-useractivitymonitor-setwindowshookex-error-126) (special thanks to [Hans Passant](http://stackoverflow.com/users/17034/hans-passant)):
