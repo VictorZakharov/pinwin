@@ -9,7 +9,7 @@ namespace PinWin
   /// <summary>
   ///  Main form of the application. Currently a place for prototyping.
   /// </summary>
-  public partial class MainForm : Form
+  public partial class MainForm : TrayAppForm
   {
     /// <summary>
     ///  Form constructor - nothing fancy here, only standard form designer code.
@@ -60,7 +60,36 @@ namespace PinWin
       }
     }
 
-    #region "Private methods"
+#region "System tray icon"
+    private void MainForm_Resize(object sender, EventArgs e)
+    {
+      if (this.WindowState == FormWindowState.Minimized)
+      {
+        this.notifyIcon_Main.ShowBalloonTip(500, "Minimized to tray",
+          "PinWin is now running from system tray.", ToolTipIcon.Info);
+        this.Hide();
+      }
+    }
+
+    private void contextMenu_CloseApplication_Click(object sender, EventArgs e)
+    {
+      this.Close();
+    }
+
+    private void contextMenu_OpenApplication_Click(object sender, EventArgs e)
+    {
+      this.AllowFormShow = true;
+      this.Show();
+      this.WindowState = FormWindowState.Normal;
+    }
+
+    private void notifyIcon_Main_DoubleClick(object sender, EventArgs e)
+    {
+      contextMenu_OpenApplication.PerformClick();
+    }
+#endregion
+
+#region "Private methods"
     /// <summary>
     ///  Find window at screen point using existing finder delegate.
     /// </summary>
@@ -113,6 +142,6 @@ namespace PinWin
         args.Handled = true;
       }
     }
-    #endregion
+#endregion
   }
 }

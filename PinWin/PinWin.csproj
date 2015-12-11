@@ -58,6 +58,9 @@
     <Compile Include="BusinessLayer\WinApi.cs" />
     <Compile Include="BusinessLayer\WinApiOwnerFormLookup.cs" />
     <Compile Include="BusinessLayer\WinformsOwnerFormLookup.cs" />
+    <Compile Include="TrayAppForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -85,6 +88,9 @@
       <Project>{f52aa97e-180a-40ed-8f2b-09080171d6c7}</Project>
       <Name>Gma.UserActivityMonitor</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Images\Pin-24.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

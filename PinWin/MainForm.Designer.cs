@@ -28,6 +28,8 @@
     /// </summary>
     private void InitializeComponent()
     {
+      this.components = new System.ComponentModel.Container();
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
       this.btn_FindWindow = new System.Windows.Forms.Button();
       this.lbl_WindowX = new System.Windows.Forms.Label();
       this.txt_WindowX = new System.Windows.Forms.TextBox();
@@ -37,6 +39,11 @@
       this.txt_FormTitle = new System.Windows.Forms.TextBox();
       this.btn_FindOwnerForm = new System.Windows.Forms.Button();
       this.btn_CaptureClick = new System.Windows.Forms.Button();
+      this.notifyIcon_Main = new System.Windows.Forms.NotifyIcon(this.components);
+      this.contextMenu_Main = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.contextMenu_OpenApplication = new System.Windows.Forms.ToolStripMenuItem();
+      this.contextMenu_CloseApplication = new System.Windows.Forms.ToolStripMenuItem();
+      this.contextMenu_Main.SuspendLayout();
       this.SuspendLayout();
       // 
       // btn_FindWindow
@@ -121,6 +128,37 @@
       this.btn_CaptureClick.UseVisualStyleBackColor = true;
       this.btn_CaptureClick.Click += new System.EventHandler(this.btn_CaptureClick_Click);
       // 
+      // notifyIcon_Main
+      // 
+      this.notifyIcon_Main.ContextMenuStrip = this.contextMenu_Main;
+      this.notifyIcon_Main.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon_Main.Icon")));
+      this.notifyIcon_Main.Text = "notifyIcon1";
+      this.notifyIcon_Main.Visible = true;
+      this.notifyIcon_Main.DoubleClick += new System.EventHandler(this.notifyIcon_Main_DoubleClick);
+      // 
+      // contextMenu_Main
+      // 
+      this.contextMenu_Main.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.contextMenu_OpenApplication,
+            this.contextMenu_CloseApplication});
+      this.contextMenu_Main.Name = "contextMenu_Main";
+      this.contextMenu_Main.Size = new System.Drawing.Size(105, 48);
+      // 
+      // contextMenu_OpenApplication
+      // 
+      this.contextMenu_OpenApplication.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.contextMenu_OpenApplication.Name = "contextMenu_OpenApplication";
+      this.contextMenu_OpenApplication.Size = new System.Drawing.Size(104, 22);
+      this.contextMenu_OpenApplication.Text = "Open";
+      this.contextMenu_OpenApplication.Click += new System.EventHandler(this.contextMenu_OpenApplication_Click);
+      // 
+      // contextMenu_CloseApplication
+      // 
+      this.contextMenu_CloseApplication.Name = "contextMenu_CloseApplication";
+      this.contextMenu_CloseApplication.Size = new System.Drawing.Size(104, 22);
+      this.contextMenu_CloseApplication.Text = "Exit";
+      this.contextMenu_CloseApplication.Click += new System.EventHandler(this.contextMenu_CloseApplication_Click);
+      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -135,8 +173,12 @@
       this.Controls.Add(this.lbl_WindowY);
       this.Controls.Add(this.lbl_WindowX);
       this.Controls.Add(this.btn_FindWindow);
+      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Name = "MainForm";
+      this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
       this.Text = "Form1";
+      this.Resize += new System.EventHandler(this.MainForm_Resize);
+      this.contextMenu_Main.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -153,6 +195,10 @@
     private System.Windows.Forms.TextBox txt_FormTitle;
     private System.Windows.Forms.Button btn_FindOwnerForm;
     private System.Windows.Forms.Button btn_CaptureClick;
+    private System.Windows.Forms.NotifyIcon notifyIcon_Main;
+    private System.Windows.Forms.ContextMenuStrip contextMenu_Main;
+    private System.Windows.Forms.ToolStripMenuItem contextMenu_OpenApplication;
+    private System.Windows.Forms.ToolStripMenuItem contextMenu_CloseApplication;
   }
 }
 
