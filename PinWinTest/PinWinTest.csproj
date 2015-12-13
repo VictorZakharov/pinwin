@@ -55,6 +55,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="BusinessLayer\FormTestLayout.cs" />
+    <Compile Include="WinApiOwnerFormLookupTest.cs" />
     <Compile Include="WinformsOwnerFormLookupTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

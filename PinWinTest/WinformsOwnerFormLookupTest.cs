@@ -9,31 +9,37 @@ namespace PinWinTest
   public class WinformsOwnerFormLookupTest
   {
     [TestMethod]
-    public void FindFormTest_Self()
+    public void WinFormsFindFormTest_Self()
     {
-      var testForm = new FormTestLayout();
-      this.FindAndValidateParent(testForm.MyForm, testForm.MyForm);
+      using (var testForm = new FormTestLayout())
+      {
+        this.FindAndValidateParent(testForm.MyForm, testForm.MyForm);
+      }
     }
 
     [TestMethod]
-    public void FindFormTest_ComplexNesting()
+    public void WinFormsFindFormTest_ComplexNesting()
     {
-      var testForm = new FormTestLayout();
-      this.FindAndValidateParent(testForm.MyButton, testForm.MyForm);
+      using (var testForm = new FormTestLayout())
+      {
+        this.FindAndValidateParent(testForm.MyButton, testForm.MyForm);
+      }
     }
 
     [TestMethod]
-    public void FindFormTest_SimpleNesting()
+    public void WinFormsFindFormTest_SimpleNesting()
     {
-      var testForm = new FormTestLayout();
-      this.FindAndValidateParent(testForm.MyPanel, testForm.MyForm);
+      using (var testForm = new FormTestLayout())
+      {
+        this.FindAndValidateParent(testForm.MyPanel, testForm.MyForm);
+      }
     }
 
     /// <summary>
-    /// 
+    ///  Find and validate parent control of the specified child control.
     /// </summary>
-    /// <param name="childControl"></param>
-    /// <param name="expectedParent"></param>
+    /// <param name="childControl">Child control, for which parent needs to be checked.</param>
+    /// <param name="expectedParent">Expected parent control for provided child control.</param>
     private void FindAndValidateParent(Control childControl, Control expectedParent)
     {
       var formLookup = new WinformsOwnerFormLookup();
