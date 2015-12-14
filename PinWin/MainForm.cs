@@ -60,7 +60,19 @@ namespace PinWin
       }
     }
 
-#region "System tray icon"
+    private void btn_SetWindowTopMost_Click(object sender, EventArgs e)
+    {
+      IntPtr formHandle = this.FindWindowAtPoint(AppLogic.GetFormHandleAtScreenPoint);
+      WinApiTopMost.Set(formHandle);
+    }
+
+    private void btn_ClearWindowTopMost_Click(object sender, EventArgs e)
+    {
+      IntPtr formHandle = this.FindWindowAtPoint(AppLogic.GetFormHandleAtScreenPoint);
+      WinApiTopMost.Clear(formHandle);
+    }
+
+    #region "System tray icon"
     private void MainForm_Resize(object sender, EventArgs e)
     {
       if (this.WindowState == FormWindowState.Minimized)
@@ -93,18 +105,20 @@ namespace PinWin
     /// <summary>
     ///  Find window at screen point using existing finder delegate.
     /// </summary>
-    private void FindWindowAtPoint(Func<Point, IntPtr> handleFinderDelegate)
+    private IntPtr FindWindowAtPoint(Func<Point, IntPtr> handleFinderDelegate)
     {
       Nullable<Point> windowLocation = this.ReadPointFromUI();
       if (windowLocation == null)
       {
         MessageBox.Show(@"Invalid input");
-        return;
+        return IntPtr.Zero;
       }
 
       IntPtr formHandle = handleFinderDelegate(windowLocation.Value);
       string displayResult = formHandle.ToDisplayString();
       txt_FormTitle.Text = displayResult;
+
+      return formHandle;
     }
 
     /// <summary>
@@ -142,6 +156,6 @@ namespace PinWin
         args.Handled = true;
       }
     }
-#endregion
+    #endregion
   }
 }

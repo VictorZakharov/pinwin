@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="BusinessLayer\AppLogic.cs" />
     <Compile Include="BusinessLayer\IntPtrExtensions.cs" />
+    <Compile Include="BusinessLayer\WinApiTopMost.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

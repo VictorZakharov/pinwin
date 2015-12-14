@@ -43,12 +43,14 @@
       this.contextMenu_Main = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.contextMenu_OpenApplication = new System.Windows.Forms.ToolStripMenuItem();
       this.contextMenu_CloseApplication = new System.Windows.Forms.ToolStripMenuItem();
+      this.btn_SetWindowTopMost = new System.Windows.Forms.Button();
+      this.btn_ClearWindowTopMost = new System.Windows.Forms.Button();
       this.contextMenu_Main.SuspendLayout();
       this.SuspendLayout();
       // 
       // btn_FindWindow
       // 
-      this.btn_FindWindow.Location = new System.Drawing.Point(417, 47);
+      this.btn_FindWindow.Location = new System.Drawing.Point(417, 94);
       this.btn_FindWindow.Name = "btn_FindWindow";
       this.btn_FindWindow.Size = new System.Drawing.Size(110, 23);
       this.btn_FindWindow.TabIndex = 0;
@@ -93,7 +95,7 @@
       // lbl_FormTitle
       // 
       this.lbl_FormTitle.AutoSize = true;
-      this.lbl_FormTitle.Location = new System.Drawing.Point(12, 115);
+      this.lbl_FormTitle.Location = new System.Drawing.Point(12, 153);
       this.lbl_FormTitle.Name = "lbl_FormTitle";
       this.lbl_FormTitle.Size = new System.Drawing.Size(76, 13);
       this.lbl_FormTitle.TabIndex = 3;
@@ -102,7 +104,7 @@
       // txt_FormTitle
       // 
       this.txt_FormTitle.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-      this.txt_FormTitle.Location = new System.Drawing.Point(99, 112);
+      this.txt_FormTitle.Location = new System.Drawing.Point(99, 150);
       this.txt_FormTitle.Name = "txt_FormTitle";
       this.txt_FormTitle.ReadOnly = true;
       this.txt_FormTitle.Size = new System.Drawing.Size(428, 20);
@@ -110,7 +112,7 @@
       // 
       // btn_FindOwnerForm
       // 
-      this.btn_FindOwnerForm.Location = new System.Drawing.Point(417, 76);
+      this.btn_FindOwnerForm.Location = new System.Drawing.Point(417, 123);
       this.btn_FindOwnerForm.Name = "btn_FindOwnerForm";
       this.btn_FindOwnerForm.Size = new System.Drawing.Size(110, 23);
       this.btn_FindOwnerForm.TabIndex = 5;
@@ -159,11 +161,33 @@
       this.contextMenu_CloseApplication.Text = "Exit";
       this.contextMenu_CloseApplication.Click += new System.EventHandler(this.contextMenu_CloseApplication_Click);
       // 
+      // btn_SetWindowTopMost
+      // 
+      this.btn_SetWindowTopMost.Location = new System.Drawing.Point(417, 18);
+      this.btn_SetWindowTopMost.Name = "btn_SetWindowTopMost";
+      this.btn_SetWindowTopMost.Size = new System.Drawing.Size(110, 23);
+      this.btn_SetWindowTopMost.TabIndex = 7;
+      this.btn_SetWindowTopMost.Text = "Set top most";
+      this.btn_SetWindowTopMost.UseVisualStyleBackColor = true;
+      this.btn_SetWindowTopMost.Click += new System.EventHandler(this.btn_SetWindowTopMost_Click);
+      // 
+      // btn_ClearWindowTopMost
+      // 
+      this.btn_ClearWindowTopMost.Location = new System.Drawing.Point(301, 18);
+      this.btn_ClearWindowTopMost.Name = "btn_ClearWindowTopMost";
+      this.btn_ClearWindowTopMost.Size = new System.Drawing.Size(110, 23);
+      this.btn_ClearWindowTopMost.TabIndex = 8;
+      this.btn_ClearWindowTopMost.Text = "Clear top most";
+      this.btn_ClearWindowTopMost.UseVisualStyleBackColor = true;
+      this.btn_ClearWindowTopMost.Click += new System.EventHandler(this.btn_ClearWindowTopMost_Click);
+      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(588, 207);
+      this.ClientSize = new System.Drawing.Size(588, 262);
+      this.Controls.Add(this.btn_ClearWindowTopMost);
+      this.Controls.Add(this.btn_SetWindowTopMost);
       this.Controls.Add(this.btn_CaptureClick);
       this.Controls.Add(this.btn_FindOwnerForm);
       this.Controls.Add(this.txt_FormTitle);
@@ -199,6 +223,8 @@
     private System.Windows.Forms.ContextMenuStrip contextMenu_Main;
     private System.Windows.Forms.ToolStripMenuItem contextMenu_OpenApplication;
     private System.Windows.Forms.ToolStripMenuItem contextMenu_CloseApplication;
+    private System.Windows.Forms.Button btn_SetWindowTopMost;
+    private System.Windows.Forms.Button btn_ClearWindowTopMost;
   }
 }
 
