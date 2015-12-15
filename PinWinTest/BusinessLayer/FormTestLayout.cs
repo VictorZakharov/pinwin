@@ -23,11 +23,11 @@ namespace PinWinTest.BusinessLayer
       this.MyPanel.Controls.Add(this.MyButton);
       this.MyForm.Controls.Add(this.MyPanel);
 
-      //prevents form title being "Winforms parking window" when running WinApi tests
-      this.MyForm.Show();
-      //prevents multiple forms being shown to user when tests are executed
-      this.MyForm.Hide();
-      //TODO: it still blinks for a moment, not sure what to do with it
+      //ensure handles are created
+      //below code is required for WinApi tests to pass
+      IntPtr myFormHandle = MyForm.Handle;
+      IntPtr myPanelHandle = MyPanel.Handle;
+      IntPtr myButtonHandle = MyButton.Handle;
     }
     
     /// <summary>
