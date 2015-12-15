@@ -10,11 +10,9 @@ namespace PinWin.Controls
     public PinnedWindowListControl()
     {
       InitializeComponent();
-
-      this.ValidateActions();
     }
 
-    public void ValidateActions()
+    public void ValidateActions(object sender, EventArgs e)
     {
       btn_UnpinAllWindows.Enabled = lst_PinnedWindowList.Items.Count > 0;
       btn_UnpinSelectedWindows.Enabled = lst_PinnedWindowList.SelectedItems.Count > 0;
@@ -23,24 +21,22 @@ namespace PinWin.Controls
 
     public void AddWindow(IntPtr handle)
     {
+      //TODO: validate uniqueness
       var newWindowListItem = new WindowListItem(handle);
       this.lst_PinnedWindowList.Items.Add(newWindowListItem);
       WinApiTopMost.Set(handle);
-      this.ValidateActions();
     }
 
     private void btn_UnpinAllWindows_Click(object sender, EventArgs e)
     {
       PinnedWindowListControl.ClearPinnedStatus(lst_PinnedWindowList.Items);
       lst_PinnedWindowList.Items.Clear();
-      this.ValidateActions();
     }
 
     private void btn_UnpinSelectedWindows_Click(object sender, EventArgs e)
     {
       PinnedWindowListControl.ClearPinnedStatus(lst_PinnedWindowList.SelectedItems);
       lst_PinnedWindowList.RemoveSelected();
-      this.ValidateActions();
     }
 
     private static void ClearPinnedStatus(IList items)
@@ -51,11 +47,6 @@ namespace PinWin.Controls
         var windowListItem = selectedItem as WindowListItem;
         windowListItem?.ClearPinnedStatus();
       }
-    }
-
-    private void lst_PinnedWindowList_SelectedIndexChanged(object sender, EventArgs e)
-    {
-      this.ValidateActions();
     }
   }
 }

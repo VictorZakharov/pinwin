@@ -30,7 +30,7 @@
     {
       this.btn_UnpinSelectedWindows = new System.Windows.Forms.Button();
       this.btn_UnpinAllWindows = new System.Windows.Forms.Button();
-      this.lst_PinnedWindowList = new System.Windows.Forms.ListBox();
+      this.lst_PinnedWindowList = new PinWin.Controls.ListBoxEx();
       this.lbl_PinnedWindowListNoItems = new System.Windows.Forms.Label();
       this.SuspendLayout();
       // 
@@ -69,7 +69,8 @@
       this.lst_PinnedWindowList.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
       this.lst_PinnedWindowList.Size = new System.Drawing.Size(306, 94);
       this.lst_PinnedWindowList.TabIndex = 1;
-      this.lst_PinnedWindowList.SelectedIndexChanged += new System.EventHandler(this.lst_PinnedWindowList_SelectedIndexChanged);
+      this.lst_PinnedWindowList.ItemsChanged += new System.EventHandler(this.ValidateActions);
+      this.lst_PinnedWindowList.SelectedIndexChanged += new System.EventHandler(this.ValidateActions);
       // 
       // lbl_PinnedWindowListNoItems
       // 
@@ -94,6 +95,7 @@
       this.Controls.Add(this.btn_UnpinSelectedWindows);
       this.Name = "PinnedWindowListControl";
       this.Size = new System.Drawing.Size(312, 128);
+      this.Load += new System.EventHandler(this.ValidateActions);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -103,7 +105,7 @@
 
     private System.Windows.Forms.Button btn_UnpinSelectedWindows;
     private System.Windows.Forms.Button btn_UnpinAllWindows;
-    private System.Windows.Forms.ListBox lst_PinnedWindowList;
+    private ListBoxEx lst_PinnedWindowList;
     private System.Windows.Forms.Label lbl_PinnedWindowListNoItems;
   }
 }

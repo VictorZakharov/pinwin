@@ -49,6 +49,9 @@
     <Compile Include="BusinessLayer\ListBoxExtensions.cs" />
     <Compile Include="BusinessLayer\WindowListItem.cs" />
     <Compile Include="BusinessLayer\WinApiTopMost.cs" />
+    <Compile Include="Controls\ListBoxEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\PinnedWindowListControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
