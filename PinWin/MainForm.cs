@@ -20,22 +20,6 @@ namespace PinWin
     }
 
     /// <summary>
-    ///  Find WinAPI window at point, which can be a form or another control.
-    /// </summary>
-    private void btn_FindWindow_Click(object sender, EventArgs e)
-    {
-      this.FindWindowAtPoint(AppLogic.GetWindowHandleAtScreenPoint);
-    }
-
-    /// <summary>
-    ///  Find WinAPI window at point, which is strictly a form.
-    /// </summary>
-    private void btn_FindOwnerForm_Click(object sender, EventArgs e)
-    {
-      this.FindWindowAtPoint(AppLogic.GetFormHandleAtScreenPoint);
-    }
-
-    /// <summary>
     ///  Fire up single use global hook handler
     ///  to process mouse click outside of this app.
     /// </summary>
@@ -63,16 +47,13 @@ namespace PinWin
     private void btn_SetWindowTopMost_Click(object sender, EventArgs e)
     {
       IntPtr formHandle = this.FindWindowAtPoint(AppLogic.GetFormHandleAtScreenPoint);
-      WinApiTopMost.Set(formHandle);
+      if (formHandle != IntPtr.Zero)
+      {
+        this.pinnedWindowListControl.AddWindow(formHandle);
+      }
     }
 
-    private void btn_ClearWindowTopMost_Click(object sender, EventArgs e)
-    {
-      IntPtr formHandle = this.FindWindowAtPoint(AppLogic.GetFormHandleAtScreenPoint);
-      WinApiTopMost.Clear(formHandle);
-    }
-
-    #region "System tray icon"
+#region "System tray icon"
     private void MainForm_Resize(object sender, EventArgs e)
     {
       if (this.WindowState == FormWindowState.Minimized)
@@ -115,9 +96,6 @@ namespace PinWin
       }
 
       IntPtr formHandle = handleFinderDelegate(windowLocation.Value);
-      string displayResult = formHandle.ToDisplayString();
-      txt_FormTitle.Text = displayResult;
-
       return formHandle;
     }
 

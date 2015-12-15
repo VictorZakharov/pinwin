@@ -46,7 +46,15 @@
   <ItemGroup>
     <Compile Include="BusinessLayer\AppLogic.cs" />
     <Compile Include="BusinessLayer\IntPtrExtensions.cs" />
+    <Compile Include="BusinessLayer\ListBoxExtensions.cs" />
+    <Compile Include="BusinessLayer\WindowListItem.cs" />
     <Compile Include="BusinessLayer\WinApiTopMost.cs" />
+    <Compile Include="Controls\PinnedWindowListControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\PinnedWindowListControl.Designer.cs">
+      <DependentUpon>PinnedWindowListControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -62,6 +70,9 @@
     <Compile Include="TrayAppForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <EmbeddedResource Include="Controls\PinnedWindowListControl.resx">
+      <DependentUpon>PinnedWindowListControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

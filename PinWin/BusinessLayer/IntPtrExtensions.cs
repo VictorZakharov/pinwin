@@ -2,6 +2,9 @@
 
 namespace PinWin.BusinessLayer
 {
+  /// <summary>
+  ///  Extension methods for IntPtr structure.
+  /// </summary>
   public static class IntPtrExtensions
   {
     /// <summary>
