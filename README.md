@@ -1,5 +1,5 @@
 # pinwin - stands for "Pin Windows"
-I always liked DeskPins application, very simply and intuitive:
+I always liked DeskPins application, very simple and intuitive:
 http://deskpins.en.softonic.com/
 
 Unfortunately, it did not work well on Windows 8 and higher.
