@@ -44,9 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BusinessLayer\AppLogic.cs" />
     <Compile Include="BusinessLayer\IntPtrExtensions.cs" />
     <Compile Include="BusinessLayer\ListBoxExtensions.cs" />
+    <Compile Include="BusinessLayer\WindowListItemList.cs" />
     <Compile Include="BusinessLayer\WindowListItem.cs" />
     <Compile Include="BusinessLayer\WinApiTopMost.cs" />
     <Compile Include="Controls\ListBoxEx.cs">
@@ -70,7 +70,7 @@
     <Compile Include="BusinessLayer\WinApi.cs" />
     <Compile Include="BusinessLayer\WinApiOwnerFormLookup.cs" />
     <Compile Include="BusinessLayer\WinformsOwnerFormLookup.cs" />
-    <Compile Include="TrayAppForm.cs">
+    <Compile Include="Controls\TrayAppForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <EmbeddedResource Include="Controls\PinnedWindowListControl.resx">

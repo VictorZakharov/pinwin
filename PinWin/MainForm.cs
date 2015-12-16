@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using Gma.UserActivityMonitor;
 using PinWin.BusinessLayer;
+using PinWin.Controls;
 
 namespace PinWin
 {
@@ -11,49 +12,17 @@ namespace PinWin
   /// </summary>
   public partial class MainForm : TrayAppForm
   {
+#region " Contructor "
     /// <summary>
-    ///  Form constructor - nothing fancy here, only standard form designer code.
+    ///  Constructor - no special processing.
     /// </summary>
     public MainForm()
     {
       InitializeComponent();
     }
+#endregion
 
-    /// <summary>
-    ///  Fire up single use global hook handler
-    ///  to process mouse click outside of this app.
-    /// </summary>
-    private void btn_CaptureClick_Click(object sender, EventArgs e)
-    {
-      HookManager.MouseClick += HookManager_MouseClick;
-    }
-
-    /// <summary>
-    ///  Single use global hook handler.
-    /// </summary>
-    private void HookManager_MouseClick(object sender, MouseEventArgs e)
-    {
-      try
-      {
-        this.ProcessGlobalMouseClick(e);
-      }
-      finally
-      {
-        //release global hook, subsequent events will not be fired
-        HookManager.MouseClick -= HookManager_MouseClick;
-      }
-    }
-
-    private void btn_SetWindowTopMost_Click(object sender, EventArgs e)
-    {
-      IntPtr formHandle = this.FindWindowAtPoint(AppLogic.GetFormHandleAtScreenPoint);
-      if (formHandle != IntPtr.Zero)
-      {
-        this.pinnedWindowListControl.AddWindow(formHandle);
-      }
-    }
-
-#region "System tray icon"
+#region " Event handlers - System tray icon "
     private void MainForm_Resize(object sender, EventArgs e)
     {
       if (this.WindowState == FormWindowState.Minimized)
@@ -82,7 +51,46 @@ namespace PinWin
     }
 #endregion
 
-#region "Private methods"
+#region " Event handlers - Other "
+    /// <summary>
+    ///  Fire up single use global hook handler
+    ///  to process mouse click outside of this app.
+    /// </summary>
+    private void btn_CaptureClick_Click(object sender, EventArgs e)
+    {
+      HookManager.MouseClick += HookManager_MouseClick;
+    }
+
+    /// <summary>
+    ///  Single use global hook handler.
+    /// </summary>
+    private void HookManager_MouseClick(object sender, MouseEventArgs e)
+    {
+      try
+      {
+        this.ProcessGlobalMouseClick(e);
+      }
+      finally
+      {
+        //release global hook, subsequent events will not be fired
+        HookManager.MouseClick -= HookManager_MouseClick;
+      }
+    }
+
+    /// <summary>
+    ///  Set window at specified coordinates as top most (always on top).
+    /// </summary>
+    private void btn_SetWindowTopMost_Click(object sender, EventArgs e)
+    {
+      IntPtr formHandle = this.FindWindowAtPoint(MainForm.GetFormHandleAtScreenPoint);
+      if (formHandle != IntPtr.Zero)
+      {
+        this.pinnedWindowListControl.AddWindow(formHandle);
+      }
+    }
+    #endregion
+
+#region " Private methods "
     /// <summary>
     ///  Find window at screen point using existing finder delegate.
     /// </summary>
@@ -133,6 +141,20 @@ namespace PinWin
       {
         args.Handled = true;
       }
+    }
+
+    /// <summary>
+    ///  Get form handle at specified coordinates (x,y).
+    /// </summary>
+    /// <param name="point">Coordinates to search.</param>
+    private static IntPtr GetFormHandleAtScreenPoint(Point point)
+    {
+      IntPtr foundWindowHandle = WinApi.WindowFromPoint(point);
+
+      var parentLookup = new WinApiOwnerFormLookup();
+      IntPtr formHandle = parentLookup.FindParent(foundWindowHandle);
+
+      return formHandle;
     }
     #endregion
   }
