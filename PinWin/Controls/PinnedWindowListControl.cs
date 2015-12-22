@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using PinWin.BusinessLayer;
 
@@ -19,6 +20,9 @@ namespace PinWin.Controls
 
       //custom processing
       this.DataSource = new WindowListItemList();
+
+      lbl_PinnedWindowListNoItems.Parent = lst_PinnedWindowList;
+      lbl_PinnedWindowListNoItems.BackColor = Color.Transparent;
     }
 #endregion
 

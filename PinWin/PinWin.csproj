@@ -46,17 +46,32 @@
   <ItemGroup>
     <Compile Include="BusinessLayer\IntPtrExtensions.cs" />
     <Compile Include="BusinessLayer\ListBoxExtensions.cs" />
+    <Compile Include="BusinessLayer\ScreenCapture.cs" />
     <Compile Include="BusinessLayer\WindowListItemList.cs" />
     <Compile Include="BusinessLayer\WindowListItem.cs" />
     <Compile Include="BusinessLayer\WinApiTopMost.cs" />
     <Compile Include="Controls\ListBoxEx.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\OverlayForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Controls\PinnedWindowListControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\PinnedWindowListControl.Designer.cs">
       <DependentUpon>PinnedWindowListControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DesktopOverlayForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DesktopOverlayForm.Designer.cs">
+      <DependentUpon>DesktopOverlayForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EmbeddedResource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EmbeddedResource.resx</DependentUpon>
     </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -73,8 +88,19 @@
     <Compile Include="Controls\TrayAppForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <EmbeddedResource Include="Controls\OverlayForm.resx">
+      <DependentUpon>OverlayForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\PinnedWindowListControl.resx">
       <DependentUpon>PinnedWindowListControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DesktopOverlayForm.resx">
+      <DependentUpon>DesktopOverlayForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EmbeddedResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>EmbeddedResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -99,12 +125,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Gma.UserActivityMonitor\Gma.UserActivityMonitor.csproj">
-      <Project>{f52aa97e-180a-40ed-8f2b-09080171d6c7}</Project>
-      <Name>Gma.UserActivityMonitor</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
+    <Content Include="Images\TargetWindowIcon.ico" />
     <Content Include="Images\Pin-24.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

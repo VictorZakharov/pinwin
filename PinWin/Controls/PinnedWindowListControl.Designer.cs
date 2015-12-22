@@ -30,8 +30,8 @@
     {
       this.btn_UnpinSelectedWindows = new System.Windows.Forms.Button();
       this.btn_UnpinAllWindows = new System.Windows.Forms.Button();
-      this.lst_PinnedWindowList = new PinWin.Controls.ListBoxEx();
       this.lbl_PinnedWindowListNoItems = new System.Windows.Forms.Label();
+      this.lst_PinnedWindowList = new PinWin.Controls.ListBoxEx();
       this.SuspendLayout();
       // 
       // btn_UnpinSelectedWindows
@@ -56,6 +56,20 @@
       this.btn_UnpinAllWindows.UseVisualStyleBackColor = true;
       this.btn_UnpinAllWindows.Click += new System.EventHandler(this.btn_UnpinAllWindows_Click);
       // 
+      // lbl_PinnedWindowListNoItems
+      // 
+      this.lbl_PinnedWindowListNoItems.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.lbl_PinnedWindowListNoItems.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lbl_PinnedWindowListNoItems.ForeColor = System.Drawing.SystemColors.ControlDark;
+      this.lbl_PinnedWindowListNoItems.Location = new System.Drawing.Point(16, 18);
+      this.lbl_PinnedWindowListNoItems.Name = "lbl_PinnedWindowListNoItems";
+      this.lbl_PinnedWindowListNoItems.Size = new System.Drawing.Size(264, 65);
+      this.lbl_PinnedWindowListNoItems.TabIndex = 11;
+      this.lbl_PinnedWindowListNoItems.Text = "A list of pinned windows will be shown here";
+      this.lbl_PinnedWindowListNoItems.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      // 
       // lst_PinnedWindowList
       // 
       this.lst_PinnedWindowList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -72,19 +86,6 @@
       this.lst_PinnedWindowList.ItemsChanged += new System.EventHandler(this.ValidateActions);
       this.lst_PinnedWindowList.SelectedIndexChanged += new System.EventHandler(this.ValidateActions);
       // 
-      // lbl_PinnedWindowListNoItems
-      // 
-      this.lbl_PinnedWindowListNoItems.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.lbl_PinnedWindowListNoItems.AutoSize = true;
-      this.lbl_PinnedWindowListNoItems.BackColor = System.Drawing.SystemColors.Window;
-      this.lbl_PinnedWindowListNoItems.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lbl_PinnedWindowListNoItems.ForeColor = System.Drawing.SystemColors.ControlDark;
-      this.lbl_PinnedWindowListNoItems.Location = new System.Drawing.Point(17, 41);
-      this.lbl_PinnedWindowListNoItems.Name = "lbl_PinnedWindowListNoItems";
-      this.lbl_PinnedWindowListNoItems.Size = new System.Drawing.Size(259, 16);
-      this.lbl_PinnedWindowListNoItems.TabIndex = 11;
-      this.lbl_PinnedWindowListNoItems.Text = "A list of pinned windows will be shown here";
-      // 
       // PinnedWindowListControl
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -97,7 +98,6 @@
       this.Size = new System.Drawing.Size(312, 128);
       this.Load += new System.EventHandler(this.ValidateActions);
       this.ResumeLayout(false);
-      this.PerformLayout();
 
     }
 

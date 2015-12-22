@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using Gma.UserActivityMonitor;
 using PinWin.BusinessLayer;
 using PinWin.Controls;
 
@@ -12,7 +11,7 @@ namespace PinWin
   /// </summary>
   public partial class MainForm : TrayAppForm
   {
-#region " Contructor "
+#region " Constructor "
     /// <summary>
     ///  Constructor - no special processing.
     /// </summary>
@@ -49,99 +48,24 @@ namespace PinWin
     {
       contextMenu_OpenApplication.PerformClick();
     }
-#endregion
+    #endregion
 
-#region " Event handlers - Other "
-    /// <summary>
-    ///  Fire up single use global hook handler
-    ///  to process mouse click outside of this app.
-    /// </summary>
-    private void btn_CaptureClick_Click(object sender, EventArgs e)
+#region " Event handlers - Other"
+    private void btn_OpenDesktopOverlay_Click(object sender, EventArgs e)
     {
-      HookManager.MouseClick += HookManager_MouseClick;
-    }
+      var desktopOverlayForm = new DesktopOverlayForm();
+      desktopOverlayForm.ShowDialog(this);
+      Point mouseClickPoint = desktopOverlayForm.MouseClickPoint;
 
-    /// <summary>
-    ///  Single use global hook handler.
-    /// </summary>
-    private void HookManager_MouseClick(object sender, MouseEventArgs e)
-    {
-      try
-      {
-        this.ProcessGlobalMouseClick(e);
-      }
-      finally
-      {
-        //release global hook, subsequent events will not be fired
-        HookManager.MouseClick -= HookManager_MouseClick;
-      }
-    }
-
-    /// <summary>
-    ///  Set window at specified coordinates as top most (always on top).
-    /// </summary>
-    private void btn_SetWindowTopMost_Click(object sender, EventArgs e)
-    {
-      IntPtr formHandle = this.FindWindowAtPoint(MainForm.GetFormHandleAtScreenPoint);
+      IntPtr formHandle = MainForm.GetFormHandleAtScreenPoint(mouseClickPoint);
       if (formHandle != IntPtr.Zero)
       {
         this.pinnedWindowListControl.AddWindow(formHandle);
       }
     }
-    #endregion
+#endregion
 
 #region " Private methods "
-    /// <summary>
-    ///  Find window at screen point using existing finder delegate.
-    /// </summary>
-    private IntPtr FindWindowAtPoint(Func<Point, IntPtr> handleFinderDelegate)
-    {
-      Nullable<Point> windowLocation = this.ReadPointFromUI();
-      if (windowLocation == null)
-      {
-        MessageBox.Show(@"Invalid input");
-        return IntPtr.Zero;
-      }
-
-      IntPtr formHandle = handleFinderDelegate(windowLocation.Value);
-      return formHandle;
-    }
-
-    /// <summary>
-    ///  Read point data, X and Y, from user input on screen, and returns a Point object.
-    /// </summary>
-    private Nullable<Point> ReadPointFromUI()
-    {
-      try
-      {
-        int xPoint = Convert.ToInt32(txt_WindowX.Text);
-        int yPoint = Convert.ToInt32(txt_WindowY.Text);
-
-        return new Point(xPoint, yPoint);
-      }
-      catch (FormatException)
-      {
-        //input contained invalid characters
-        return null;
-      }
-    }
-
-    /// <summary>
-    ///  Process mouse click args from global handler and display result on screen.
-    /// </summary>
-    /// <param name="e">Mouse click event args from global handler.</param>
-    private void ProcessGlobalMouseClick(MouseEventArgs e)
-    {
-      txt_WindowX.Text = e.X.ToString();
-      txt_WindowY.Text = e.Y.ToString();
-
-      //prevent external application from processing click event
-      MouseEventExtArgs args = e as MouseEventExtArgs;
-      if (args != null)
-      {
-        args.Handled = true;
-      }
-    }
 
     /// <summary>
     ///  Get form handle at specified coordinates (x,y).
@@ -156,6 +80,7 @@ namespace PinWin
 
       return formHandle;
     }
-    #endregion
+#endregion
+    
   }
 }
