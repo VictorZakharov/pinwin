@@ -19,9 +19,16 @@ namespace PinWin
     {
       InitializeComponent();
     }
-#endregion
+    #endregion
 
-#region " Event handlers - System tray icon "
+    protected override void RegisterHotKeys()
+    {
+      this.RegisterHotKey(Keys.Control | Keys.F11, this.AddPinnedWindowFromClick);
+      //TODO: temporary, for testing multiple hot keys
+      this.RegisterHotKey(Keys.Control | Keys.F12, () => MessageBox.Show(@"Hello"));
+    }
+
+    #region " Event handlers - System tray icon "
     private void MainForm_Resize(object sender, EventArgs e)
     {
       if (this.WindowState == FormWindowState.Minimized)
@@ -53,17 +60,26 @@ namespace PinWin
 #region " Event handlers - Other"
     private void btn_OpenDesktopOverlay_Click(object sender, EventArgs e)
     {
+      this.AddPinnedWindowFromClick();
+    }
+
+    private void AddPinnedWindowFromClick()
+    {
       var desktopOverlayForm = new DesktopOverlayForm();
       desktopOverlayForm.ShowDialog(this);
-      Point mouseClickPoint = desktopOverlayForm.MouseClickPoint;
+      Nullable<Point> mouseClickPoint = desktopOverlayForm.MouseClickPoint;
 
-      IntPtr formHandle = MainForm.GetFormHandleAtScreenPoint(mouseClickPoint);
-      if (formHandle != IntPtr.Zero)
+      if (mouseClickPoint != null)
       {
-        this.pinnedWindowListControl.AddWindow(formHandle);
+        IntPtr formHandle = MainForm.GetFormHandleAtScreenPoint(mouseClickPoint.Value);
+        if (formHandle != IntPtr.Zero)
+        {
+          this.pinnedWindowListControl.AddWindow(formHandle);
+        }
       }
     }
-#endregion
+
+    #endregion
 
 #region " Private methods "
 

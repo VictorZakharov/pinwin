@@ -44,12 +44,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BusinessLayer\HotKey.cs" />
+    <Compile Include="BusinessLayer\HotKeyList.cs" />
     <Compile Include="BusinessLayer\IntPtrExtensions.cs" />
     <Compile Include="BusinessLayer\ListBoxExtensions.cs" />
     <Compile Include="BusinessLayer\ScreenCapture.cs" />
     <Compile Include="BusinessLayer\WindowListItemList.cs" />
     <Compile Include="BusinessLayer\WindowListItem.cs" />
     <Compile Include="BusinessLayer\WinApiTopMost.cs" />
+    <Compile Include="BusinessLayer\WinApiHotKey.cs" />
     <Compile Include="Controls\ListBoxEx.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -93,6 +96,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\PinnedWindowListControl.resx">
       <DependentUpon>PinnedWindowListControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TrayAppForm.resx">
+      <DependentUpon>TrayAppForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DesktopOverlayForm.resx">
       <DependentUpon>DesktopOverlayForm.cs</DependentUpon>

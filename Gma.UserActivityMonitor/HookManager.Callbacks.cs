@@ -384,11 +384,11 @@ namespace Gma.UserActivityMonitor
                 //See comment of this field. To avoid GC to clean it up.
                 s_KeyboardDelegate = KeyboardHookProc;
                 //install hook
+                var mar = LoadLibrary("user32.dll");
                 s_KeyboardHookHandle = SetWindowsHookEx(
                     WH_KEYBOARD_LL,
                     s_KeyboardDelegate,
-                    Marshal.GetHINSTANCE(
-                        Assembly.GetExecutingAssembly().GetModules()[0]),
+                    mar,
                     0);
                 //If SetWindowsHookEx fails.
                 if (s_KeyboardHookHandle == 0)

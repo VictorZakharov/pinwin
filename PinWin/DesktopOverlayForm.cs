@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using PinWin.BusinessLayer;
 using PinWin.Controls;
@@ -7,9 +8,9 @@ namespace PinWin
 {
   public partial class DesktopOverlayForm : OverlayForm
   {
-    private Point _mouseClickPoint;
+    private Nullable<Point> _mouseClickPoint = null;
 
-    public Point MouseClickPoint => _mouseClickPoint;
+    public Nullable<Point> MouseClickPoint => _mouseClickPoint;
 
     public DesktopOverlayForm()
     {
