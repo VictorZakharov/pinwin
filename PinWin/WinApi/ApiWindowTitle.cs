@@ -2,9 +2,9 @@
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace PinWin.BusinessLayer
+namespace PinWin.WinApi
 {
-  public class WinApiWindowTitle
+  public class ApiWindowTitle
   {
     /// <summary>
     ///  Get window title for a given IntPtr handle.
@@ -20,12 +20,12 @@ namespace PinWin.BusinessLayer
       {
         throw new ArgumentNullException(nameof(handle));
       }
-      int length = WinApiWindowTitle.SendMessageGetTextLength(handle, WM_GETTEXTLENGTH, IntPtr.Zero, IntPtr.Zero);
+      int length = ApiWindowTitle.SendMessageGetTextLength(handle, WM_GETTEXTLENGTH, IntPtr.Zero, IntPtr.Zero);
       if (length > 0 && length < int.MaxValue)
       {
         length++; // room for EOS terminator
         StringBuilder windowTitle = new StringBuilder(length);
-        WinApiWindowTitle.SendMessageGetText(handle, WM_GETTEXT, (IntPtr)windowTitle.Capacity, windowTitle);
+        ApiWindowTitle.SendMessageGetText(handle, WM_GETTEXT, (IntPtr)windowTitle.Capacity, windowTitle);
         return windowTitle.ToString();
       }
       return String.Empty;

@@ -2,9 +2,9 @@
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace PinWin.BusinessLayer
+namespace PinWin.WinApi
 {
-  public class WinApiHotKey
+  public class ApiHotKey
   {
     #region fields
     public static int MOD_ALT = 0x1;
@@ -25,23 +25,23 @@ namespace PinWin.BusinessLayer
       int modifiers = 0;
 
       if ((key & Keys.Alt) == Keys.Alt)
-        modifiers = modifiers | WinApiHotKey.MOD_ALT;
+        modifiers = modifiers | ApiHotKey.MOD_ALT;
 
       if ((key & Keys.Control) == Keys.Control)
-        modifiers = modifiers | WinApiHotKey.MOD_CONTROL;
+        modifiers = modifiers | ApiHotKey.MOD_CONTROL;
 
       if ((key & Keys.Shift) == Keys.Shift)
-        modifiers = modifiers | WinApiHotKey.MOD_SHIFT;
+        modifiers = modifiers | ApiHotKey.MOD_SHIFT;
 
       Keys k = key & ~Keys.Control & ~Keys.Shift & ~Keys.Alt;
-      WinApiHotKey.RegisterHotKey(f.Handle, keyId, modifiers, (int) k);
+      ApiHotKey.RegisterHotKey(f.Handle, keyId, modifiers, (int) k);
     }
 
     public static void Clear(Form f, int keyId)
     {
       try
       {
-        WinApiHotKey.UnregisterHotKey(f.Handle, keyId);
+        ApiHotKey.UnregisterHotKey(f.Handle, keyId);
       }
       catch (Exception ex)
       {

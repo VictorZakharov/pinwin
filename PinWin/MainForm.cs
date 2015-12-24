@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using PinWin.BusinessLayer;
 using PinWin.Controls;
+using PinWin.WinApi;
 
 namespace PinWin
 {
@@ -63,20 +63,26 @@ namespace PinWin
       this.AddPinnedWindowFromClick();
     }
 
+    /// <summary>
+    ///  Try making window top most, based on mouse click location.
+    /// </summary>
     private void AddPinnedWindowFromClick()
     {
-      var desktopOverlayForm = new DesktopOverlayForm();
-      desktopOverlayForm.ShowDialog(this);
-      Nullable<Point> mouseClickPoint = desktopOverlayForm.MouseClickPoint;
-
-      if (mouseClickPoint != null)
+      Nullable<Point> mouseClickPoint = DesktopOverlayForm.SelectPoint(ParentForm);
+      if (mouseClickPoint == null)
       {
-        IntPtr formHandle = WinApiForm.Select(mouseClickPoint.Value);
-        if (formHandle != IntPtr.Zero)
-        {
-          this.pinnedWindowListControl.AddWindow(formHandle);
-        }
+        //no point was selected by user, do nothing
+        return;
       }
+
+      IntPtr formHandle = ApiForm.Select(mouseClickPoint.Value);
+      if (formHandle == IntPtr.Zero)
+      {
+        //parent could not be found
+        return;
+      }
+
+      this.pinnedWindowListControl.AddWindow(formHandle);
     }
 
     #endregion

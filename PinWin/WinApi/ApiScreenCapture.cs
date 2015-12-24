@@ -2,9 +2,9 @@
 using System.Drawing;
 using System.Runtime.InteropServices;
 
-namespace PinWin.BusinessLayer
+namespace PinWin.WinApi
 {
-  internal class WinApiScreenCapture
+  internal class ApiScreenCapture
   {
     /// <summary>
     ///  Take screenshot of the specified area on desktop (all monitors).

@@ -1,4 +1,5 @@
 ﻿using System;
+using PinWin.WinApi;
 
 namespace PinWin.BusinessLayer
 {
@@ -27,7 +28,7 @@ namespace PinWin.BusinessLayer
     public WindowListItem(IntPtr handle)
     {
       this.Handle = handle;
-      this.Title = WinApiWindowTitle.FromHandle(handle);
+      this.Title = ApiWindowTitle.FromHandle(handle);
     }
     #endregion
 
@@ -37,7 +38,7 @@ namespace PinWin.BusinessLayer
     /// </summary>
     public void SetPinnedStatus()
     {
-      WinApiTopMost.Set(this.Handle);
+      ApiTopMost.Set(this.Handle);
     }
 
     /// <summary>
@@ -45,7 +46,7 @@ namespace PinWin.BusinessLayer
     /// </summary>
     public void ClearPinnedStatus()
     {
-      WinApiTopMost.Clear(this.Handle);
+      ApiTopMost.Clear(this.Handle);
     }
 
     /// <summary>

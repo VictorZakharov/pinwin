@@ -1,4 +1,5 @@
 ﻿using System.Windows.Forms;
+using PinWin.Algorithms;
 
 namespace PinWin.BusinessLayer
 {

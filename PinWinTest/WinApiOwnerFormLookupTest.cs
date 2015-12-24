@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using PinWin.BusinessLayer;
+using PinWin.WinApi;
 using PinWinTest.BusinessLayer;
 
 namespace PinWinTest
@@ -42,7 +42,7 @@ namespace PinWinTest
     /// <param name="expectedParent">Expected parent window handle.</param>
     private void FindAndValidateParent(IntPtr childWindow, IntPtr expectedParent)
     {
-      var formLookup = new WinApiOwnerFormLookup();
+      var formLookup = new ApiOwnerFormLookup();
       IntPtr actualParent = formLookup.FindParent(childWindow);
 
       Assert.AreEqual(actualParent, expectedParent);

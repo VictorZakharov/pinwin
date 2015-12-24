@@ -8,10 +8,13 @@ namespace PinWin
 {
   public partial class DesktopOverlayForm : OverlayForm
   {
+#region " Properties "
     private Nullable<Point> _mouseClickPoint = null;
 
     public Nullable<Point> MouseClickPoint => _mouseClickPoint;
+#endregion
 
+#region " Constructor "
     public DesktopOverlayForm()
     {
       InitializeComponent();
@@ -25,7 +28,27 @@ namespace PinWin
       //apply custom cursor - make interface more user-friendly
       this.Cursor = new Cursor(EmbeddedResource.TargetWindowIcon.Handle);
     }
-    
+    #endregion
+
+#region " Public methods "
+    /// <summary>
+    ///  Prompt user to select a Point on screen.
+    /// </summary>
+    /// <param name="parentForm">
+    ///  A new window will open for this parent form.
+    /// </param>
+    /// <returns>
+    ///  Point that was selected by user. Null if selection was cancelled.
+    /// </returns>
+    public static Nullable<Point> SelectPoint(Form parentForm)
+    {
+      var desktopOverlayForm = new DesktopOverlayForm();
+      desktopOverlayForm.ShowDialog(parentForm);
+      return desktopOverlayForm.MouseClickPoint;
+    }
+#endregion
+
+#region " Event handlers "
     /// <summary>
     ///  User-friendly interface, escape key triggers form close.
     /// </summary>
@@ -53,5 +76,6 @@ namespace PinWin
       this._mouseClickPoint = new Point(e.X, e.Y);
       this.Close();
     }
+#endregion
   }
 }

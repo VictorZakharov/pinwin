@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using PinWin.WinApi;
 
 namespace PinWin.BusinessLayer
 {
@@ -15,7 +16,7 @@ namespace PinWin.BusinessLayer
     public static Bitmap CreateBitmapFromDesktop()
     {
       Rectangle bounds = ScreenCapture.GetDesktopBounds();
-      Bitmap bitmap = WinApiScreenCapture.CreateBitmap(bounds);
+      Bitmap bitmap = ApiScreenCapture.CreateBitmap(bounds);
       return bitmap;
     }
 

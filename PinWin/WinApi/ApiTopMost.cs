@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace PinWin.BusinessLayer
+namespace PinWin.WinApi
 {
   /// <summary>
   ///  WinApi wrapper for setting external windows top most (always on top).
@@ -10,7 +10,7 @@ namespace PinWin.BusinessLayer
   ///  Most of the content for below class was grabbed from here:
   ///  http://www.pinvoke.net/default.aspx/user32.SetWindowPos
   /// </remarks>
-  public class WinApiTopMost
+  public class ApiTopMost
   {
     private static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
     private static readonly IntPtr HWND_NOTOPMOST = new IntPtr(-2);

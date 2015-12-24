@@ -48,12 +48,12 @@
     <Compile Include="BusinessLayer\HotKeyList.cs" />
     <Compile Include="BusinessLayer\ListBoxExtensions.cs" />
     <Compile Include="BusinessLayer\ScreenCapture.cs" />
-    <Compile Include="BusinessLayer\WinApiForm.cs" />
-    <Compile Include="BusinessLayer\WinApiScreenCapture.cs" />
+    <Compile Include="WinApi\ApiForm.cs" />
+    <Compile Include="WinApi\ApiScreenCapture.cs" />
     <Compile Include="BusinessLayer\WindowListItemList.cs" />
     <Compile Include="BusinessLayer\WindowListItem.cs" />
-    <Compile Include="BusinessLayer\WinApiTopMost.cs" />
-    <Compile Include="BusinessLayer\WinApiHotKey.cs" />
+    <Compile Include="WinApi\ApiTopMost.cs" />
+    <Compile Include="WinApi\ApiHotKey.cs" />
     <Compile Include="Controls\ListBoxEx.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -83,11 +83,11 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="BusinessLayer\ParentChildHierarchyLookup.cs" />
+    <Compile Include="Algorithms\ParentChildHierarchyLookup.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="BusinessLayer\WinApiWindowTitle.cs" />
-    <Compile Include="BusinessLayer\WinApiOwnerFormLookup.cs" />
+    <Compile Include="WinApi\ApiWindowTitle.cs" />
+    <Compile Include="WinApi\ApiOwnerFormLookup.cs" />
     <Compile Include="BusinessLayer\WinformsOwnerFormLookup.cs" />
     <Compile Include="Controls\TrayAppForm.cs">
       <SubType>Form</SubType>
@@ -135,9 +135,7 @@
     <Content Include="Images\TargetWindowIcon.ico" />
     <Content Include="Images\Pin-24.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="WinApi\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
