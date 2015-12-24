@@ -49,6 +49,7 @@
     <Compile Include="BusinessLayer\IntPtrExtensions.cs" />
     <Compile Include="BusinessLayer\ListBoxExtensions.cs" />
     <Compile Include="BusinessLayer\ScreenCapture.cs" />
+    <Compile Include="BusinessLayer\WinApiScreenCapture.cs" />
     <Compile Include="BusinessLayer\WindowListItemList.cs" />
     <Compile Include="BusinessLayer\WindowListItem.cs" />
     <Compile Include="BusinessLayer\WinApiTopMost.cs" />

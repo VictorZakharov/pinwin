@@ -10,23 +10,13 @@ namespace PinWin.BusinessLayer
   internal class ScreenCapture
   {
     /// <summary>
-    ///  Take screenshot of whole desktop (all monitors) and get result as Bitmap.
+    ///  Capture whole desktop into Bitmap (all monitors).
     /// </summary>
-    /// <remarks>
-    ///  Based on this answer on StackOverflow:
-    ///  http://stackoverflow.com/questions/1163761/capture-screenshot-of-active-window
-    /// </remarks>
     public static Bitmap CreateBitmapFromDesktop()
     {
       Rectangle bounds = ScreenCapture.GetDesktopBounds();
-      Bitmap image = new Bitmap(bounds.Width, bounds.Height);
-
-      using (Graphics g = Graphics.FromImage(image))
-      {
-        g.CopyFromScreen(Point.Empty, Point.Empty, bounds.Size);
-      }
-
-      return image;
+      Bitmap bitmap = WinApiScreenCapture.CreateBitmap(bounds);
+      return bitmap;
     }
 
     /// <summary>
