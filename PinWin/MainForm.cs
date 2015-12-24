@@ -71,7 +71,7 @@ namespace PinWin
 
       if (mouseClickPoint != null)
       {
-        IntPtr formHandle = MainForm.GetFormHandleAtScreenPoint(mouseClickPoint.Value);
+        IntPtr formHandle = WinApiForm.Select(mouseClickPoint.Value);
         if (formHandle != IntPtr.Zero)
         {
           this.pinnedWindowListControl.AddWindow(formHandle);
@@ -80,23 +80,5 @@ namespace PinWin
     }
 
     #endregion
-
-#region " Private methods "
-
-    /// <summary>
-    ///  Get form handle at specified coordinates (x,y).
-    /// </summary>
-    /// <param name="point">Coordinates to search.</param>
-    private static IntPtr GetFormHandleAtScreenPoint(Point point)
-    {
-      IntPtr foundWindowHandle = WinApi.WindowFromPoint(point);
-
-      var parentLookup = new WinApiOwnerFormLookup();
-      IntPtr formHandle = parentLookup.FindParent(foundWindowHandle);
-
-      return formHandle;
-    }
-#endregion
-    
   }
 }

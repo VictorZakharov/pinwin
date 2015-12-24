@@ -27,7 +27,7 @@ namespace PinWin.BusinessLayer
     public WindowListItem(IntPtr handle)
     {
       this.Handle = handle;
-      this.Title = WinApi.GetWindowTitle(handle);
+      this.Title = WinApiWindowTitle.FromHandle(handle);
     }
     #endregion
 
