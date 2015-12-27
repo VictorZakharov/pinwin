@@ -1,6 +1,5 @@
 # pinwin - stands for "Pin Windows"
-I always liked DeskPins application, very simple and intuitive:
-http://deskpins.en.softonic.com/
+I always liked DeskPins application, very simple and intuitive, [link for direct download](https://drive.google.com/file/d/0BzOSyp06l5JwMVNXYkFMQXNMUTQ/view?usp=sharing) is provided here for your convenience (using Google Drive).
 
 Unfortunately, it did not work well on Windows 8 and higher.
 So I decided to write one in .NET with support for all OS (hopefully).
