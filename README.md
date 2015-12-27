@@ -1,5 +1,5 @@
 # pinwin - stands for "Pin Windows"
-I always liked DeskPins application, very simple and intuitive, it allows you to make any 3rd party window, i.e. that of another application, as [top most](https://msdn.microsoft.com/en-us/library/system.windows.window.topmost%28v=vs.110%29.aspx) (also known as "always-on-top"), and it will appear on top of other windows at all times, until DeskPins application is closed. Below is a screenshot of how it works, self-explanatory:
+I always liked DeskPins application, very simple and intuitive, it allows you to make any 3rd party window, i.e. that of another application, [top most](https://msdn.microsoft.com/en-us/library/system.windows.window.topmost%28v=vs.110%29.aspx) (also known as "always-on-top"), and it will appear on top of other windows at all times, until DeskPins application is closed. Below is a screenshot of how it works, self-explanatory:
 
 ![DeskPins in action](http://i.imgur.com/Y65spks.png)
 
