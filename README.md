@@ -1,5 +1,9 @@
 # pinwin - stands for "Pin Windows"
-I always liked DeskPins application, very simple and intuitive, [link for direct download](https://drive.google.com/file/d/0BzOSyp06l5JwMVNXYkFMQXNMUTQ/view?usp=sharing) is provided here for your convenience (using Google Drive).
+I always liked DeskPins application, very simple and intuitive, it allows you to make any 3rd party window, i.e. that of another application, as top most (also known as "always-on-top"), and it will appear on top of other windows at all times, until DeskPins application is closed. Below is a screenshot of how it works, self-explanatory:
+
+![DeskPins in action](http://i.imgur.com/Y65spks.png)
+
+[Link for DeskPins direct download](https://drive.google.com/file/d/0BzOSyp06l5JwMVNXYkFMQXNMUTQ/view?usp=sharing) is provided here for your convenience (no ads, using Google Drive).
 
 If you look at the attached readme file, the original software is not meant to work on Windows Vista and above. However, it kept working all the way until Windows 7, but then unfortunately, stopped working on Windows 8 and higher.
 So I decided to write one in .NET with support for all OS (hopefully).
