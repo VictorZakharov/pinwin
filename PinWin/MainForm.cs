@@ -24,8 +24,6 @@ namespace PinWin
     protected override void RegisterHotKeys()
     {
       this.RegisterHotKey(Keys.Control | Keys.F11, this.AddPinnedWindowFromClick);
-      //TODO: temporary, for testing multiple hot keys
-      this.RegisterHotKey(Keys.Control | Keys.F12, () => MessageBox.Show(@"Hello"));
     }
 
     #region " Event handlers - System tray icon "
@@ -75,14 +73,7 @@ namespace PinWin
         return;
       }
 
-      IntPtr formHandle = ApiForm.Select(mouseClickPoint.Value);
-      if (formHandle == IntPtr.Zero)
-      {
-        //parent could not be found
-        return;
-      }
-
-      this.pinnedWindowListControl.AddWindow(formHandle);
+      this.pinnedWindowListControl.TryAddWindowFromPoint(mouseClickPoint.Value);
     }
 
     #endregion

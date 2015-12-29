@@ -44,11 +44,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BusinessLayer\FormExtensions.cs" />
     <Compile Include="BusinessLayer\HotKey.cs" />
     <Compile Include="BusinessLayer\HotKeyList.cs" />
     <Compile Include="BusinessLayer\ListBoxExtensions.cs" />
     <Compile Include="BusinessLayer\ScreenCapture.cs" />
+    <Compile Include="BusinessLayer\WindowStyle.cs" />
+    <Compile Include="Controls\PinForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\PinForm.designer.cs">
+      <DependentUpon>PinForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="WinApi\ApiForm.cs" />
+    <Compile Include="WinApi\ApiSystemMetrics.cs" />
+    <Compile Include="WinApi\ApiWindowPos.cs" />
     <Compile Include="WinApi\ApiScreenCapture.cs" />
     <Compile Include="BusinessLayer\WindowListItemList.cs" />
     <Compile Include="BusinessLayer\WindowListItem.cs" />
@@ -92,8 +102,13 @@
     <Compile Include="Controls\TrayAppForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="WinApi\NativeMethods.cs" />
+    <Compile Include="WinApi\SystemMetric.cs" />
     <EmbeddedResource Include="Controls\OverlayForm.resx">
       <DependentUpon>OverlayForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\PinForm.resx">
+      <DependentUpon>PinForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\PinnedWindowListControl.resx">
       <DependentUpon>PinnedWindowListControl.cs</DependentUpon>

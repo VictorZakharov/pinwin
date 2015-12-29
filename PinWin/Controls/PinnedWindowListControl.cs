@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using PinWin.BusinessLayer;
+using PinWin.WinApi;
 
 namespace PinWin.Controls
 {
@@ -31,9 +33,29 @@ namespace PinWin.Controls
     ///  Add specified window to the list of pinned windows (always on top).
     /// </summary>
     /// <param name="handle">Window handle to be added.</param>
-    public void AddWindow(IntPtr handle)
+    private void TryAddWindow(IntPtr handle)
     {
       this.DataSource.TryAddPinned(handle);
+      PinForm.Create(handle);
+    }
+
+    public void TryAddWindowFromPoint(Point point)
+    {
+      IntPtr formHandle = ApiForm.Select(point);
+      if (formHandle == IntPtr.Zero)
+      {
+        //parent could not be found
+        return;
+      }
+
+      this.TryAddWindow(formHandle);
+    }
+
+    public IntPtr[] SelectedWindowHandles {
+      get
+      {
+        return this.SelectedItems.Select(x => x.Handle).ToArray();
+      }
     }
 #endregion
 
