@@ -28,7 +28,9 @@
     /// </summary>
     private void InitializeComponent()
     {
+      this.components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PinForm));
+      this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
       this.SuspendLayout();
       // 
       // PinForm
@@ -37,16 +39,21 @@
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
       this.ClientSize = new System.Drawing.Size(16, 16);
+      this.Cursor = System.Windows.Forms.Cursors.Hand;
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
       this.Name = "PinForm";
       this.ShowInTaskbar = false;
       this.Text = "PinForm";
+      this.toolTip1.SetToolTip(this, "Click to unpin");
       this.Load += new System.EventHandler(this.PinForm_Load);
       this.Shown += new System.EventHandler(this.PinForm_Shown);
+      this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PinForm_MouseClick);
       this.ResumeLayout(false);
 
     }
 
     #endregion
+
+    private System.Windows.Forms.ToolTip toolTip1;
   }
 }

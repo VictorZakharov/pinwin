@@ -47,8 +47,6 @@ namespace PinWin.Controls
     {
       Rectangle move = ApiWindowPos.Get(this._parentHandle);
 
-      Debug.WriteLine("Data: " + move.Left + " " + move.Top);
-
       this.Left = (int)(move.Left + (move.Right - move.Left) * 0.75);
       this.Top = move.Top + 5;
 
@@ -91,5 +89,15 @@ namespace PinWin.Controls
 
     [DllImport("user32.dll", SetLastError = true)]
     static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
+
+    private void PinForm_MouseClick(object sender, MouseEventArgs e)
+    {
+      this.Close();
+
+      if (this._parentHandle != IntPtr.Zero)
+      {
+        ApiTopMost.Clear(this._parentHandle);
+      }
+    }
   }
 }
