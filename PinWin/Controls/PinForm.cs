@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -12,11 +11,17 @@ namespace PinWin.Controls
   {
     private const uint WINEVENT_OUTOFCONTEXT = 0x0000;
     private const uint EVENT_OBJECT_LOCATIONCHANGE = 0x800B;
+    const uint EVENT_OBJECT_DESTROY = 0x8001; // hwnd ID idChild is destroyed item
 
     private const uint EVENT_SYSTEM_MOVESIZEEND = 0x000B;
 
     private readonly IntPtr _parentHandle;
+    private readonly string _parentFormTitle;
     private NativeMethods.WinEventDelegate _parentLocationChangedHandler;
+    private NativeMethods.WinEventDelegate _parentWindowDestroyed;
+
+    public IntPtr ParentHandle => this._parentHandle;
+    public string ParentTitle => this._parentFormTitle;
 
     public PinForm()
     {
@@ -28,11 +33,13 @@ namespace PinWin.Controls
     public PinForm(IntPtr parentHandle) : this()
     {
       this._parentHandle = parentHandle;
+      this._parentFormTitle = ApiWindowTitle.FromHandle(parentHandle);
     }
 
     public static PinForm Create(IntPtr parentHandle)
     {
       PinForm pinForm = new PinForm(parentHandle);
+      ApiTopMost.Set(parentHandle);
       pinForm.Show(parentHandle);
       return pinForm;
     }
@@ -69,6 +76,17 @@ namespace PinWin.Controls
       this.MoveToParentWindow();
     }
 
+    private void WinEventProc_Destroyed(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
+    {
+      if (hwnd != this._parentHandle)
+      {
+        //skip mouse moves and child control events
+        return;
+      }
+
+      this.Close();
+    }
+
     private void PinForm_Load(object sender, EventArgs e)
     {
       if (this._parentHandle == IntPtr.Zero)
@@ -80,9 +98,11 @@ namespace PinWin.Controls
       uint threadId;
       threadId = GetWindowThreadProcessId(this._parentHandle, out processId);
       this._parentLocationChangedHandler = WinEventProc;
+      this._parentWindowDestroyed = WinEventProc_Destroyed;
 
       NativeMethods.SetWinEventHook(EVENT_OBJECT_LOCATIONCHANGE, EVENT_OBJECT_LOCATIONCHANGE, IntPtr.Zero, this._parentLocationChangedHandler, processId, threadId, WINEVENT_OUTOFCONTEXT);
       NativeMethods.SetWinEventHook(EVENT_SYSTEM_MOVESIZEEND, EVENT_SYSTEM_MOVESIZEEND, IntPtr.Zero, this._parentLocationChangedHandler, processId, threadId, WINEVENT_OUTOFCONTEXT);
+      NativeMethods.SetWinEventHook(EVENT_OBJECT_DESTROY, EVENT_OBJECT_DESTROY, IntPtr.Zero, this._parentWindowDestroyed, processId, threadId, WINEVENT_OUTOFCONTEXT);
 
       this.MoveToParentWindow();
     }
@@ -93,11 +113,23 @@ namespace PinWin.Controls
     private void PinForm_MouseClick(object sender, MouseEventArgs e)
     {
       this.Close();
+    }
 
+    private void PinForm_FormClosing(object sender, FormClosingEventArgs e)
+    {
       if (this._parentHandle != IntPtr.Zero)
       {
         ApiTopMost.Clear(this._parentHandle);
       }
+    }
+
+    /// <summary>
+    ///  Used for debugging purposes.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+      return $"{this._parentHandle} - {this._parentFormTitle}";
     }
   }
 }

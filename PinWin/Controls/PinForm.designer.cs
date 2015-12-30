@@ -45,6 +45,7 @@
       this.ShowInTaskbar = false;
       this.Text = "PinForm";
       this.toolTip1.SetToolTip(this, "Click to unpin");
+      this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PinForm_FormClosing);
       this.Load += new System.EventHandler(this.PinForm_Load);
       this.Shown += new System.EventHandler(this.PinForm_Shown);
       this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PinForm_MouseClick);

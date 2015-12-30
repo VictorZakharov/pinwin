@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -21,7 +22,7 @@ namespace PinWin.Controls
       InitializeComponent();
 
       //custom processing
-      this.DataSource = new WindowListItemList();
+      this.DataSource = new PinFormFactory();
 
       lbl_PinnedWindowListNoItems.Parent = lst_PinnedWindowList;
       lbl_PinnedWindowListNoItems.BackColor = Color.Transparent;
@@ -36,7 +37,6 @@ namespace PinWin.Controls
     private void TryAddWindow(IntPtr handle)
     {
       this.DataSource.TryAddPinned(handle);
-      PinForm.Create(handle);
     }
 
     public void TryAddWindowFromPoint(Point point)
@@ -54,7 +54,7 @@ namespace PinWin.Controls
     public IntPtr[] SelectedWindowHandles {
       get
       {
-        return this.SelectedItems.Select(x => x.Handle).ToArray();
+        return this.SelectedItems.Select(x => x.ParentHandle).ToArray();
       }
     }
 #endregion
@@ -65,9 +65,8 @@ namespace PinWin.Controls
     /// </summary>
     private void btn_UnpinAllWindows_Click(object sender, EventArgs e)
     {
-      WindowListItemList dataSource = this.DataSource;
-      dataSource.ClearPinnedStatus();
-      dataSource.Clear();
+      PinFormFactory dataSource = this.DataSource;
+      this.DataSource.RemoveRange(dataSource);
     }
 
     /// <summary>
@@ -75,9 +74,7 @@ namespace PinWin.Controls
     /// </summary>
     private void btn_UnpinSelectedWindows_Click(object sender, EventArgs e)
     {
-      WindowListItemList selectedItems = this.SelectedItems;
-      selectedItems.ClearPinnedStatus();
-
+      List<PinForm> selectedItems = this.SelectedItems;
       this.DataSource.RemoveRange(selectedItems);
     }
 
@@ -96,22 +93,35 @@ namespace PinWin.Controls
     /// <summary>
     ///  Gets or sets underlying business object.
     /// </summary>
-    private WindowListItemList DataSource
+    private PinFormFactory DataSource
     {
       get
       {
-        return this.lst_PinnedWindowList.DataSource as WindowListItemList;
+        return this.lst_PinnedWindowList.DataSource as PinFormFactory;
       }
       set
       {
         this.lst_PinnedWindowList.DataSource = value;
+        this.lst_PinnedWindowList.DisplayMember = "ParentTitle";
+        this.lst_PinnedWindowList.ValueMember = "ParentHandle";
       }
     }
 
     /// <summary>
     ///  Read-only accessor to selected items from the underlying business object.
     /// </summary>
-    private WindowListItemList SelectedItems => this.lst_PinnedWindowList.SelectedItems;
+    private List<PinForm> SelectedItems
+    {
+      get
+      {
+        var items = new List<PinForm>();
+        foreach (PinForm pinForm in lst_PinnedWindowList.SelectedItems)
+        {
+          items.Add(pinForm);
+        }
+        return items;
+      }
+    }
 #endregion
   }
 }

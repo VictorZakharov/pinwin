@@ -60,8 +60,7 @@
     <Compile Include="WinApi\ApiSystemMetrics.cs" />
     <Compile Include="WinApi\ApiWindowPos.cs" />
     <Compile Include="WinApi\ApiScreenCapture.cs" />
-    <Compile Include="BusinessLayer\WindowListItemList.cs" />
-    <Compile Include="BusinessLayer\WindowListItem.cs" />
+    <Compile Include="BusinessLayer\PinFormFactory.cs" />
     <Compile Include="WinApi\ApiTopMost.cs" />
     <Compile Include="WinApi\ApiHotKey.cs" />
     <Compile Include="Controls\ListBoxEx.cs">
