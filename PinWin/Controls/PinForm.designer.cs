@@ -7,19 +7,6 @@
     /// </summary>
     private System.ComponentModel.IContainer components = null;
 
-    /// <summary>
-    /// Clean up any resources being used.
-    /// </summary>
-    /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-    protected override void Dispose(bool disposing)
-    {
-      if (disposing && (components != null))
-      {
-        components.Dispose();
-      }
-      base.Dispose(disposing);
-    }
-
     #region Windows Form Designer generated code
 
     /// <summary>
@@ -45,7 +32,6 @@
       this.ShowInTaskbar = false;
       this.Text = "PinForm";
       this.toolTip1.SetToolTip(this, "Click to unpin");
-      this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PinForm_FormClosing);
       this.Load += new System.EventHandler(this.PinForm_Load);
       this.Shown += new System.EventHandler(this.PinForm_Shown);
       this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PinForm_MouseClick);
