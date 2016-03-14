@@ -59,7 +59,7 @@ namespace PinWin.BusinessLayer
         return;
       }
 
-      UnhookWinEvent(_eventHandle);
+      UnhookWinEvent(this._eventHandle);
     }
   }
 }
