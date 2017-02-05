@@ -1,3 +1,4 @@
 *.user
 obj
 bin
+*.suo

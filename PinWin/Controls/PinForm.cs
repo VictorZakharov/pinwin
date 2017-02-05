@@ -60,19 +60,14 @@ namespace PinWin.Controls
       this.Width = 16;
     }
 
+    /// <summary>
+    ///  Resets pinned icon location relative to parent when parent is moved.
+    /// </summary>
     private void MoveToParentWindow()
     {
-      Rectangle move = ApiWindowPos.Get(this._parentHandle);
-
-      this.Left = (int)(move.Left + (move.Right - move.Left) * 0.75);
-      this.Top = move.Top + 5;
-
-      //TODO: replace 0.75 with below
-      //this.Text = ApiSystemMetrics.Get(SystemMetric.SM_CXSIZE) + @" " +
-      //            ApiSystemMetrics.Get(SystemMetric.SM_CYSIZE);
-
-      //WindowStyle style = new WindowStyle(this.Handle);
-      //this.Text += $", maxbtn:{style.MaximizeBox} minbtn:{style.MinimizeBox}";
+      Point newLocation = PinForm.GetRelativeLocation(this._parentHandle);
+      this.Left = newLocation.X;
+      this.Top = newLocation.Y;
     }
 
     private void PinForm_Load(object sender, EventArgs e)
@@ -124,6 +119,33 @@ namespace PinWin.Controls
     public override string ToString()
     {
       return $"{this._parentHandle} - {this._parentFormTitle}";
+    }
+
+    /// <summary>
+    ///  Calculates absolute location of pin icon based on parent form's handle.
+    /// </summary>
+    /// <param name="handle">Parent window handle.</param>
+    /// <returns>Absolute location of pin icon.</returns>
+    private static Point GetRelativeLocation(IntPtr handle)
+    {
+      int rightMargin = PinForm.GetControlAreaWidth(handle) + 20;
+      Rectangle move = ApiWindowPos.Get(handle);
+
+      return new Point(move.Left + move.Width - rightMargin, move.Top + 5);
+    }
+
+    /// <summary>
+    ///  Calculates total width of control buttons (minimize, maximize, close).
+    /// </summary>
+    /// <param name="handle">Window handle.</param>
+    /// <returns>Total width in pixels.</returns>
+    private static int GetControlAreaWidth(IntPtr handle)
+    {
+      WindowStyle style = new WindowStyle(handle);
+      int buttonCount = style.MaximizeBox || style.MinimizeBox ? 3 : 1;
+
+      int controlButtonAverageWidth = ApiSystemMetrics.Get(SystemMetric.SM_CXSIZE);
+      return controlButtonAverageWidth * buttonCount;
     }
   }
 }
