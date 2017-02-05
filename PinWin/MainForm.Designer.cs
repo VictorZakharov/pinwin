@@ -55,20 +55,20 @@
             this.contextMenu_OpenApplication,
             this.contextMenu_CloseApplication});
       this.contextMenu_Main.Name = "contextMenu_Main";
-      this.contextMenu_Main.Size = new System.Drawing.Size(122, 56);
+      this.contextMenu_Main.Size = new System.Drawing.Size(116, 52);
       // 
       // contextMenu_OpenApplication
       // 
       this.contextMenu_OpenApplication.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.contextMenu_OpenApplication.Name = "contextMenu_OpenApplication";
-      this.contextMenu_OpenApplication.Size = new System.Drawing.Size(121, 26);
+      this.contextMenu_OpenApplication.Size = new System.Drawing.Size(115, 24);
       this.contextMenu_OpenApplication.Text = "Open";
       this.contextMenu_OpenApplication.Click += new System.EventHandler(this.contextMenu_OpenApplication_Click);
       // 
       // contextMenu_CloseApplication
       // 
       this.contextMenu_CloseApplication.Name = "contextMenu_CloseApplication";
-      this.contextMenu_CloseApplication.Size = new System.Drawing.Size(121, 26);
+      this.contextMenu_CloseApplication.Size = new System.Drawing.Size(115, 24);
       this.contextMenu_CloseApplication.Text = "Exit";
       this.contextMenu_CloseApplication.Click += new System.EventHandler(this.contextMenu_CloseApplication_Click);
       // 
@@ -117,7 +117,6 @@
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Margin = new System.Windows.Forms.Padding(4);
       this.MaximizeBox = false;
-      this.MinimizeBox = false;
       this.MinimumSize = new System.Drawing.Size(522, 229);
       this.Name = "MainForm";
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
