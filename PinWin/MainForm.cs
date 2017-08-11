@@ -11,6 +11,8 @@ namespace PinWin
     /// </summary>
     public partial class MainForm : TrayAppForm
     {
+        public bool IsLoaded { get; set; }
+
         #region " Constructor "
 
         /// <summary>
@@ -51,6 +53,10 @@ namespace PinWin
         private void contextMenu_OpenApplication_Click(object sender, EventArgs e)
         {
             this.AllowFormShow = true;
+            if (!this.IsLoaded)
+            {
+                this.CenterToScreen();
+            }
             this.Show();
             this.WindowState = FormWindowState.Normal;
         }
@@ -66,6 +72,7 @@ namespace PinWin
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            this.IsLoaded = true;
             this.Text = $@"{Application.ProductName} v{Application.ProductVersion}";
         }
 
