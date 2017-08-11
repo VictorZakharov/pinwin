@@ -19,6 +19,9 @@ namespace PinWin
         public MainForm()
         {
             InitializeComponent();
+
+            // Replace default tooltip text of tray icon with application name
+            this.notifyIcon_Main.Text = Application.ProductName;
         }
 
         #endregion
