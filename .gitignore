@@ -3,3 +3,5 @@ obj
 bin
 *.suo
 /.vs
+/PinWinInstaller/PinWinInstaller-SetupFiles
+/PinWinInstaller/PinWinInstaller-cache
