@@ -12,6 +12,13 @@ DeskPins was written in C++ and [its source code recently made public](https://b
 If you look at the attached readme file, the original software is not meant to work on Windows Vista and above. However, it kept working all the way until Windows 7, but then unfortunately, stopped working on Windows 8 and higher.
 So I decided to write one in .NET with support for all OS (hopefully).
 
+### Download
+
+You can download PinWin [via GitHub releases](https://github.com/VictorZakharov/pinwin/releases), where the most recent version is available. Pick your preferred distribution method: 
+- Source code - clone this repository via any Git client and build it yourself using Visual Studio 2017.
+- Binaries - download the exe for xcopy install and any custom configuration.
+- MSI installer package - it will do the work for you (I am currently using the free version of [Advanced Installer](http://www.advancedinstaller.com/)).
+
 ### Credits
 
 I would like to thank below people and communities for making this project happen:
