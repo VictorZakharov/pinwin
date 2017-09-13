@@ -13,6 +13,8 @@ namespace PinWin
     {
         public bool IsLoaded { get; set; }
 
+        private bool _isDesktopOverlayShown { get; set; }
+
         #region " Constructor "
 
         /// <summary>
@@ -86,14 +88,28 @@ namespace PinWin
         /// </summary>
         private void AddPinnedWindowFromClick()
         {
-            Point? mouseClickPoint = DesktopOverlayForm.SelectPoint(ParentForm);
-            if (mouseClickPoint == null)
+            if (this._isDesktopOverlayShown)
             {
-                //no point was selected by user, do nothing
+                //prevent overlay from pinning itself
                 return;
             }
 
-            this.pinnedWindowListControl.TryAddWindowFromPoint(mouseClickPoint.Value);
+            this._isDesktopOverlayShown = true;
+            try
+            {
+                Point? mouseClickPoint = DesktopOverlayForm.SelectPoint(ParentForm);
+                if (mouseClickPoint == null)
+                {
+                    //no point was selected by user, do nothing
+                    return;
+                }
+
+                this.pinnedWindowListControl.TryAddWindowFromPoint(mouseClickPoint.Value);
+            }
+            finally
+            {
+                this._isDesktopOverlayShown = false;
+            }
         }
 
         #endregion
