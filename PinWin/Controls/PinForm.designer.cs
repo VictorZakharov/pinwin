@@ -22,18 +22,20 @@
       // 
       // PinForm
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
+      this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
       this.ClientSize = new System.Drawing.Size(16, 16);
       this.Cursor = System.Windows.Forms.Cursors.Hand;
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+      this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this.Name = "PinForm";
       this.ShowInTaskbar = false;
+      this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
       this.Text = "PinForm";
       this.toolTip1.SetToolTip(this, "Click to unpin");
       this.Load += new System.EventHandler(this.PinForm_Load);
-      this.Shown += new System.EventHandler(this.PinForm_Shown);
       this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PinForm_MouseClick);
       this.ResumeLayout(false);
 

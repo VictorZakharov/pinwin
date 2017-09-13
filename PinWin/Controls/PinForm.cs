@@ -53,13 +53,7 @@ namespace PinWin.Controls
       pinForm.Show(parentHandle);
       return pinForm;
     }
-
-    private void PinForm_Shown(object sender, EventArgs e)
-    {
-      this.Height = 16;
-      this.Width = 16;
-    }
-
+    
     /// <summary>
     ///  Resets pinned icon location relative to parent when parent is moved.
     /// </summary>
@@ -98,7 +92,7 @@ namespace PinWin.Controls
 
     private void ParentForm_Destroyed(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
     {
-      if (hwnd != this._parentHandle)
+      if (hwnd != this._parentHandle || idObject != 0)
       {
         //skip unwanted events
         return;
