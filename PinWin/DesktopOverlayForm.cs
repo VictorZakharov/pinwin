@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Forms;
 
 using PinWin.BusinessLayer;
@@ -22,6 +21,9 @@ namespace PinWin
         public DesktopOverlayForm()
         {
             InitializeComponent();
+
+            //clear initial text, it only helps find the label at design time
+            this.lbl_DebugInfo.Text = string.Empty;
 
             //set overlay form as full screen across all monitors
             this.Bounds = ScreenCapture.GetDesktopBounds();
