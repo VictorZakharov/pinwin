@@ -113,5 +113,10 @@ namespace PinWin
         }
 
         #endregion
+
+        private void tmrWindowPosSync_Tick(object sender, EventArgs e)
+        {
+            this.pinnedWindowListControl.SyncWindowPosition();
+        }
     }
 }

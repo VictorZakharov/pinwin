@@ -37,6 +37,7 @@
             this.pinnedWindowListControl = new PinWin.Controls.PinnedWindowListControl();
             this.btn_OpenDesktopOverlay = new System.Windows.Forms.Button();
             this.lbl_message = new System.Windows.Forms.Label();
+            this.tmrWindowPosSync = new System.Windows.Forms.Timer(this.components);
             this.contextMenu_Main.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -55,20 +56,20 @@
             this.contextMenu_OpenApplication,
             this.contextMenu_CloseApplication});
             this.contextMenu_Main.Name = "contextMenu_Main";
-            this.contextMenu_Main.Size = new System.Drawing.Size(122, 56);
+            this.contextMenu_Main.Size = new System.Drawing.Size(116, 52);
             // 
             // contextMenu_OpenApplication
             // 
             this.contextMenu_OpenApplication.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.contextMenu_OpenApplication.Name = "contextMenu_OpenApplication";
-            this.contextMenu_OpenApplication.Size = new System.Drawing.Size(121, 26);
+            this.contextMenu_OpenApplication.Size = new System.Drawing.Size(115, 24);
             this.contextMenu_OpenApplication.Text = "Open";
             this.contextMenu_OpenApplication.Click += new System.EventHandler(this.contextMenu_OpenApplication_Click);
             // 
             // contextMenu_CloseApplication
             // 
             this.contextMenu_CloseApplication.Name = "contextMenu_CloseApplication";
-            this.contextMenu_CloseApplication.Size = new System.Drawing.Size(121, 26);
+            this.contextMenu_CloseApplication.Size = new System.Drawing.Size(115, 24);
             this.contextMenu_CloseApplication.Text = "Exit";
             this.contextMenu_CloseApplication.Click += new System.EventHandler(this.contextMenu_CloseApplication_Click);
             // 
@@ -106,6 +107,12 @@
             this.lbl_message.Text = "Use CTRL+F11 to trigger window selection when minimized to tray";
             this.lbl_message.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // tmrWindowPosSync
+            // 
+            this.tmrWindowPosSync.Enabled = true;
+            this.tmrWindowPosSync.Interval = 10;
+            this.tmrWindowPosSync.Tick += new System.EventHandler(this.tmrWindowPosSync_Tick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -136,6 +143,7 @@
     private Controls.PinnedWindowListControl pinnedWindowListControl;
     private System.Windows.Forms.Button btn_OpenDesktopOverlay;
     private System.Windows.Forms.Label lbl_message;
-  }
+        private System.Windows.Forms.Timer tmrWindowPosSync;
+    }
 }
 
