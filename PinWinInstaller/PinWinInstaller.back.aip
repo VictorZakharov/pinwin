@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="14.2.1" version="14.3" Modules="simple" RootPath="." Language="en" Id="{298A15D1-22ED-42ED-B7DE-747E994F9FB3}">
+<DOCUMENT Type="Advanced Installer" CreateVersion="14.2.1" version="14.2.1" Modules="simple" RootPath="." Language="en" Id="{298A15D1-22ED-42ED-B7DE-747E994F9FB3}">
   <COMPONENT cid="caphyon.advinst.msicomp.ProjectOptionsComponent">
     <ROW Name="HiddenItems" Value="AppXProductDetailsComponent;AppXDependenciesComponent;AppXAppDetailsComponent;AppXVisualAssetsComponent;AppXCapabilitiesComponent;AppXAppDeclarationsComponent;AppXUriRulesComponent"/>
   </COMPONENT>
@@ -14,7 +14,7 @@
     <ROW Property="ProductCode" Value="1033:{AC50E347-C2BE-46FE-9BB6-3A6DF82E62EA} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="PinWin"/>
-    <ROW Property="ProductVersion" Value="0.1.2" Type="32"/>
+    <ROW Property="ProductVersion" Value="0.1.1" Type="32"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{A51AACDC-7FA9-4A57-BE3B-146EA4619D2C}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
