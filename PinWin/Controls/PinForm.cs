@@ -71,6 +71,11 @@ namespace PinWin.Controls
         /// </summary>
         public bool IsParentOpen => ApiWindowPos.IsWindow(this.ParentHandle);
 
+        /// <summary>
+        ///  Determines if the parent form is minimized to tray.
+        /// </summary>
+        public bool IsParentMinimized => ApiWindowPos.IsIconic(this.ParentHandle);
+
         private void PinForm_Load(object sender, EventArgs e)
         {
             if (this._parentHandle == IntPtr.Zero)

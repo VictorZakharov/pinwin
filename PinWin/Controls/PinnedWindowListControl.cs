@@ -79,10 +79,11 @@ namespace PinWin.Controls
                 {
                     //form destroyed event not supported by parent application
                     closedForms.Add(form);
+                    continue;
                 }
 
                 //if parent window is minimized, an attempt to sync the pin location may hide the pin
-                if (!ApiWindowPos.IsIconic(form.ParentHandle))
+                if (!form.IsParentMinimized)
                 {
                     //parent window was either never moved, or cannot send move events (not supported)
                     form.MoveToParentWindow();
