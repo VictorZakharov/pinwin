@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 using PinWin.BusinessLayer;
 using PinWin.WinApi;
@@ -85,6 +86,9 @@ namespace PinWin.Controls
                 //if parent window is minimized, an attempt to sync the pin location may hide the pin
                 if (!form.IsParentMinimized)
                 {
+                    //give other windows a chance to finish processing (e.g. window restore)
+                    Thread.Sleep(1);
+
                     //parent window was either never moved, or cannot send move events (not supported)
                     form.MoveToParentWindow();
                 }
