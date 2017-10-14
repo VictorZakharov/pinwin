@@ -67,21 +67,9 @@ namespace PinWin.Controls
         }
 
         /// <summary>
-        ///  Determines if the form went off-screen.
+        ///  Determines if the parent form handle is still open.
         /// </summary>
-        /// <remarks>
-        ///  It happens to Command Prompt window when it's closed.
-        ///  Command Prompt does not send Move and Destroyed events.
-        /// </remarks>
-        public bool IsVisibleOnScreen
-        {
-            get
-            {
-                Point p = this.Location;
-                bool formInScreenBounds = (p.X >= 0 && p.Y >= 0);
-                return (this.Visible && formInScreenBounds);
-            }
-        }
+        public bool IsParentOpen => ApiWindowPos.IsWindow(this.ParentHandle);
 
         private void PinForm_Load(object sender, EventArgs e)
         {

@@ -59,7 +59,7 @@ namespace PinWin.Controls
         {
             get { return this.SelectedItems.Select(x => x.ParentHandle).ToArray(); }
         }
-        
+
         /// <summary>
         ///  Synchronizes pinned icon position relative to the parent form.
         /// </summary>
@@ -75,7 +75,7 @@ namespace PinWin.Controls
                     continue;
                 }
                 
-                if (form.IsVisibleOnScreen)
+                if (form.IsParentOpen)
                 {
                     //parent window was either never moved, or cannot send move events (not supported)
                     form.MoveToParentWindow();
