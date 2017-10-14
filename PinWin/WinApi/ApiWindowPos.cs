@@ -32,10 +32,19 @@ namespace PinWin.WinApi
         /// <summary>
         ///  Determines if the specified handle is open.
         /// </summary>
-        /// <param name="hWnd">Handle to be checked.</param>
+        /// <param name="hWnd">Window handle to be checked.</param>
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool IsWindow(IntPtr hWnd);
+
+        /// <summary>
+        ///  Determines if window is minimized.
+        /// </summary>
+        /// <param name="hWnd">Window handle to be checked.</param>
+        /// <returns></returns>
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool IsIconic(IntPtr hWnd);
 
         [DllImport(@"dwmapi.dll")]
         private static extern int DwmGetWindowAttribute(IntPtr hwnd, int dwAttribute, out Rect pvAttribute,

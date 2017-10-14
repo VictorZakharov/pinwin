@@ -75,15 +75,17 @@ namespace PinWin.Controls
                     continue;
                 }
                 
-                if (form.IsParentOpen)
+                if (!form.IsParentOpen)
+                {
+                    //form destroyed event not supported by parent application
+                    closedForms.Add(form);
+                }
+
+                //if parent window is minimized, an attempt to sync the pin location may hide the pin
+                if (!ApiWindowPos.IsIconic(form.ParentHandle))
                 {
                     //parent window was either never moved, or cannot send move events (not supported)
                     form.MoveToParentWindow();
-                }
-                else
-                {
-                    //form destroyed event not supported by parent application, or the form was hidden
-                    closedForms.Add(form);
                 }
             }
 
