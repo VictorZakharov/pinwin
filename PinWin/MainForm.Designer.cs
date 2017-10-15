@@ -56,20 +56,20 @@
             this.contextMenu_OpenApplication,
             this.contextMenu_CloseApplication});
             this.contextMenu_Main.Name = "contextMenu_Main";
-            this.contextMenu_Main.Size = new System.Drawing.Size(116, 52);
+            this.contextMenu_Main.Size = new System.Drawing.Size(105, 48);
             // 
             // contextMenu_OpenApplication
             // 
             this.contextMenu_OpenApplication.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.contextMenu_OpenApplication.Name = "contextMenu_OpenApplication";
-            this.contextMenu_OpenApplication.Size = new System.Drawing.Size(115, 24);
+            this.contextMenu_OpenApplication.Size = new System.Drawing.Size(104, 22);
             this.contextMenu_OpenApplication.Text = "Open";
             this.contextMenu_OpenApplication.Click += new System.EventHandler(this.contextMenu_OpenApplication_Click);
             // 
             // contextMenu_CloseApplication
             // 
             this.contextMenu_CloseApplication.Name = "contextMenu_CloseApplication";
-            this.contextMenu_CloseApplication.Size = new System.Drawing.Size(115, 24);
+            this.contextMenu_CloseApplication.Size = new System.Drawing.Size(104, 22);
             this.contextMenu_CloseApplication.Text = "Exit";
             this.contextMenu_CloseApplication.Click += new System.EventHandler(this.contextMenu_CloseApplication_Click);
             // 
@@ -78,19 +78,18 @@
             this.pinnedWindowListControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pinnedWindowListControl.Location = new System.Drawing.Point(231, 15);
-            this.pinnedWindowListControl.Margin = new System.Windows.Forms.Padding(5);
+            this.pinnedWindowListControl.Location = new System.Drawing.Point(173, 12);
+            this.pinnedWindowListControl.Margin = new System.Windows.Forms.Padding(4);
             this.pinnedWindowListControl.Name = "pinnedWindowListControl";
-            this.pinnedWindowListControl.Size = new System.Drawing.Size(483, 224);
+            this.pinnedWindowListControl.Size = new System.Drawing.Size(355, 182);
             this.pinnedWindowListControl.TabIndex = 9;
             // 
             // btn_OpenDesktopOverlay
             // 
             this.btn_OpenDesktopOverlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_OpenDesktopOverlay.Location = new System.Drawing.Point(16, 15);
-            this.btn_OpenDesktopOverlay.Margin = new System.Windows.Forms.Padding(4);
+            this.btn_OpenDesktopOverlay.Location = new System.Drawing.Point(12, 12);
             this.btn_OpenDesktopOverlay.Name = "btn_OpenDesktopOverlay";
-            this.btn_OpenDesktopOverlay.Size = new System.Drawing.Size(207, 185);
+            this.btn_OpenDesktopOverlay.Size = new System.Drawing.Size(155, 150);
             this.btn_OpenDesktopOverlay.TabIndex = 10;
             this.btn_OpenDesktopOverlay.Text = "Select Window";
             this.btn_OpenDesktopOverlay.UseVisualStyleBackColor = true;
@@ -98,11 +97,13 @@
             // 
             // lbl_message
             // 
+            this.lbl_message.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.lbl_message.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_message.ForeColor = System.Drawing.Color.Green;
-            this.lbl_message.Location = new System.Drawing.Point(11, 244);
+            this.lbl_message.Location = new System.Drawing.Point(8, 198);
+            this.lbl_message.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbl_message.Name = "lbl_message";
-            this.lbl_message.Size = new System.Drawing.Size(694, 29);
+            this.lbl_message.Size = new System.Drawing.Size(520, 24);
             this.lbl_message.TabIndex = 11;
             this.lbl_message.Text = "Use CTRL+F11 to trigger window selection when minimized to tray";
             this.lbl_message.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -115,16 +116,15 @@
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(717, 283);
+            this.ClientSize = new System.Drawing.Size(538, 230);
             this.Controls.Add(this.lbl_message);
             this.Controls.Add(this.pinnedWindowListControl);
             this.Controls.Add(this.btn_OpenDesktopOverlay);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(522, 229);
+            this.MinimumSize = new System.Drawing.Size(396, 193);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "PinWin";
