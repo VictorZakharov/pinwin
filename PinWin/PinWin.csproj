@@ -58,6 +58,11 @@
     <Compile Include="Controls\PinForm.designer.cs">
       <DependentUpon>PinForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="WinApi\ApiForm.cs" />
     <Compile Include="WinApi\ApiSystemMetrics.cs" />
     <Compile Include="WinApi\ApiWindowPos.cs" />
@@ -137,6 +142,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -148,6 +157,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Images\Pinned.bmp" />
     <Content Include="Images\TargetWindowIcon.ico" />
     <Content Include="Images\Pin-24.ico" />
   </ItemGroup>

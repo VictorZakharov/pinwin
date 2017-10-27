@@ -22,8 +22,6 @@ namespace PinWin.Controls
         public PinForm()
         {
             InitializeComponent();
-
-            this.TransparencyKey = Color.FromArgb(255, 240, 240, 240);
         }
 
         public PinForm(IntPtr parentHandle) : this()
@@ -116,6 +114,19 @@ namespace PinWin.Controls
             this.Close();
         }
 
+        /// <summary>
+        ///  OnPaint is used to make it work in XP, as well as later OS.
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+
+            var pinnedBitmap = Resources.Pinned;
+            pinnedBitmap.MakeTransparent();
+            e.Graphics.DrawImage(pinnedBitmap, new Point(0, 0));
+        }
+        
         private void PinForm_MouseClick(object sender, MouseEventArgs e)
         {
             this.Close();
