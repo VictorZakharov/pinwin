@@ -38,7 +38,9 @@
             this.btn_OpenDesktopOverlay = new System.Windows.Forms.Button();
             this.lbl_message = new System.Windows.Forms.Label();
             this.tmrWindowPosSync = new System.Windows.Forms.Timer(this.components);
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.contextMenu_Main.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // notifyIcon_Main
@@ -75,19 +77,17 @@
             // 
             // pinnedWindowListControl
             // 
-            this.pinnedWindowListControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pinnedWindowListControl.Location = new System.Drawing.Point(173, 12);
+            this.pinnedWindowListControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pinnedWindowListControl.Location = new System.Drawing.Point(165, 4);
             this.pinnedWindowListControl.Margin = new System.Windows.Forms.Padding(4);
             this.pinnedWindowListControl.Name = "pinnedWindowListControl";
-            this.pinnedWindowListControl.Size = new System.Drawing.Size(355, 182);
+            this.pinnedWindowListControl.Size = new System.Drawing.Size(443, 181);
             this.pinnedWindowListControl.TabIndex = 9;
             // 
             // btn_OpenDesktopOverlay
             // 
             this.btn_OpenDesktopOverlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_OpenDesktopOverlay.Location = new System.Drawing.Point(12, 12);
+            this.btn_OpenDesktopOverlay.Location = new System.Drawing.Point(3, 3);
             this.btn_OpenDesktopOverlay.Name = "btn_OpenDesktopOverlay";
             this.btn_OpenDesktopOverlay.Size = new System.Drawing.Size(155, 150);
             this.btn_OpenDesktopOverlay.TabIndex = 10;
@@ -98,9 +98,10 @@
             // lbl_message
             // 
             this.lbl_message.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.tableLayoutPanel1.SetColumnSpan(this.lbl_message, 2);
             this.lbl_message.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_message.ForeColor = System.Drawing.Color.Green;
-            this.lbl_message.Location = new System.Drawing.Point(8, 198);
+            this.lbl_message.Location = new System.Drawing.Point(46, 189);
             this.lbl_message.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbl_message.Name = "lbl_message";
             this.lbl_message.Size = new System.Drawing.Size(520, 24);
@@ -114,23 +115,38 @@
             this.tmrWindowPosSync.Interval = 10;
             this.tmrWindowPosSync.Tick += new System.EventHandler(this.tmrWindowPosSync_Tick);
             // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 2;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(this.btn_OpenDesktopOverlay, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.pinnedWindowListControl, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lbl_message, 0, 1);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 2;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(612, 213);
+            this.tableLayoutPanel1.TabIndex = 12;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(538, 230);
-            this.Controls.Add(this.lbl_message);
-            this.Controls.Add(this.pinnedWindowListControl);
-            this.Controls.Add(this.btn_OpenDesktopOverlay);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.ClientSize = new System.Drawing.Size(612, 213);
+            this.Controls.Add(this.tableLayoutPanel1);
             this.MaximizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(396, 193);
+            this.MinimumSize = new System.Drawing.Size(507, 193);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "PinWin";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.contextMenu_Main.ResumeLayout(false);
+            this.tableLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
     }
@@ -144,6 +160,7 @@
     private System.Windows.Forms.Button btn_OpenDesktopOverlay;
     private System.Windows.Forms.Label lbl_message;
         private System.Windows.Forms.Timer tmrWindowPosSync;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
     }
 }
 
