@@ -12,9 +12,18 @@ DeskPins was written in C++ and [its source code recently made public](https://b
 If you look at the attached readme file, the original software is not meant to work on Windows Vista and above. However, it kept working all the way until Windows 7, but then unfortunately, stopped working on Windows 8 and higher.
 So I decided to write one in .NET with support for all OS (hopefully).
 
-### Download
+### How is the progress so far?
 
-![PinWin in action](https://imgur.com/a/71NLV)
+![PinWin in action](https://i.imgur.com/aH0FWrw.png)
+
+- Basic functionality is there, tested on Windows XP, 7 and 8.1.
+- Multi-monitor supported (verified dual extend configuration).
+- High DPI supported (verified 100-200%).
+- You can set other windows as top most via CTRL+F11 same as DeskPins.
+- User friendly installer with upgrade support.
+- No user configuration is available yet.
+
+### Download
 
 You can download PinWin [via GitHub releases](https://github.com/VictorZakharov/pinwin/releases), where the most recent version is available (source code, binaries or installer).
 
