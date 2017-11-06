@@ -19,7 +19,7 @@ So I decided to write one in .NET with support for all OS (hopefully).
 - Basic functionality is there, tested on Windows XP, 7 and 8.1.
 - Multi-monitor supported (verified dual extend configuration).
 - High DPI supported (verified 100-200%).
-- You can set other windows as top most via CTRL+F11 same as DeskPins.
+- Set other windows as top most via CTRL+F11 (same as DeskPins).
 - User friendly installer with upgrade support.
 - No user configuration is available yet.
 
