@@ -159,7 +159,8 @@
   <ItemGroup>
     <Content Include="Images\Pinned.bmp" />
     <Content Include="Images\TargetWindowIcon.ico" />
-    <Content Include="Images\Pin-24.ico" />
+    <Content Include="Images\Tray.ico" />
+    <Content Include="Images\Tray.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
