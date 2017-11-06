@@ -14,10 +14,7 @@ So I decided to write one in .NET with support for all OS (hopefully).
 
 ### Download
 
-You can download PinWin [via GitHub releases](https://github.com/VictorZakharov/pinwin/releases), where the most recent version is available. Pick your preferred distribution method: 
-- Source code - click to [download zip](https://github.com/VictorZakharov/pinwin/archive/v0.1.1.zip) or clone this repository via any Git client, then build it yourself using Visual Studio 2017.
-- Binaries - [download the exe](https://github.com/VictorZakharov/pinwin/releases/download/v0.1.1/PinWin_v0.1.1_binaries.zip) for xcopy install and any custom configuration.
-- MSI [installer package](https://github.com/VictorZakharov/pinwin/releases/download/v0.1.1/PinWinInstaller_v0.1.1.msi) - it will do the work for you (I am currently using the free version of [Advanced Installer](http://www.advancedinstaller.com/)).
+You can download PinWin [via GitHub releases](https://github.com/VictorZakharov/pinwin/releases), where the most recent version is available (source code, binaries or installer).
 
 ### Credits
 
