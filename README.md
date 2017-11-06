@@ -23,4 +23,4 @@ You can download PinWin [via GitHub releases](https://github.com/VictorZakharov/
 
 I would like to thank below people and communities for making this project happen:
 - StackOverflow, for [this answer](http://stackoverflow.com/questions/17897646/gma-useractivitymonitor-setwindowshookex-error-126) (special thanks to [Hans Passant](http://stackoverflow.com/users/17034/hans-passant)) and [this answer](http://stackoverflow.com/questions/4604023/unable-to-read-another-applications-caption) (special thanks to [Tergiver](http://stackoverflow.com/users/351385/tergiver)).
-- Creators of Advanced Installer for allowing some basic use of their tool for free.
+- Creators of [Inno Setup](http://www.jrsoftware.org/isinfo.php), developer-friendly installer tool with a flat learning curve.
