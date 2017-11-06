@@ -14,6 +14,8 @@ So I decided to write one in .NET with support for all OS (hopefully).
 
 ### Download
 
+![PinWin in action](https://imgur.com/a/71NLV)
+
 You can download PinWin [via GitHub releases](https://github.com/VictorZakharov/pinwin/releases), where the most recent version is available (source code, binaries or installer).
 
 ### Credits
