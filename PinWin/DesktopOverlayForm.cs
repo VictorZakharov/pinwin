@@ -3,6 +3,7 @@ using System.Windows.Forms;
 
 using PinWin.BusinessLayer;
 using PinWin.Controls;
+using PinWin.WinApi;
 
 namespace PinWin
 {
@@ -83,7 +84,10 @@ namespace PinWin
         /// </summary>
         private void DesktopOverlayForm_MouseDown(object sender, MouseEventArgs e)
         {
-            this._mouseClickPoint = new Point(e.X, e.Y);
+            //desktop bounds can have negative values depending on which monitor is primary
+            //form coordinates are always positive and need to be adjusted to work as expected
+            Rectangle bounds = ScreenCapture.GetDesktopBounds();
+            this._mouseClickPoint = new Point(bounds.X + e.X, bounds.Y + e.Y);
             this.Close();
         }
 
