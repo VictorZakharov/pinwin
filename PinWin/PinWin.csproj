@@ -63,7 +63,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="SingleGlobalInstance.cs" />
+    <Compile Include="BusinessLayer\SingleInstanceManager.cs" />
     <Compile Include="WinApi\ApiForm.cs" />
     <Compile Include="WinApi\ApiSystemMetrics.cs" />
     <Compile Include="WinApi\ApiWindowPos.cs" />

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
+using PinWin.BusinessLayer;
+using PinWin.WinApi;
 
 namespace PinWin
 {
@@ -14,10 +16,10 @@ namespace PinWin
             if (Environment.OSVersion.Version.Major >= 6)
             {
                 // prevent overlay from capturing only a portion of the desktop
-                SetProcessDPIAware();
+                ApiScreenCapture.SetProcessDPIAware();
             }
 
-            using (var app = new SingleGlobalInstance())
+            using (var app = new SingleInstanceManager())
             {
                 const int singleInstanceWaitMs = 1000;
                 if (!app.IsFirstInstance(singleInstanceWaitMs))
@@ -33,14 +35,5 @@ namespace PinWin
                 Application.Run(new MainForm());
             }
         }
-
-        /// <summary>
-        ///  Sets process as DPI aware, prevents odd behavior related to auto-scaling.
-        /// </summary>
-        /// <remarks>
-        ///  https://stackoverflow.com/questions/13228185/how-to-configure-an-app-to-run-correctly-on-a-machine-with-a-high-dpi-setting-e/13228495#13228495
-        /// </remarks>
-        [System.Runtime.InteropServices.DllImport("user32.dll")]
-        private static extern bool SetProcessDPIAware();
     }
 }

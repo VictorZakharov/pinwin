@@ -5,7 +5,7 @@ using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Threading;
 
-namespace PinWin
+namespace PinWin.BusinessLayer
 {
     /// <summary>
     ///  Forces to the application to run in single instance mode.
@@ -13,7 +13,7 @@ namespace PinWin
     /// <remarks>
     ///  Used code from here https://stackoverflow.com/a/7810107/897326 as a base.
     /// </remarks>
-    class SingleGlobalInstance : IDisposable
+    class SingleInstanceManager : IDisposable
     {
         private bool _hasHandle = false;
         private Mutex _mutex;
@@ -21,9 +21,9 @@ namespace PinWin
         /// <summary>
         ///  Constructor.
         /// </summary>
-        public SingleGlobalInstance()
+        public SingleInstanceManager()
         {
-            InitMutex();
+            this.InitMutex();
         }
 
         /// <summary>
@@ -51,12 +51,17 @@ namespace PinWin
         /// </summary>
         public void Dispose()
         {
-            if (_mutex != null)
+            if (this._mutex == null)
             {
-                if (_hasHandle)
-                    _mutex.ReleaseMutex();
-                _mutex.Close();
+                return;
             }
+            
+            if (this._hasHandle)
+            {
+                this._mutex.ReleaseMutex();
+            }
+
+            this._mutex.Close();
         }
 
         /// <summary>
