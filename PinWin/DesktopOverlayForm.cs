@@ -34,6 +34,9 @@ namespace PinWin
 
             //apply custom cursor - make interface more user-friendly
             this.Cursor = new Cursor(EmbeddedResource.TargetWindowIcon.Handle);
+
+            //appear on top of all windows, including those pinned earlier
+            this.TopMost = true;
         }
 
         #endregion
