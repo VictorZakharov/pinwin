@@ -32,7 +32,8 @@ namespace PinWin
 
         protected override void RegisterHotKeys()
         {
-            this.RegisterHotKey(Keys.Control | Keys.F11, this.AddPinnedWindowFromClick);
+            this.RegisterHotKey(Keys.Control | Keys.F11, this.PinWindowPrompt);
+            this.RegisterHotKey(Keys.Control | Keys.F12, this.PinWindowUnderCursor);
         }
 
         #region " Event handlers - System tray icon "
@@ -80,13 +81,13 @@ namespace PinWin
 
         private void btn_OpenDesktopOverlay_Click(object sender, EventArgs e)
         {
-            this.AddPinnedWindowFromClick();
+            this.PinWindowPrompt();
         }
 
         /// <summary>
         ///  Try making window top most, based on mouse click location.
         /// </summary>
-        private void AddPinnedWindowFromClick()
+        private void PinWindowPrompt()
         {
             if (this._isDesktopOverlayShown)
             {
@@ -110,6 +111,14 @@ namespace PinWin
             {
                 this._isDesktopOverlayShown = false;
             }
+        }
+
+        /// <summary>
+        ///  Make window top most, based on mouse hover location (no clicks).
+        /// </summary>
+        private void PinWindowUnderCursor()
+        {
+            this.pinnedWindowListControl.TryAddWindowFromPoint(Cursor.Position);
         }
 
         #endregion
