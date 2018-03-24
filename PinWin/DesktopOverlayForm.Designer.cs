@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.CodeDom.Compiler;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace PinWin
@@ -29,6 +30,7 @@ namespace PinWin
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
+        [GeneratedCode("WinForms Designer", "")]
         private void InitializeComponent()
         {
             this.lbl_DebugInfo = new System.Windows.Forms.Label();

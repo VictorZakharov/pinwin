@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-
+using PinWin.BusinessLayer;
 using PinWin.Controls;
 
 namespace PinWin
@@ -13,7 +13,11 @@ namespace PinWin
     {
         public bool IsLoaded { get; set; }
 
+        // ReSharper disable once InconsistentNaming
         private bool _isDesktopOverlayShown { get; set; }
+
+        // ReSharper disable once InconsistentNaming
+        private ApplicationSettings _settings { get; set; }
 
         #region " Constructor "
 
@@ -26,14 +30,30 @@ namespace PinWin
 
             // Replace default tooltip text of tray icon with application name
             this.notifyIcon_Main.Text = Application.ProductName;
+
+            // Load key configuration from file when form is created
+            this._settings = ApplicationSettingsJson.LoadFromFile();
+
+            // register hot keys in the application
+            this.RegisterHotKeys();
         }
 
         #endregion
 
-        protected override void RegisterHotKeys()
+        protected void RegisterHotKeys()
         {
-            this.RegisterHotKey(Keys.Control | Keys.F11, this.PinWindowPrompt);
-            this.RegisterHotKey(Keys.Control | Keys.F12, this.PinWindowUnderCursor);
+            lbl_message.Text = this.GetWelcomeHint();
+            this.RegisterHotKey(this._settings.ShortcutPinWindowPrompt, this.PinWindowPrompt);
+            this.RegisterHotKey(this._settings.ShortcutPinWindowUnderCursor, this.PinWindowUnderCursor);
+        }
+
+        /// <summary>
+        ///  Gets the correct wording to hint user on which key toggles window pin operation.
+        /// </summary>
+        private string GetWelcomeHint()
+        {
+            var keyHint = KeysStringConverter.ToString(this._settings.ShortcutPinWindowPrompt);
+            return $@"Use {keyHint} to trigger window selection when minimized to tray";
         }
 
         #region " Event handlers - System tray icon "
@@ -126,6 +146,31 @@ namespace PinWin
         private void tmrWindowPosSync_Tick(object sender, EventArgs e)
         {
             this.pinnedWindowListControl.SyncWindowPosition();
+        }
+
+        private void btnChangeKeyMap_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            // Create local copy of application settings
+            var settings = new ApplicationSettings(this._settings);
+
+            // newSettings will contain modified settings or null if user cancelled
+            var newSettings = SettingsForm.ShowSettingsDialog(this, settings);
+            if (newSettings == null)
+            {
+                // user cancelled - do not change anything
+                return;
+            }
+
+            // user OK'd, need to save new key configuration
+            this._settings = newSettings;
+            if (!ApplicationSettingsJson.SaveToFile(newSettings))
+            {
+                MessageBox.Show(@"Unable to save to file.", @"Application error");
+            }
+
+            // And re-register hot keys
+            this.UnregisterHotKeys();
+            this.RegisterHotKeys();
         }
     }
 }

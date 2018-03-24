@@ -5,3 +5,4 @@ bin
 /.vs
 /PinWinInstaller/PinWinInstaller-SetupFiles
 /PinWinInstaller/PinWinInstaller-cache
+/packages

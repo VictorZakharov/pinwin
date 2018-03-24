@@ -1,4 +1,6 @@
-﻿namespace PinWin
+﻿using System.CodeDom.Compiler;
+
+namespace PinWin
 {
   partial class MainForm
   {
@@ -20,14 +22,15 @@
       base.Dispose(disposing);
     }
 
-    #region Windows Form Designer generated code
+        #region Windows Form Designer generated code
 
-    /// <summary>
-    /// Required method for Designer support - do not modify
-    /// the contents of this method with the code editor.
-    /// </summary>
-    private void InitializeComponent()
-    {
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        [GeneratedCode("WinForms Designer", "")]
+        private void InitializeComponent()
+        {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.notifyIcon_Main = new System.Windows.Forms.NotifyIcon(this.components);
@@ -39,6 +42,7 @@
             this.lbl_message = new System.Windows.Forms.Label();
             this.tmrWindowPosSync = new System.Windows.Forms.Timer(this.components);
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.btnChangeKeyMap = new System.Windows.Forms.LinkLabel();
             this.contextMenu_Main.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -79,7 +83,7 @@
             // 
             this.pinnedWindowListControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pinnedWindowListControl.Location = new System.Drawing.Point(165, 4);
-            this.pinnedWindowListControl.Margin = new System.Windows.Forms.Padding(4);
+            this.pinnedWindowListControl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pinnedWindowListControl.Name = "pinnedWindowListControl";
             this.pinnedWindowListControl.Size = new System.Drawing.Size(443, 181);
             this.pinnedWindowListControl.TabIndex = 9;
@@ -98,15 +102,14 @@
             // lbl_message
             // 
             this.lbl_message.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.tableLayoutPanel1.SetColumnSpan(this.lbl_message, 2);
-            this.lbl_message.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_message.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_message.ForeColor = System.Drawing.Color.Green;
-            this.lbl_message.Location = new System.Drawing.Point(46, 189);
+            this.lbl_message.Location = new System.Drawing.Point(163, 189);
             this.lbl_message.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbl_message.Name = "lbl_message";
-            this.lbl_message.Size = new System.Drawing.Size(520, 24);
+            this.lbl_message.Size = new System.Drawing.Size(446, 24);
             this.lbl_message.TabIndex = 11;
-            this.lbl_message.Text = "Use CTRL+F11 to trigger window selection when minimized to tray";
+            this.lbl_message.Text = "Welcome hint - which key to use";
             this.lbl_message.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // tmrWindowPosSync
@@ -120,9 +123,10 @@
             this.tableLayoutPanel1.ColumnCount = 2;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Controls.Add(this.btn_OpenDesktopOverlay, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.pinnedWindowListControl, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lbl_message, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.lbl_message, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.btnChangeKeyMap, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.btn_OpenDesktopOverlay, 0, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -132,6 +136,19 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(612, 213);
             this.tableLayoutPanel1.TabIndex = 12;
             // 
+            // btnChangeKeyMap
+            // 
+            this.btnChangeKeyMap.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btnChangeKeyMap.AutoSize = true;
+            this.btnChangeKeyMap.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnChangeKeyMap.Location = new System.Drawing.Point(20, 192);
+            this.btnChangeKeyMap.Name = "btnChangeKeyMap";
+            this.btnChangeKeyMap.Size = new System.Drawing.Size(121, 18);
+            this.btnChangeKeyMap.TabIndex = 12;
+            this.btnChangeKeyMap.TabStop = true;
+            this.btnChangeKeyMap.Text = "Change Key Map";
+            this.btnChangeKeyMap.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.btnChangeKeyMap_LinkClicked);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -139,7 +156,7 @@
             this.ClientSize = new System.Drawing.Size(612, 213);
             this.Controls.Add(this.tableLayoutPanel1);
             this.MaximizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(507, 193);
+            this.MinimumSize = new System.Drawing.Size(506, 192);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "PinWin";
@@ -147,6 +164,7 @@
             this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.contextMenu_Main.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
 
     }
@@ -161,6 +179,7 @@
     private System.Windows.Forms.Label lbl_message;
         private System.Windows.Forms.Timer tmrWindowPosSync;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.LinkLabel btnChangeKeyMap;
     }
 }
 
