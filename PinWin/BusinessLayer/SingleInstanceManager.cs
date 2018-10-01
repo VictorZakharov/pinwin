@@ -1,12 +1,12 @@
-﻿using System;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Security.AccessControl;
-using System.Security.Principal;
-using System.Threading;
-
-namespace PinWin.BusinessLayer
+﻿namespace PinWin.BusinessLayer
 {
+    using System;
+    using System.Reflection;
+    using System.Runtime.InteropServices;
+    using System.Security.AccessControl;
+    using System.Security.Principal;
+    using System.Threading;
+
     /// <summary>
     ///  Forces to the application to run in single instance mode.
     /// </summary>

@@ -57,7 +57,6 @@
     <Compile Include="BusinessLayer\HotKeyList.cs" />
     <Compile Include="BusinessLayer\JsonKeysConverter.cs" />
     <Compile Include="BusinessLayer\KeysStringConverter.cs" />
-    <Compile Include="BusinessLayer\ListBoxExtensions.cs" />
     <Compile Include="BusinessLayer\ScreenCapture.cs" />
     <Compile Include="BusinessLayer\WindowStyle.cs" />
     <Compile Include="BusinessLayer\WinEventHook.cs" />
@@ -119,6 +118,7 @@
     <Compile Include="Algorithms\ParentChildHierarchyLookup.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WinApi\ApiWindowStyle.cs" />
     <Compile Include="WinApi\ApiWindowTitle.cs" />
     <Compile Include="WinApi\ApiOwnerFormLookup.cs" />
     <Compile Include="BusinessLayer\WinformsOwnerFormLookup.cs" />

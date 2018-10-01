@@ -1,9 +1,9 @@
-﻿using System;
-using System.Drawing;
-using System.Runtime.InteropServices;
-
-namespace PinWin.WinApi
+﻿namespace PinWin.WinApi
 {
+    using System;
+    using System.Drawing;
+    using System.Runtime.InteropServices;
+
     internal class ApiScreenCapture
     {
         /// <summary>

@@ -1,7 +1,7 @@
-﻿using System.Windows.Forms;
-
-namespace PinWin.BusinessLayer
+﻿namespace PinWin.BusinessLayer
 {
+    using System.Windows.Forms;
+
     public class ApplicationSettings
     {
         public Keys ShortcutPinWindowPrompt = Keys.Control | Keys.F11;

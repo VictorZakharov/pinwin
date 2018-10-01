@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
-
-namespace PinWin.BusinessLayer
+﻿namespace PinWin.BusinessLayer
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using System.Windows.Forms;
+
     /// <summary>
     ///  Converts Keys enum values with modifiers to and from string, using standard keyboard shortcut notation.
     /// </summary>

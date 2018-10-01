@@ -1,26 +1,27 @@
-﻿using System;
-using System.Drawing;
-using System.Runtime.InteropServices;
-
-namespace PinWin.WinApi
+﻿namespace PinWin.WinApi
 {
-  internal class ApiForm
-  {
-    [DllImport("user32.dll")]
-    private static extern IntPtr WindowFromPoint(Point p);
+    using System;
+    using System.Drawing;
+    using System.Runtime.InteropServices;
 
-    /// <summary>
-    ///  Get form handle at specified coordinates (x,y).
-    /// </summary>
-    /// <param name="point">Coordinates to search.</param>
-    public static IntPtr Select(Point point)
+    internal class ApiForm
     {
-      IntPtr foundWindowHandle = ApiForm.WindowFromPoint(point);
+        [DllImport("user32.dll")]
+        private static extern IntPtr WindowFromPoint(Point p);
 
-      var parentLookup = new ApiOwnerFormLookup();
-      IntPtr formHandle = parentLookup.FindParent(foundWindowHandle);
+        /// <summary>
+        ///  Get form handle at specified coordinates (x,y).
+        /// </summary>
+        /// <param name="point">Coordinates to search.</param>
+        public static IntPtr Select(Point point)
+        {
+            // ReSharper disable once ArrangeStaticMemberQualifier
+            IntPtr foundWindowHandle = ApiForm.WindowFromPoint(point);
 
-      return formHandle;
+            var parentLookup = new ApiOwnerFormLookup();
+            IntPtr formHandle = parentLookup.FindParent(foundWindowHandle);
+
+            return formHandle;
+        }
     }
-  }
 }

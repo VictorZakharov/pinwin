@@ -1,9 +1,10 @@
-﻿using System;
-using System.Windows.Forms;
-using PinWin.BusinessLayer;
-
-namespace PinWin.Controls
+﻿namespace PinWin.Controls
 {
+    using System;
+    using System.Windows.Forms;
+
+    using BusinessLayer;
+
     /// <summary>
     ///  Inherit from this form to create system tray applications.
     /// </summary>

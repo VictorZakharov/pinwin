@@ -1,15 +1,15 @@
-﻿using System.Runtime.InteropServices;
-
-namespace PinWin.WinApi
+﻿namespace PinWin.WinApi
 {
-  public class ApiSystemMetrics
-  {
-    [DllImport("user32.dll")]
-    private static extern int GetSystemMetrics(SystemMetric smIndex);
+    using System.Runtime.InteropServices;
 
-    public static int Get(SystemMetric smIndex)
+    public class ApiSystemMetrics
     {
-      return GetSystemMetrics(smIndex);
+        [DllImport("user32.dll")]
+        private static extern int GetSystemMetrics(SystemMetric smIndex);
+
+        public static int Get(SystemMetric smIndex)
+        {
+            return GetSystemMetrics(smIndex);
+        }
     }
-  }
 }

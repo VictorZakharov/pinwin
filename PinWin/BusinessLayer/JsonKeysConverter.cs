@@ -1,9 +1,10 @@
-﻿using System;
-using System.Windows.Forms;
-using Newtonsoft.Json;
-
-namespace PinWin.BusinessLayer
+﻿namespace PinWin.BusinessLayer
 {
+    using System;
+    using System.Windows.Forms;
+
+    using Newtonsoft.Json;
+
     public class JsonKeysConverter : JsonConverter
     {
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

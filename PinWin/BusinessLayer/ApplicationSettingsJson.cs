@@ -1,9 +1,9 @@
-using System;
-using System.IO;
-using Newtonsoft.Json;
-
 namespace PinWin.BusinessLayer
 {
+    using System;
+    using System.IO;
+    using Newtonsoft.Json;
+
     public static class ApplicationSettingsJson
     {
         private const string SettingsFilename = "settings.json";

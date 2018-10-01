@@ -1,12 +1,13 @@
-﻿using System;
-using System.Drawing;
-using System.Windows.Forms;
-using PinWin.BusinessLayer;
-using PinWin.WinApi;
-using static PinWin.WinApi.ApiWinEventHook;
-
-namespace PinWin.Controls
+﻿namespace PinWin.Controls
 {
+    using System;
+    using System.Drawing;
+    using System.Windows.Forms;
+
+    using BusinessLayer;
+    using WinApi;
+    using static WinApi.ApiWinEventHook;
+
     public partial class PinForm : Form
     {
         private WinEventHook _winEventHook;
@@ -16,7 +17,6 @@ namespace PinWin.Controls
         private readonly string _parentFormTitle;
 
         public IntPtr ParentHandle => this._parentHandle;
-        public string ParentTitle => this._parentFormTitle;
         public bool ReceivesParentMoveEvents => _receivesParentMoveEvents;
 
         public PinForm()
@@ -43,6 +43,7 @@ namespace PinWin.Controls
             {
                 components.Dispose();
             }
+
             base.Dispose(disposing);
         }
 
@@ -126,7 +127,7 @@ namespace PinWin.Controls
             pinnedBitmap.MakeTransparent();
             e.Graphics.DrawImage(pinnedBitmap, new Point(0, 0));
         }
-        
+
         private void PinForm_MouseClick(object sender, MouseEventArgs e)
         {
             this.Close();

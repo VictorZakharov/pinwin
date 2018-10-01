@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Windows.Forms;
-using PinWin.Controls;
-
-namespace PinWin.BusinessLayer
+﻿namespace PinWin.BusinessLayer
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Linq;
+    using System.Windows.Forms;
+
+    using Controls;
+
     /// <summary>
     ///  Business object representing list of pinned windows, used for UI binding.
     /// </summary>
