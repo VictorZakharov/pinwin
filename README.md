@@ -16,12 +16,17 @@ So I decided to write one in .NET with support for all OS (hopefully).
 
 ![PinWin in action](https://i.imgur.com/aH0FWrw.png)
 
-- Basic functionality is there, tested on Windows XP, 7 and 8.1.
+- Basic functionality is there, tested on Windows XP, 7, 8.1 and 10.
 - Multi-monitor supported (verified dual extend configuration).
 - High DPI supported (verified 100-200%).
-- Set other windows as top most via CTRL+F11 (same as DeskPins).
+- Select another window to be top most via CTRL+F11 (same as DeskPins).
+- Make window under cursor top most via CTRL+F12 (save a drag-and-click).
 - User friendly installer with upgrade support.
 - Configurable keyboard shortcuts (select and pin window, pin under cursor).
+
+### Known Issues
+
+- [#17](https://github.com/VictorZakharov/pinwin/issues/17) On Windows 10 if each monitor is using different DPI, screen capture window takes portion of the screen.
 
 ### Download
 
