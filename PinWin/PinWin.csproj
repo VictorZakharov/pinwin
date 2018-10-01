@@ -52,7 +52,6 @@
   <ItemGroup>
     <Compile Include="BusinessLayer\ApplicationSettings.cs" />
     <Compile Include="BusinessLayer\ApplicationSettingsJson.cs" />
-    <Compile Include="BusinessLayer\FormExtensions.cs" />
     <Compile Include="BusinessLayer\HotKey.cs" />
     <Compile Include="BusinessLayer\HotKeyList.cs" />
     <Compile Include="BusinessLayer\JsonKeysConverter.cs" />

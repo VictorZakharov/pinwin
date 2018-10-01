@@ -15,6 +15,8 @@
 
         private readonly IntPtr _parentHandle;
         private readonly string _parentFormTitle;
+        // ReSharper disable once UnusedMember.Global - used by Windows forms data binding
+        public string ParentTitle => $"{this._parentFormTitle} ({this._parentHandle})";
 
         public IntPtr ParentHandle => this._parentHandle;
         public bool ReceivesParentMoveEvents => _receivesParentMoveEvents;
@@ -51,7 +53,7 @@
         {
             PinForm pinForm = new PinForm(parentHandle);
             ApiTopMost.Set(parentHandle);
-            pinForm.Show(parentHandle);
+            PinForm.ShowSetOwnerHandle(pinForm, parentHandle);
             return pinForm;
         }
 
@@ -167,6 +169,14 @@
 
             int controlButtonAverageWidth = ApiSystemMetrics.Get(SystemMetric.SM_CXSIZE);
             return controlButtonAverageWidth * buttonCount;
+        }
+
+        public static void ShowSetOwnerHandle(Form form, IntPtr ownerHandle)
+        {
+            NativeWindow nativeWindow = new NativeWindow();
+            nativeWindow.AssignHandle(ownerHandle);
+            form.Show(nativeWindow);
+            nativeWindow.ReleaseHandle();
         }
     }
 }
