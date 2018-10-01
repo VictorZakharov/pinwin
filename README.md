@@ -25,7 +25,7 @@ So I decided to write one in .NET with support for all OS (hopefully).
 
 ### Known Issues
 
-- On Windows 10 if each monitor is using different DPI, screen capture window takes portion of the screen (bug, by design).
+- On Windows 10 if each monitor is using different DPI, screen capture window takes portion of the screen (limitation of existing design, will need to rework so that each monitor is covered by its own screen capture dialog).
 
 ### Download
 
