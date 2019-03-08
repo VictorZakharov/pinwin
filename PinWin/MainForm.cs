@@ -172,5 +172,13 @@ namespace PinWin
             this.UnregisterHotKeys();
             this.RegisterHotKeys();
         }
+
+        private void notifyIcon_Main_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                this.PinWindowPrompt();
+            }
+        }
     }
 }

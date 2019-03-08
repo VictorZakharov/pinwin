@@ -54,6 +54,7 @@ namespace PinWin
             this.notifyIcon_Main.Text = "notifyIcon1";
             this.notifyIcon_Main.Visible = true;
             this.notifyIcon_Main.DoubleClick += new System.EventHandler(this.notifyIcon_Main_DoubleClick);
+            this.notifyIcon_Main.MouseUp += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_Main_MouseUp);
             // 
             // contextMenu_Main
             // 
