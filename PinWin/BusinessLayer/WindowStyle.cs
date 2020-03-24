@@ -19,5 +19,23 @@
             this.Handle = handle;
             this._windowStyleRaw = ApiWindowStyle.GetWindowLong(handle, (int) ApiWindowStyle.WindowLongFlags.GWL_STYLE);
         }
+
+        /// <summary>
+        ///  Get total computed width of control box area (minimize, maximize and close buttons). 
+        /// </summary>
+        /// <returns>Total width in pixels.</returns>
+        public int GetControlBoxWidth()
+        {
+            int controlBoxWidth = ApiSystemMetrics.GetControlBoxWidth(this.Handle);
+            if (controlBoxWidth > 0)
+            {
+                return controlBoxWidth;
+            }
+
+            // legacy OS
+            int buttonCount = this.MaximizeBox || this.MinimizeBox ? 3 : 1;
+            int controlButtonAverageWidth = ApiSystemMetrics.GetControlButtonWidth();
+            return controlButtonAverageWidth * buttonCount;
+        }
     }
 }

@@ -151,24 +151,11 @@
         /// <returns>Absolute location of pin icon.</returns>
         private static Point GetRelativeLocation(IntPtr handle)
         {
-            int rightMargin = PinForm.GetControlAreaWidth(handle) + 20;
+            var style = new WindowStyle(handle);
+            int rightMargin = style.GetControlBoxWidth() + 20;
             Rectangle move = ApiWindowPos.Get(handle);
 
             return new Point(move.Left + move.Width - rightMargin, move.Top + 5);
-        }
-
-        /// <summary>
-        ///  Calculates total width of control buttons (minimize, maximize, close).
-        /// </summary>
-        /// <param name="handle">Window handle.</param>
-        /// <returns>Total width in pixels.</returns>
-        private static int GetControlAreaWidth(IntPtr handle)
-        {
-            WindowStyle style = new WindowStyle(handle);
-            int buttonCount = style.MaximizeBox || style.MinimizeBox ? 3 : 1;
-
-            int controlButtonAverageWidth = ApiSystemMetrics.Get(SystemMetric.SM_CXSIZE);
-            return controlButtonAverageWidth * buttonCount;
         }
 
         public static void ShowSetOwnerHandle(Form form, IntPtr ownerHandle)
