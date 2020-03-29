@@ -1,4 +1,6 @@
-﻿namespace PinWin.Controls
+﻿using System.ComponentModel;
+
+namespace PinWin.Controls
 {
     using System;
     using System.Drawing;
@@ -158,12 +160,18 @@
             return new Point(move.Left + move.Width - rightMargin, move.Top + 5);
         }
 
-        public static void ShowSetOwnerHandle(Form form, IntPtr ownerHandle)
+        private static void ShowSetOwnerHandle(Form form, IntPtr ownerHandle)
         {
             NativeWindow nativeWindow = new NativeWindow();
             nativeWindow.AssignHandle(ownerHandle);
-            form.Show(nativeWindow);
-            nativeWindow.ReleaseHandle();
+            try
+            {
+                form.Show(nativeWindow);
+            }
+            finally
+            {
+                nativeWindow.ReleaseHandle();
+            }
         }
     }
 }

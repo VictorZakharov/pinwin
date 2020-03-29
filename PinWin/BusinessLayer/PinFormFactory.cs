@@ -51,10 +51,18 @@
                 return false;
             }
 
-            PinForm newForm = PinForm.Create(handle);
-            newForm.FormClosing += PinFormOnClosing;
-            this.Add(newForm);
-            return true;
+            try
+            {
+                PinForm newForm = PinForm.Create(handle);
+                newForm.FormClosing += PinFormOnClosing;
+                this.Add(newForm);
+                return true;
+            }
+            catch (Win32Exception ex)
+            {
+                MessageBox.Show(ex.Message, Application.ProductName);
+                return false;
+            }
         }
 
         private void PinFormOnClosing(object sender, FormClosingEventArgs formClosingEventArgs)
