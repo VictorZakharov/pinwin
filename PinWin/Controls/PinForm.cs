@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace PinWin.Controls
+﻿namespace PinWin.Controls
 {
     using System;
     using System.Drawing;
