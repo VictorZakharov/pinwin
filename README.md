@@ -26,7 +26,7 @@ So I decided to write one in .NET with support for all OS (hopefully).
 
 ### Known Issues
 
-- [#17](https://github.com/VictorZakharov/pinwin/issues/17) On Windows 10 if each monitor is using different DPI, screen capture window takes portion of the screen.
+- [#17](https://github.com/VictorZakharov/pinwin/issues/17) On Windows 10 if each monitor is using different DPI, screen capture window takes portion of the screen. Workaround is to make sure all your monitors are using the same DPI. PinWin was initially designed to improve productivity on a single monitor, to avoid context switch. With multiple monitors, its usefulness fades.
 
 ### Download
 
