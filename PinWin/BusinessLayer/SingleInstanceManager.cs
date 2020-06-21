@@ -1,12 +1,10 @@
-﻿namespace PinWin.BusinessLayer
-{
-    using System;
-    using System.Reflection;
-    using System.Runtime.InteropServices;
-    using System.Security.AccessControl;
-    using System.Security.Principal;
-    using System.Threading;
+﻿using System;
+using System.Security.Principal;
+using System.Threading;
+using System.Windows.Forms;
 
+namespace PinWin.BusinessLayer
+{
     /// <summary>
     ///  Forces to the application to run in single instance mode.
     /// </summary>
@@ -69,19 +67,15 @@
         /// </summary>
         private void InitMutex()
         {
-            string appGuid = ((GuidAttribute)Assembly.GetExecutingAssembly().
-                GetCustomAttributes(typeof(GuidAttribute), false).GetValue(0)).Value;
+            // Environment.UserName; -- gets RunAs user
+            // WindowsIdentity.GetCurrent ignores RunAs user, which makes sense
+            // We don't want to have two instances of PinWin running at the same time
+            // It works, but why support a non-useful workflow?
+            string accountId = WindowsIdentity.GetCurrent().User.AccountDomainSid.ToString();
+            string appName = Application.ProductName;
 
-            string mutexId = $"Global\\{{{appGuid}}}";
-            this._mutex = new Mutex(false, mutexId);
-
-            var allowEveryoneRule = new MutexAccessRule(
-                new SecurityIdentifier(WellKnownSidType.WorldSid, null),
-                MutexRights.FullControl, AccessControlType.Allow);
-
-            var securitySettings = new MutexSecurity();
-            securitySettings.AddAccessRule(allowEveryoneRule);
-            this._mutex.SetAccessControl(securitySettings);
+            String mutexName = $"{appName}:{accountId}";
+            this._mutex = new Mutex(false, mutexName);
         }
     }
 }
