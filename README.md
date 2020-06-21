@@ -27,6 +27,7 @@ So I decided to write one in .NET with support for all OS (hopefully).
 ### Known Issues
 
 - [#17](https://github.com/VictorZakharov/pinwin/issues/17) On Windows 10 if each monitor is using different DPI, screen capture window takes portion of the screen. Workaround is to make sure all your monitors are using the same DPI. PinWin was initially designed to improve productivity on a single monitor, to avoid context switch. With multiple monitors, its usefulness fades.
+- [#26](https://github.com/VictorZakharov/pinwin/issues/26) UWP is not currently supported, the pin is placed on top of minimize button. Otherwise it works fine. To fix, requires framework upgrade to 4.6, which breaks XP compatibility. Vote for linked ticket - with enough votes I will create another repo with Windows 7+ OS support level, then it can handle UWP.
 
 ### Download
 
