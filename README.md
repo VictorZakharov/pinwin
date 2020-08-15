@@ -6,7 +6,7 @@ I always liked [DeskPins](http://efotinis.neocities.org/deskpins/index.html) win
 
 [Link for DeskPins direct download](https://drive.google.com/file/d/0BzOSyp06l5JwMVNXYkFMQXNMUTQ/view?usp=sharing) is provided here for your convenience (no ads, using Google Drive).
 
-DeskPins was written in C++ and [its source code recently made public](https://bitbucket.org/efotinis/deskpins) (thank you, Elias).
+DeskPins was written in C++ and [its source code recently made public](https://efotinis.neocities.org/downloads/efotinis-deskpins-e3caef22897e.zip) (thank you, Elias).
 
 ### Why?
 If you look at the attached readme file, the original software is not meant to work on Windows Vista and above. However, it kept working all the way until Windows 7, but then unfortunately, stopped working on Windows 8 and higher.
