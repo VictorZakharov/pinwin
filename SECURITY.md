@@ -10,4 +10,4 @@ Only the latest release version is supported, including pre-releases.
 
 ## Reporting a Vulnerability
 
-If you want to report a vulnerability, use GitHub Issues.
+If you want to report a vulnerability, use [GitHub Issues](https://github.com/VictorZakharov/pinwin/issues).
