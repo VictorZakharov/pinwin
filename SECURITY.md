@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-Only the latest release version is supported, including pre-releases.
+Only the [latest release version](https://github.com/VictorZakharov/pinwin/releases) is supported, including pre-releases.
 
 | Version | Supported          |
 | ------- | ------------------ |
