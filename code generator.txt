@@ -1,4 +1,411 @@
-npm install js-code-generator
+3D FlipBook - jQuery plugin documentation
+Introduction
+Simple using
+Scripts
+PDF with default presets
+General approach
+Using in frameworks, MVC, CMS
+Advanced using
+Installing
+Build system
+Project structure
+Properties
+Book properties
+Sheet properties
+Cover properties
+Page properties
+Book control properties
+Foreign libraries
+Introduction
+3D FlipBook project uses modern technologies (new JavaScript generation (ES6), jQuery, ThreeJs), but you need little skills for simple using it in your projects. If you do not want to research the project and just want to use finished product then go to next section, in other case go here. For advanced using you need to have some programming skills.
+
+Simple using
+It is necessary to install any web server because the plugin uses AJAX.
+
+Scripts
+Add next scripts resources to your page.
+
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/html2canvas.min.js"></script>
+    <script src="js/three.min.js"></script>
+    <script src="js/pdf.min.js"></script>
+
+    <script src="js/3dflipbook.min.js"></script>
+  
+jQuery, html2canvas, Three, PdfJs are free libraries, you can easily find them in the Internet or copy from /3d-flip-book/js/libs. Do not forget to copy pdf.worker.js and default-book-view.js in js directory. 3dflipbook.min.js is placed in /3d-flip-book/js/dist. It is built 3D FlipBook project.
+
+Copy images, css, fonts and templates directories from /3d-flip-book to your web server. templates contains 3D FlipBook view template, if it is necessary you can customize it.
+
+For creating 3D FlipBooks there are two ways. The first - using HTML tag and the second - jQuery function.
+
+PDF with default presets
+
+  <div class="flip-book-container" src="example.pdf">
+
+  </div>
+To see live demonstration go to the example.
+
+Using HTML is limited just for PDFs because it is not convenient to pass the options through HTML tag attributes.
+
+General approach
+Before calling FlipBook factory function you need define options, where you should specify book type, properties customization function, pages quantity and so on. See the code below.
+
+
+  var options = {
+    pdf: 'example.pdf', // you should use this property or pageCallback and pages to specify your book
+    pageCallback: function(n) { // this function has to return source description for FlipBook page
+      // for image sources
+      var imageDescription = {
+        type: 'image',
+        src: 'example/' + n + '.jpg',
+        interactive: false
+      };
+      // for html sources
+      var htmlDescription = {
+        type: 'html',
+        src: 'example/' + n + '.html',
+        interactive: true // or false - if your page interact with the user then use true
+      };
+      // for blank page
+      var blankDescription = {
+        type: 'blank'
+      };
+      return htmlDescription; // or imageDescription or blankDescription
+    },
+    pages: 10, // amount of pages
+    controlsProps: { // set of optional properties that allow to customize 3D FlipBook control
+      downloadURL: 'example.pdf'
+    },
+    propertiesCallback: function(props) { // optional function - it lets to customize 3D FlipBook
+      props.page.depth /= 2;
+      props.cover.binderTexture = 'exampleTexture.jpg';
+      props.cssLayersLoader = function(n, clb) {// n - page number
+        clb([{
+          css: '.heading {margin-top: 200px;background-color: red;}',
+          html: '<h1 class="heading">Hello</h1>',
+          js: function (jContainer, props) { // jContainer - jQuery element that contains HTML Layer content
+            console.log('init');
+            return { // set of callbacks
+              hide: function() {console.log('hide');},
+              hidden: function() {console.log('hidden');},
+              show: function() {console.log('show');},
+              shown: function() {console.log('shown');},
+              dispose: function() {console.log('dispose');}
+            };
+          }
+        }]);
+      };
+      return props;
+    },
+    template: { // by means this property you can choose appropriate skin
+      html: 'templates/default-book-view.html',
+      styles: [
+        'css/black-book-view.css'// or one of white-book-view.css, short-white-book-view.css, shart-black-book-view.css
+      ],
+      links: [{
+        rel: 'stylesheet',
+        href: 'css/font-awesome.min.css'
+      }],
+      script: 'js/default-book-view.js',
+      printStyle: undefined, // or you can set your stylesheet for printing ('print-style.css')
+      sounds: {
+        startFlip: 'sounds/start-flip.mp3',
+        endFlip: 'sounds/end-flip.mp3'
+      }
+    },
+    pdfLinks: {
+      handler: function(type, destination) { // type: 'internal' (destination - page number), 'external' (destination - url)
+        return true; // true - prevent default handler, false - call default handler
+      }
+    },
+    autoNavigation: {
+      urlParam: 'fb3d-page', // query param for deep linking
+      navigates: 1 // number of instances that will be navigated automatically
+    },
+    ready: function(scene) { // optional function - this function executes when loading is complete
+
+    },
+    error: function(e) { // optional function for notification about errors
+
+    }
+  };
+  var book = $('container-selector').FlipBook(options);
+For more details see examples: simple PDF, PDF links & bookmarks, controls customization.
+
+If you decide to remove created FlipBook from the page you should use next code.
+
+
+  book.dispose();
+Using in frameworks, MVC, CMS
+You can easily use 3D FlipBook in any projects but you need to take care about its resources. It means that you should specify all paths for template files and set path for pdfJsWorker. To do this add next script before <script src="js/3dflipbook.min.js"></script>
+
+  
+
+    <script type="text/javascript">
+      window.PDFJS_LOCALE = {
+        pdfJsWorker: 'js/pdf.worker.js',
+        pdfJsCMapUrl: 'cmaps'
+      };
+    </script>
+  
+
+But you need to set your path instead of the relative one. Do the same with book option template.
+
+Advanced using
+Installing
+Install Node.js. Open /3d-flip-book in console and use command
+
+
+  npm install
+Do the same for /common.
+
+Build system
+Webpack is used for project building. All predefined commands are described in next table.
+
+Command	Description
+npm run dev	starts developing server at http://localhost:8080
+npm run build-debug	builds developer version of project with inline source map
+npm run build-production	builds production version of project
+It is possible to bundle some of global libraries (jQuery, ThreeJs, html2canvas). See GLOBAL_LIBS in file /3d-flip-book/webpack.config.js.
+
+Project structure
+Path	Description
+/3d-flip-book	main directory
+/3d-flip-book/css	styles
+/3d-flip-book/fonts	glyphs in font format from the Glyphicon Halflings set, icons for 3D FlipBook menu
+/3d-flip-book/templates/default-book-view.html	3D FlipBook view template
+/3d-flip-book/index.js	project entry point
+/3d-flip-book/js/libs	foreign libraries
+/3d-flip-book/js/dist	project builds
+/3d-flip-book/js/models/sheetBlock.js	block of sheets geometry
+/3d-flip-book/js/classes	project sources
+Properties
+3D FlipBook has a lot of customization options, the most useful you can find in tables below.
+
+Book properties
+Property	Default value	Description
+height	0.297	book height
+width	0.21	book width
+gravity	1	gravity constant
+injector	undefined	a function that let you transfer some objects to the window context of HTML FlipBook pages, its argument is the page window
+cachedPages	50	amount of rendered cached pages
+renderInactivePages	true	render loaded hidden pages in the background
+renderInactivePagesOnMobile	false	render loaded hidden pages in the background on mobile devices
+renderWhileFlipping	false	render pages while they are flipping, it can slow down animation
+pagesForPredicting	5	amount of loaded by user pages that are used for predicting user behaviour
+preloadPages	5	quantity of predicted pages for automatic loading
+rtl	false	rtl is a right-to-left, top-to-bottom script, writing starts from the right of the page and continues to the left
+sheet	object	common for page and cover properties
+cover	object	cover properties, also you can redefine any of sheet properties here
+page	object	page properties, also you can redefine any of sheet properties here
+Sheet properties
+Property	Default value	Description
+startVelocity	0.8	initial flipping velocity, it should be enough to overcome the gravity
+cornerDeviation	0.15	max corner (flexible part of the sheet) deviation from the whole sheet
+flexibility	10	sheet flexibility
+flexibleCorner	0.5	part of the sheet that can be flexed, should be in range (0, 1)
+bending	11	speed of changing bending angle of the flexible corner
+wave	0.5	curvature of open sheet, 0 is for flat sheet
+shape	0	flipping sheet shape (0 or 1)
+widthTexels	5*210	width texture resolution
+heightTexels	5*297	height texture resolution
+color	0xFFFFFF	sheet color, hex RGB value (#FFFFFF is css analogue)
+Cover properties
+Property	Default value	Description
+padding	0	cover height is more on 2*padding and width more on 1*padding than page ones, so you can set different sizes for typical pages and cover like for real book
+binderTexture	undefined	binder texture - URL of image ('example.jpg')
+depth	0.0003	cower thickness
+mass	0.003	cower weight
+Page properties
+Property	Default value	Description
+depth	0.0001	page thickness
+mass	0.001	page weight
+Book control properties
+3D FlipBook control has very wide range of properties that help to customize it for a user. It lets to bind keys or mouse events for some commands, change default presets for zoom level and range, lighting level and range. It allows to disable some commands.
+
+Property	Default value	Description
+scale	object	zoom settings
+lighting	object	lighting settings
+downloadURL	undefined	download URL
+pan	object	pan settings
+actions	object	actions settings
+autoResolution	object	auto resolution settings
+loadingAnimation	object	loading animation settings
+Zoom settings
+Property	Default value	Description
+default	0.9	default value
+min	0.9	minimum value
+max	2.5	maximum value
+levels	7	amount of zoom levels
+Lighting settings
+Property	Default value	Description
+default	0.7	default value
+min	0	minimum value
+max	1	maximum value
+levels	7	amount of lighting levels
+Pan settings
+Property	Default value	Description
+speed	50	pan step for comands cmdPanLeft, cmdPanRight, cmdPanUp, cmdPanDown
+Auto resolution settings
+Property	Default value	Description
+enabled	true	the plugin automatically compute the page texture resolution
+coefficient	1.5	magnification coefficient for the automatically computed resolution
+Loading animation settings
+Property	Default value	Description
+book	true	using book built in animation
+skin	false	using template animation
+Actions
+Property	Default value	Description
+cmdZoomIn	object	zoom in
+cmdZoomOut	object	zoom out
+cmdDefaultZoom	object	set default zoom
+cmdToc	object	show bookmarks
+cmdFastBackward	object	turn 10 pages backward
+cmdBackward	object	turn a page backward
+cmdForward	object	turn a page forward
+cmdFastForward	object	turn 10 pages forward
+cmdSave	object	download
+cmdPrint	object	print
+cmdFullScreen	object	toggle fulscreen mode
+cmdSmartPan	object	toggle the smart pan mode
+cmdSinglePage	object	toggle single page mode
+cmdSounds	object	toggle sound effects
+cmdStats	object	toggle statistics monitor
+cmdLightingUp	object	increase lighting
+cmdLightingDown	object	reduce lighting
+cmdPanLeft	object	move pan to the left
+cmdPanRight	object	move pan to the right
+cmdPanUp	object	move pan to the up
+cmdPanDown	object	move pan to the down
+mouseCmdRotate	object	rotate the book by means mouse drag operation
+mouseCmdDragZoom	object	zoom by means mouse drag operation
+mouseCmdPan	object	pan by means mouse drag operation
+mouseCmdWheelZoom	object	zoom by means mouse wheel operation
+touchCmdRotate	object	rotate the book by means touch drag operation
+touchCmdZoom	object	zoom by means touch drag operation
+touchCmdPan	object	pan by means touch drag operation
+touchCmdSwipe	object	flip a page by means the swipe gesture
+Action object properties
+All actions have properties enabled - true or false and code - scan code or pressed key or mouse button - Left = 0 or Middle = 1 or Right = 2 or amount fingers on touch screen - 1, 2, 3.
+
+For actions that names start with mouseCmd and cmd there is a property flags - combination of holding keys - Ctrl = 1, Shift = 2 and Alt = 4.
+
+For actions start with cmd you can set property type - it is name of the event that you want to bind with this action - keydown, keyup, keypress, mousedown, mouseup, mousemove, click, dblclick, touchstart, touchmove, touchend. By default type = 'keydown'.
+
+Actions cmdSmartPan, cmdStats, cmdSinglePage, cmdSounds have property active - true or false. It lets to activate a mode or an element by default.
+
+Action cmdSinglePage has additional property activeForMobile - true or false. The same that active but just for mobile devices.
+
+For details see the example.
+
+San codes
+Key	Code
+backspace	8
+tab	9
+enter	13
+shift	16
+ctrl	17
+alt	18
+pause/break	19
+caps lock	20
+escape	27
+page up	33
+page down	34
+end	35
+home	36
+left arrow	37
+up arrow	38
+right arrow	39
+down arrow	40
+insert	45
+delete	46
+0	48
+1	49
+2	50
+3	51
+4	52
+5	53
+6	54
+7	55
+8	56
+9	57
+a	65
+b	66
+c	67
+d	68
+Key	Code
+e	69
+f	70
+g	71
+h	72
+i	73
+j	74
+k	75
+l	76
+m	77
+n	78
+o	79
+p	80
+q	81
+r	82
+s	83
+t	84
+u	85
+v	86
+w	87
+x	88
+y	89
+z	90
+left window key	91
+right window key	92
+select key	93
+numpad 0	96
+numpad 1	97
+numpad 2	98
+numpad 3	99
+numpad 4	100
+numpad 5	101
+numpad 6	102
+numpad 7	103
+Key	Code
+numpad 8	104
+numpad 9	105
+multiply	106
+add	107
+subtract	109
+decimal point	110
+divide	111
+f1	112
+f2	113
+f3	114
+f4	115
+f5	116
+f6	117
+f7	118
+f8	119
+f9	120
+f10	121
+f11	122
+f12	123
+num lock	144
+scroll lock	145
+semi-colon	186
+equal sign	187
+comma	188
+dash	189
+period	190
+forward slash	191
+grave accent	192
+open bracket	219
+back slash	220
+close braket	221
+single quote	222
+Foreign libraries
+jQuery - cross browser compatibility and simplifying a lot of operations;
+ThreeJs - managing 3D objects;
+PdfJs - rendering PDFs;
+html2canvas is used just for not supporting SVG foreignObject browsers to render HTML.npm install js-code-generator
 Features
 Handles code indentation for you while allowing you to set the number of spaces and tabs.
 Provides helper method to generate unique names for iterator variables to make generating nested loops easier
@@ -292,7 +699,30 @@ ifStatement
   {string} condition,
   {function} body
 }
-*/
+*/def DNA_strand(dna)
+  base_hash = { 'A' => 'T', 'T' => 'A', 'G' => 'C', 'C' => 'G' }
+  dna.gsub(/[ATGC]/, base_hash)
+end
+I could also do this which would be exactly equivalent:
+
+def DNA_strand(dna)
+  Dna.tr(’ACTG’, ’TGAC’)
+end
+In JS is there any equivalent method to :tr in ruby?
+
+Currently I can only think of solving this problem in JS like this:
+
+function DNAStrand(dna){
+  function matchBase(match, offset, string) {
+    const base = { 'A': 'T', 'T': 'A', 'G': 'C', 'C': 'G' };
+    return `${base[match]}`;
+  }
+  return dna.replace(/[ATGC]/g, matchBase);
+>> "FOOACTGBARACTG".replace(/ACTG/g, 'TGAC')
+and you'll get
+
+<- "FOOTGACBARTGAC"
+}
  
 var numVar = Generate.variable(name: "num", value: "0");
  
@@ -389,5 +819,89 @@ for (var i = 0; i < 10; i += 1) {
     }
   }
 }
-*/
-Keywords
+*/41
+
+from the man page
+
+linux$ man -S 5 crontab
+
+   cron(8) examines cron entries once every minute.
+
+   The time and date fields are:
+
+          field          allowed values
+          -----          --------------
+          minute         0-59
+          hour           0-23
+          day of month   1-31
+          month          1-12 (or names, see below)
+          day of week    0-7 (0 or 7 is Sun, or use names)
+   ...
+   # run five minutes after midnight, every day
+   5 0 * * *       $HOME/bin/daily.job >> $HOME/tmp/out 2>&1
+   ...
+It is good to note the special "nicknames" that can be used (documented in the man page), particularly "@reboot" which has no time and date alternative.
+
+   # Run once after reboot.
+   @reboot         /usr/local/sbin/run_only_once_after_reboot.sh
+You can also use this trick to run your cron job multiple times per minute.
+
+   # Run every minute at 0, 20, and 40 second intervals
+   * * * * *       sleep 00; /usr/local/sbin/run_3times_per_minute.sh
+   * * * * *       sleep 20; /usr/local/sbin/run_3times_per_minute.sh
+   * * * * *       sleep 40; /usr/local/sbin/run_3times_per_minute.sh
+To add a cron job, you can do one of three things:
+
+add a command to a user's crontab, as shown above (and from the crontab, section 5, man page).
+
+edit a user's crontab as root with crontab -e -u <username>
+or edit the current user's crontab with just crontab -e
+You can set the editor with the EDITOR environment variable
+env EDITOR=nano crontab -e -u <username>
+or set the value of EDITOR for your entire shell session
+export EDITOR=vim
+crontab -e
+Make scripts executable with chmod a+x <file>
+
+
+create a script/program as a cron job, and add it to the system's anacron /etc/cron.*ly directories
+
+anacron /etc/cron.*ly directories:
+/etc/cron.daily
+/etc/cron.hourly
+/etc/cron.monthly
+/etc/cron.weekly
+as in:
+/etc/cron.daily/script_runs_daily.sh
+chmod a+x /etc/cron.daily/script_runs_daily.sh -- make it executable
+See also the anacron man page: man anacron
+Make scripts executable with chmod a+x <file>
+When do these cron.*ly script run?
+For RHEL/CentOS 5.x, they are configured in /etc/crontab or /etc/anacrontab to run at a set time
+RHEL/CentOS 6.x+ and Fedora 17+ Linux systems only define this in /etc/anacrontab, and define cron.hourly in /etc/cron.d/0hourly
+
+
+Or, One can create system crontables in /etc/cron.d.
+
+The previously described crontab syntax (with additionally providing a user to execute each job as) is put into a file, and the file is dropped into the /etc/cron.d directory.
+These are easy to manage in system packaging (e.g. RPM packages), so may usually be application specific.
+The syntax difference is that a user must be specified for the cron job after the time/date fields and before the command to execute.
+The files added to /etc/cron.d do not need to be executable.
+Here is an example job that is executed as the user someuser, and the use of /bin/bash as the shell is forced.
+
+
+   File: /etc/cron.d/myapp-cron
+   # use /bin/bash to run commands, no matter what /etc/passwd says
+   SHELL=/bin/bash
+   # Execute a nightly (11:00pm) cron job to scrub application records
+   00 23 * * * someuser /opt/myapp/bin/scrubrecords.php# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see the documentation for all configuration options:
+# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+  - package-ecosystem: "" # See documentation for possible values
+    directory: "/" # Location of package manifests
+    schedule:
+      interval: "daily"

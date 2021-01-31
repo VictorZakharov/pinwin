@@ -1,0 +1,1884 @@
+Any public methods you place on your POCO classes that are annotated with the [Coalesce] will get built into your TypeScript ViewModels and ListViewModels, and API endpoints will be created for these methods to be called. Both instance methods and static methods are supported. Additionally, any instance methods on Services will also have API endpoints and TypeScript generated.
+
+Contents
+
+Parameters
+Return Values
+Security
+Generated TypeScript
+Instance Methods
+Static Methods
+Method Annotations
+Parameters
+The following parameters can be added to your methods:
+
+Primitives & Dates
+Primitive values (numerics, strings, booleans, enums) and dates (DateTime, DateTimeOffset, and nullable variants) are accepted as parameters to be passed from the client to the method call.
+Objects
+Any object types may be passed to the method call. These may be existing Entity Models or External Types. When invoking the method on the client, the object's properties will only be serialized one level deep. If an object parameter has additional child object properties, they will not be included in the invocation of the method - only the object's primitive & date properties will be deserialized from the client.
+Files
+Methods can accept file uploads by using a parameter of type IntelliTect.Coalesce.Models.IFile (or any derived type, like IntelliTect.Coalesce.Models.File).
+<YourDbContext> db
+If the method has a parameter of the same type as your DbContext class, the current DbContext will be passed to the method call. For Services which don't have a defined backing EF context, this is treated as having an implicit [Inject] attribute.
+ClaimsPrincipal user
+If the method has a parameter of type ClaimsPrincipal, the current user will be passed to the method call.
+[Inject] <anything>
+If a parameter is marked with the [Inject] attribute, it will be injected from the application's IServiceProvider.
+out IncludeTree includeTree
+If the method has an out IncludeTree includeTree parameter, then the IncludeTree that is passed out will be used to control serialization. See Generated C# DTOs and Include Tree for more information. If the method returns an IQueryable, the out parameter will supersede the include tree obtained from inspecting the query.
+
+Return Values
+You can return virtually anything from these methods:
+
+Primitives & Dates
+Any primitive data types may be returned - string, int, etc.
+Model Types
+Any of the types of your models may be returned. The generated TypeScript for calling the method will use the generated TypeScript ViewModels of your models to store the returned value.
+
+If the return type is the same as the type that the method is defined on, and the method is not static, then the results of the method call will be loaded into the calling TypeScript object.
+
+Custom Types
+Any custom type you define may also be returned from a method. Corresponding TypeScript ViewModels will be created for these types. See External Types.
+
+Warning
+
+When returning custom types from methods, be careful of the types of their properties. As Coalesce generates the TypeScript ViewModels for your External Types, it will also generate ViewModels for the types of any of its properties, and so on down the tree. If a type is encountered from the FCL/BCL or another package that your application uses, these generated types will get out of hand extremely quickly.
+
+Mark any properties you don't want generated on these TypeScript ViewModels with the [InternalUse] attribute, or give them a non-public access modifier. Whenever possible, don't return types that you don't own or control.
+
+ICollection<T> or IEnumerable<T>
+Collections of any of the above valid return types above are also valid return types. IEnumerables are useful for generator functions using yield. ICollection is highly suggested over IEnumerable whenever appropriate, though.
+IQueryable<T>
+Queryables of the valid return types above are valid return types. The query will be evaluated, and Coalesce will attempt to pull an Include Tree from the queryable to shape the response. When Include Tree functionality is needed to shape the response but an IQueryable<> return type is not feasible, an out IncludeTree includeTree parameter will do the trick as well.
+IntelliTect.Coalesce.Models.ItemResult<T> or ItemResult
+An ItemResult<T> of any of the valid return types above, including collections, is valid. The WasSuccessful and Message properties on the result object will be sent along to the client to indicate success or failure of the method. The type T will be mapped to the appropriate DTO object before being serialized as normal.
+IntelliTect.Coalesce.Models.ListResult<T>
+A ListResult<T> of any of the non-collection types above, is valid. The WasSuccessful Message, and all paging information on the result object will be sent along to the client. The type T will be mapped to the appropriate DTO objects before being serialized as normal.
+
+The class created for the method in TypeScript will be used to hold the paging information included in the ListResult. See below for more information about this class.
+
+Downloading files from custom methods is currently unsupported. Please open a feature request on GitHub if this would be useful for you.
+
+
+Security
+You can implement role-based security on a method by placing the [Execute] on the method. Placing this attribute on the method with no roles specified will simply require that the calling user be authenticated.
+
+Security for instance methods is also controlled by the data source that loads the instance - if the data source can't provide an instance of the requested model, the method won't be executed.
+
+Generated TypeScript
+See API Callers and ViewModel Layer (Vue) or TypeScript Method Objects (Knockout) for details on the code that is generated for your custom methods.
+
+Tip
+
+Any Task-returning methods with "Async" as a suffix to the C# method's name will have the "Async" suffix stripped from the generated Typescript.
+
+
+Instance Methods
+The instance of the model will be loaded using the data source specified by an attribute [LoadFromDataSource(typeof(MyDataSource))] if present. Otherwise, the model instance will be loaded using the default data source for the POCO's type. If you have a Custom Data Source annotated with [DefaultDataSource], that data source will be used. Otherwise, the Standard Data Source will be used.
+
+Instance methods are generated onto the TypeScript ViewModels.
+
+
+Static Methods
+Static methods are generated onto the TypeScript ListViewModels. All of the same members that are generated for instance methods are also generated for static methods.
+
+If a static method returns the type that it is declared on, it will also be generated on the TypeScript ViewModel of its class (Knockout only).
+
+public static ICollection<string> NamesStartingWith(string characters, AppDbContext db)
+{
+    return db.People.Where(f => f.FirstName.StartsWith(characters)).Select(f => f.FirstName).ToList();
+}
+
+Method Annotations
+Methods can be annotated with attributes to control API exposure and TypeScript generation. The following attributes are available for model methods. General annotations can be found on the Attributes page.
+
+[Coalesce]
+The [Coalesce] attribute causes the method to be exposed via a generated API controller. This is not needed for methods defined on an interface marked with [Service] - Coalesce assumes that all methods on the interface are intended to be exposed. If this is not desired, create a new, more restricted interface with only the desired methods to be exposed.
+[ControllerAction(Method = HttpMethod)]
+The [ControllerAction] attribute controls how this method is exposed via HTTP. By default all controller method actions use the POST HTTP method. This behavior can be overridden with this attribute to use GET, POST, PUT, DELETE, or PATCH HTTP methods. Keep in mind that when using the GET method, all parameters are sent as part of the URL, so the typical considerations with sensitive data in a query string applies.
+[Execute(string roles)]
+The [Execute] attribute specifies which roles can execute this method from the generated API controller.
+[Hidden(Areas area)]
+The [Hidden] attribute allows for hiding this method on the admin pages both for list/card views and the editor.
+[LoadFromDataSource(Type dataSourceType)]
+The [LoadFromDataSource] attribute specifies that the targeted model instance method should load the instance it is called on from the specified data source when invoked from an API endpoint. By default, whatever the default data source for the model's type will be used.n Coalesce, all data that is retrieved from your database through the generated controllers is done so by a data source. These data sources control what data gets loaded and how it gets loaded. By default, there is a single generic data source that serves all data for your models in a generic way that fits many of the most common use cases - the Standard Data Source.
+
+In addition to this standard data source, Coalesce allows you to create custom data sources that provide complete control over the way data is loaded and serialized for transfer to a requesting client. These data sources are defined on a per-model basis, and you can have as many of them as you like for each model.
+
+Contents
+
+Defining Data Sources
+Dependency Injection
+Consuming Data Sources
+Standard Parameters
+Custom Parameters
+List Auto-loading
+Standard Data Source
+Default Loading Behavior
+Properties
+Method Overview
+Method Details
+Globally Replacing the Standard Data Source
+Defining Data Sources
+By default, each of your models that Coalesce exposes will expose the standard data source (IntelliTect.Coalesce.StandardDataSource<T, TContext>). This data source provides all the standard functionality one would expect - paging, sorting, searching, filtering, and so on. Each of these component pieces is implemented in one or more virtual methods, making the StandardDataSource a great place to start from when implementing your own data source. To suppress this behavior of always exposing the raw StandardDataSource, create your own custom data source and annotate it with [DefaultDataSource].
+
+To implement your own custom data source, you simply need to define a class that implements IntelliTect.Coalesce.IDataSource<T>. To expose your data source to Coalesce, either place it as a nested class of the type T that you data source serves, or annotate it with the [Coalesce] attribute. Of course, the easiest way to create a data source that doesn't require you to re-engineer a great deal of logic would be to inherit from IntelliTect.Coalesce.StandardDataSource<T, TContext>, and then override only the parts that you need.
+
+public class Person
+{
+    [DefaultDataSource]
+    public class IncludeFamily : StandardDataSource<Person, AppDbContext>
+    {
+        public IncludeFamily(CrudContext<AppDbContext> context) : base(context) { }
+
+        public override IQueryable<Person> GetQuery(IDataSourceParameters parameters)
+            => Db.People
+            .Where(f => User.IsInRole("Admin") || f.CreatedById == User.GetUserId())
+            .Include(f => f.Parents).ThenInclude(s => s.Parents)
+            .Include(f => f.Cousins).ThenInclude(s => s.Parents);
+    }
+}
+
+[Coalesce]
+public class NamesStartingWithA : StandardDataSource<Person, AppDbContext>
+{
+    public NamesStartingWithA(CrudContext<AppDbContext> context) : base(context) { }
+
+    public override IQueryable<Person> GetQuery(IDataSourceParameters parameters)
+        => Db.People.Include(f => f.Siblings).Where(f => f.FirstName.StartsWith("A"));
+}
+The structure of the IQueryable built by the various methods of StandardDataSource is used to shape and trim the structure of the DTO as it is serialized and sent out to the client. One may also override method IncludeTree GetIncludeTree(IQueryable<Person> query, IDataSourceParameters parameters) to control this explicitly. See Include Tree for more information on how this works.
+
+Warning
+
+If you create a custom data source that has custom logic for securing your data, be aware that the default implementation of StandardDataSource (or your custom default implementation - see below) is still exposed unless you annotate one of your custom data sources with [DefaultDataSource]. Doing so will replace the default data source with the annotated class for your type T.
+
+Dependency Injection
+All data sources are instantiated using dependency injection and your application's IServiceProvider. As a result, you can add whatever constructor parameters you desire to your data sources as long as a value for them can be resolved from your application's services. The single parameter to the StandardDataSource is resolved in this way - the CrudContext<TContext> contains the common set of objects most commonly used, including the DbContext and the ClaimsPrincipal representing the current user.
+
+Consuming Data Sources
+The ViewModels and ListViewModels each have a property called $dataSource. This property accepts an instance of a DataSource class generated in the Model Layer.
+
+import { Person } from '@/viewmodels.g'
+import { PersonViewModel, PersonListViewModel } from '@/viewmodels.g'
+
+var viewModel = new PersonViewModel();
+viewModel.$dataSource = new Person.DataSources.IncludeFamily();
+viewModel.$load(1);
+
+var list = new PersonListViewModel();
+list.$dataSource = new Person.DataSources.NamesStartingWith();
+list.$load(1);
+Standard Parameters
+All methods on IDataSource<T> take a parameter that contains all the client-specified parameters for things paging, searching, sorting, and filtering information. Almost all overridable methods on StandardDataSource are also passed the relevant set of parameters.
+
+Custom Parameters
+On any data source that you create, you may add additional properties annotated with [Coalesce] that will then be exposed as parameters to the client. These property parameters are currently restricted to primitives (numeric types, strings) and dates (DateTime, DateTimeOffset). Property parameter primitives may be expanded to allow for more types in the future.
+
+[Coalesce]
+public class NamesStartingWith : StandardDataSource<Person, AppDbContext>
+{
+    public NamesStartingWith(CrudContext<AppDbContext> context) : base(context) { }
+
+    [Coalesce]
+    public string StartsWith { get; set; }
+
+    public override IQueryable<Person> GetQuery(IDataSourceParameters parameters)
+        => Db.People.Include(f => f.Siblings)
+        .Where(f => string.IsNullOrWhitespace(StartsWith) ? true : f.FirstName.StartsWith(StartsWith));
+}
+List Auto-loading
+You can setup TypeScript List ViewModels to automatically reload from the server when data source parameters change:
+
+To automatically reload a ListViewModel when data source parameters change, simply use the list's $startAutoLoad function:
+
+import { Person } from '@/models.g';
+import { PersonListViewModel } from '@/viewmodels.g';
+
+const list = new PersonListViewModel;
+const dataSource = list.$dataSource = new Person.DataSources.NamesStartingWith
+list.$startAutoLoad(this);
+
+// Trigger a reload:
+dataSource.startsWith = "Jo";
+Standard Data Source
+The standard data sources, IntelliTect.Coalesce.StandardDataSource<T> and its EntityFramework-supporting sibling IntelliTect.Coalesce.StandardDataSource<T, TContext>, contain a significant number of properties and methods that can be utilized and/or overridden at your leisure.
+
+Default Loading Behavior
+When an object or list of objects is requested, the default behavior of the the StandardDataSource is to load all of the immediate relationships of the object (parent objects and child collections), as well as the far side of many-to-many relationships. This can be suppressed by settings includes = "none" on your TypeScript ViewModel or ListViewModel when making a request.
+
+In most cases, however, you'll probably want more or less data than what the default behavior provides. You can achieve this by overriding the GetQuery method, outlined below.
+
+Properties
+The following properties are available for use on the StandardDataSource
+
+CrudContext<TContext> Context
+The object passed to the constructor that contains the set of objects needed by the standard data source, and those that are most likely to be used in custom implementations.
+TContext Db
+An instance of the db context that contains a DbSet<T> for the entity served by the data source.
+ClaimsPrincipal User
+The user making the current request.
+int MaxSearchTerms
+The max number of search terms to process when interpreting a search term word-by-word. Override by setting a value in the constructor.
+int DefaultPageSize
+The page size to use if none is specified by the client. Override by setting a value in the constructor.
+int MaxPageSize
+The maximum page size that will be served. By default, client-specified page sizes will be clamped to this value. Override by setting a value in the constructor.
+Method Overview
+The standard data source contains 19 different methods which can be overridden in your derived class to control its behavior.
+
+These methods often call one another, so overriding one method may cause some other method to no longer be called. The hierarchy of method calls, ignoring any logic or conditions contained within, is as follows:
+
+GetMappedItemAsync
+    GetItemAsync
+        GetQueryAsync
+            GetQuery
+        GetIncludeTree
+    TransformResults
+
+GetMappedListAsync
+    GetListAsync
+        GetQueryAsync
+            GetQuery
+        ApplyListFiltering
+            ApplyListPropertyFilters
+                ApplyListPropertyFilter
+            ApplyListSearchTerm
+        GetListTotalCountAsync
+        ApplyListSorting
+            ApplyListClientSpecifiedSorting
+            ApplyListDefaultSorting
+        ApplyListPaging
+        GetIncludeTree
+    TrimListFields
+    TransformResults
+
+GetCountAsync
+    GetQueryAsync
+        GetQuery
+    ApplyListFiltering
+        ApplyListPropertyFilters
+            ApplyListPropertyFilter
+        ApplyListSearchTerm
+    GetListTotalCountAsync
+Method Details
+All of the methods outlined above can be overridden. A description of each of the non-interface inner methods is as follows:
+
+GetQuery/GetQueryAsync
+The method is the one that you will most commonly be override in order to implement custom query logic. The default implementation of GetQueryAsync simply calls GetQuery - be aware of this in cases of complex overrides/inheritance. From this method, you could:
+
+Specify additional query filtering such as row-level security or soft-delete logic. Or, restrict the data source entirely for users or whole roles by returning an empty query.
+Include additional data using EF's .Include() and .ThenInclude().
+Add additional edges to the serialized object graph using Coalesce's .IncludedSeparately() and .ThenIncluded().
+Note
+
+When GetQuery is overridden, the Default Loading Behavior is overridden as well. To restore this behavior, use the IQueryable<T>.IncludeChildren() extension method to build your query.
+
+GetIncludeTree
+Allows for explicitly specifying the Include Tree that will be used when serializing results obtained from this data source into DTOs. By default, the query that is build up through all the other methods in the data source will be used to build the include tree.
+CanEvalQueryAsynchronously
+Called by other methods in the standard data source to determine whether or not EF Core async methods will be used to evaluate queries. This may be globally disabled when bugs like https://github.com/aspnet/EntityFrameworkCore/issues/9038 are present in EF Core.
+ApplyListFiltering
+A simple wrapper that calls ApplyListPropertyFilters and ApplyListSearchTerm.
+ApplyListPropertyFilters
+For each value in parameters.Filter, invoke ApplyListPropertyFilter to apply a filter to the query.
+ApplyListPropertyFilter
+Given a property and a client-provided string value, perform some filtering on that property.
+
+Dates with a time component will be matched exactly.
+Dates with no time component will match any dates that fell on that day.
+Strings will match exactly unless an asterisk is found, in which case they will be matched with string.StartsWith.
+Enums will match by string or numeric value. Multiple comma-delimited values will create a filter that will match on any of the provided values.
+Numeric values will match exactly. Multiple comma-delimited values will create a filter that will match on any of the provided values.
+ApplyListSearchTerm
+Applies filters to the query based on the specified search term. See [Search] for a detailed look at how searching works in Coalesce.
+ApplyListSorting
+If any client-specified sort orders are present, invokes ApplyListClientSpecifiedSorting. Otherwise, invokes ApplyListDefaultSorting.
+ApplyListClientSpecifiedSorting
+Applies sorting to the query based on sort orders specified by the client. If the client specified "none" as the sort field, no sorting will take place.
+ApplyListDefaultSorting
+Applies default sorting behavior to the query, including behavior defined with use of [DefaultOrderBy] in C# POCOs, as well as fallback sorting to "Name" or primary key properties.
+ApplyListPaging
+Applies paging to the query based on incoming parameters. Provides the actual page and pageSize that were used as out parameters.
+GetListTotalCountAsync
+Simple wrapper around invoking .Count() on a query.
+TransformResults
+Allows for transformation of a result set after the query has been evaluated. This will be called for both lists of items and for single items. This can be used for things like populating non-mapped properties on a model. This method is only called immediately before mapping to a DTO - if the data source is serving data without mapping (e.g. when invoked by Behaviors) to a DTO, this will not be called..
+
+Warning
+
+It is STRONGLY RECOMMENDED that this method does not modify any database-mapped properties, as any such changes could be inadvertently persisted to the database.
+
+TrimListFields
+Performs trimming of the fields of the result set based on the parameters given to the data source. Can be overridden to forcibly disable this, override the behavior to always trim specific fields, or any other functionality desired.
+Globally Replacing the Standard Data Source
+You can, of course, create a custom base data source that all your custom implementations inherit from. But, what if you want to override the standard data source across your entire application, so that StandardDataSource<,> will never be instantiated? You can do that too!
+
+Simply create a class that implements IEntityFrameworkDataSource<,> (the StandardDataSource<,> already does - feel free to inherit from it), then register it at application startup like so:
+
+public class MyDataSource<T, TContext> : StandardDataSource<T, TContext>
+    where T : class, new()
+    where TContext : DbContext
+{
+    public MyDataSource(CrudContext<TContext> context) : base(context)
+    {
+    }
+
+    ...
+}
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddCoalesce(b =>
+    {
+        b.AddContext<AppDbContext>();
+        b.UseDefaultDataSource(typeof(MyDataSource<,>));
+    });
+Your custom data source must have the same generic type parameters - <T, TContext>. Otherwise, the Microsoft.Extensions.DependencyInjection service provider won't know how to inject it.In a CRUD system, creating, updating, and deleting are considered especially different from reading. In Coalesce, the dedicated classes that perform these operations are derivatives of a special interface known as the IBehaviors<T>. These are their stories.
+
+Coalesce separates out the parts of your API that read your data from the parts that mutate it. The read portion is performed by Data Sources, and the mutations are performed by behaviors. Like data sources, there exists a standard set of behaviors that Coalesce provides out-of-the-box that cover the most common use cases for creating, updating, and deleting objects in your data model.
+
+Also like data sources, these functions can be easily overridden on a per-model basis, allowing complete control over the ways in which your data is mutated by the APIs that Coalesce generates. However, unlike data sources which can have as many implementations per model as you like, you can only have one set of behaviors.
+
+Contents
+
+Defining Behaviors
+Dependency Injection
+Standard Behaviors
+Properties
+Method Overview
+Method Details
+Globally Replacing the Standard Behaviors
+Defining Behaviors
+By default, each of your models that Coalesce exposes will utilize the standard behaviors (IntelliTect.Coalesce.StandardBehaviors<T, TContext>) for the out-of-the-box API endpoints that Coalesce provides. These behaviors provide a set of create, update, and delete methods for an EF Core DbContext, as well as a plethora of virtual methods that make the StandardBehaviors a great base class for your custom implementations. Unlike data sources which require an annotation to override the Coalesce-provided standard class, the simple presence of an explicitly declared set of behaviors will suppress the standard behaviors.
+
+Note
+
+When you define a set of custom behaviors, take note that these are only used by the standard set of API endpoints that Coalesce always provides. They will not be used to handle any mutations in any Methods you write for your models.
+
+To create your own behaviors, you simply need to define a class that implements IntelliTect.Coalesce.IBehaviors<T>. To expose your behaviors to Coalesce, either place it as a nested class of the type T that your behaviors are for, or annotate it with the [Coalesce] attribute. Of course, the easiest way to create behaviors that doesn't require you to re-engineer a great deal of logic would be to inherit from IntelliTect.Coalesce.StandardBehaviors<T, TContext>, and then override only the parts that you need.
+
+public class Case
+{
+    public int CaseId { get; set; }
+    public int OwnerId { get; set; }
+    public bool IsDeleted { get; set; }
+    ...
+}
+
+[Coalesce]
+public class CaseBehaviors : StandardBehaviors<Case, AppDbContext>
+{
+    public Behaviors(CrudContext<AppDbContext> context) : base(context) { }
+
+    public override ItemResult BeforeSave(SaveKind kind, Case oldItem, Case item)
+    {
+        // Allow admins to bypass all validation.
+        if (User.IsInRole("Admin")) return true;
+
+        if (kind == SaveKind.Update && oldItem.OwnerId != item.OwnerId)
+            return "The owner of a case may not be changed";
+
+        // This is a new item, OR its an existing item and the owner isn't being modified.
+        if (item.CreatedById != User.GetUserId())
+            return "You are not the owner of this item."
+
+        return true;
+    }
+
+    public override ItemResult BeforeDelete(Case item)
+        => User.IsInRole("Manager") ? true : "Unauthorized";
+
+    public override Task ExecuteDeleteAsync(Case item)
+    {
+        // Soft delete the item.
+        item.IsDeleted = true;
+        return Db.SaveChangesAsync();
+    }
+}
+Dependency Injection
+All behaviors are instantiated using dependency injection and your application's IServiceProvider. As a result, you can add whatever constructor parameters you desire to your behaviors as long as a value for them can be resolved from your application's services. The single parameter to the StandardBehaviors is resolved in this way - the CrudContext<TContext> contains the common set of objects most commonly used, including the DbContext and the ClaimsPrincipal representing the current user.
+
+Standard Behaviors
+The standard behaviors, IntelliTect.Coalesce.StandardBehaviors<T> and its EntityFramework-supporting sibling IntelliTect.Coalesce.StandardBehaviors<T, TContext>, contain a significant number of properties and methods that can be utilized and/or overridden at your leisure.
+
+Properties
+CrudContext<TContext> Context
+The object passed to the constructor that contains the set of objects needed by the standard behaviors, and those that are most likely to be used in custom implementations.
+TContext Db
+An instance of the db context that contains a DbSet<T> for the entity handled by the behaviors
+ClaimsPrincipal User
+The user making the current request.
+IDataSource<T> OverrideFetchForUpdateDataSource
+A data source that, if set, will override the data source that is used to retrieve the target of an update operation from the database. The incoming values will then be set on this retrieved object. Null by default; override by setting a value in the constructor.
+IDataSource<T> OverridePostSaveResultDataSource
+A data source that, if set, will override the data source that is used to retrieve a newly-created or just-updated object from the database after a save. The retrieved object will be returned to the client. Null by default; override by setting a value in the constructor.
+IDataSource<T> OverrideFetchForDeleteDataSource
+A data source that, if set, will override the data source that is used to retrieve the target of an delete operation from the database. The retrieved object will then be deleted. Null by default; override by setting a value in the constructor.
+IDataSource<T> OverridePostDeleteResultDataSource
+A data source that, if set, will override the data source that is used to retrieve the target of an delete operation from the database after it has been deleted. If an object is able to be retrieved from this data source, it will be sent back to the client. This allows soft-deleted items to be returned to the client when the user is able to see them. Null by default; override by setting a value in the constructor.
+Method Overview
+The standard behaviors implementation contains many different methods which can be overridden in your derived class to control functionality.
+
+These methods often call one another, so overriding one method may cause some other method to no longer be called. The hierarchy of method calls, ignoring any logic or conditions contained within, is as follows:
+
+SaveAsync
+    DetermineSaveKindAsync
+    GetDbSet
+    ValidateDto
+    MapIncomingDto
+    BeforeSaveAsync
+        BeforeSave
+    ExecuteSaveAsync
+    AfterSave
+
+DeleteAsync
+    BeforeDeleteAsync
+        BeforeDelete
+    ExecuteDeleteAsync
+        GetDbSet
+    AfterDelete
+Method Details
+All of the methods outlined above can be overridden. A description of each of the methods is as follows:
+
+SaveAsync
+Save the given item. This is the main entry point for saving, and takes a DTO as a parameter. This method is responsible for performing mapping to your EF models and ultimately saving to your database. If it is required that you access properties from the incoming DTO in this method, a set of extension methods GetValue and GetObject are available on the DTO for accessing properties that are mapped 1:1 with your EF models.
+DetermineSaveKindAsync
+Given the incoming DTO on which Save has been called, examine its properties to determine if the operation is meant to be a create or an update operation. Return this distinction along with the key that was used to make the distinction.
+
+This method is called outside of the standard data source by the base API controller to perform role-based security on saves at the controller level.
+
+GetDbSet
+Fetch a DbSet<T> that items can be added to (creates) or remove from (deletes).
+ValidateDto
+Provides a chance to validate the properties of the DTO object itself, as opposed to the properties of the model after the DTO has been mapped to it in BeforeSave. A number of extension methods on IClassDto<T> can be used to access the value of the properties of Generated C# DTOs. For behaviors on Custom DTOs where the DTO type is known, simply cast to the correct type.
+MapIncomingDto
+Map the properties of the incoming DTO to the model that will be saved to the database. By default, this will call the MapTo method on the DTO, but if more precise control is needed, the IClassDto<T> extension methods or a cast to a known type can be used to get specific values. If all else fails, the DTO can be reflected upon.
+BeforeSaveAsync/BeforeSave
+Provides an easy way for derived classes to intercept a save attempt and either reject it by returning an unsuccessful result, or approve it by returning success. The incoming item can also be modified at will in this method to override changes that the client made as desired.
+AfterSave
+Provides an easy way for derived classes to perform actions after a save operation has been completed. Failure results returned here will present an error to the client, but will not prevent modifications to the database since changes have already been saved at this point. This method can optionally modify or replace the item that is sent back to the client after a save by setting ref T item to another object or to null. Setting ref IncludeTree includeTree will override the Include Tree used to shape the response object.
+
+Warning
+
+Setting ref T item to null will prevent the new object from being returned - be aware that this can be harmful in create scenarios since it prevents the client from receiving the primary key of the newly created item. If autoSave is enabled on the client, this could cause a large number of duplicate objects to be created in the database, since each subsequent save by the client will be treated as a create when the incoming object lacks a primary key.
+
+DeleteAsync
+Deletes the given item.
+BeforeDelete
+Provides an easy way to intercept a delete request and potentially reject it.
+ExecuteDeleteAsync
+Performs the delete action against the database. The implementation of this method removes the item from its corresponding DbSet<T>, and then calls Db.SaveChangesAsync().
+
+Overriding this allows for changing this row-deletion implementation to something else, like setting of a soft delete flag, or copying the data into another archival table before deleting.
+
+AfterDelete
+Allows for performing any sort of cleanup actions after a delete has completed. If the item was still able to be retrieved from the database after the delete operation completed, this method allows lets you modify or replace the item that is sent back to the client by setting ref T item to another object or to null. Setting ref IncludeTree includeTree will override the Include Tree used to shape the response object.
+Globally Replacing the Standard Behaviors
+You can, of course, create a custom base behaviors class that all your custom implementations inherit from. But, what if you want to override the standard behaviors across your entire application, so that StandardBehaviors<,> will never be instantiated? You can do that too!
+
+Simply create a class that implements IEntityFrameworkBehaviors<,> (the StandardBehaviors<,> already does - feel free to inherit from it), then register it at application startup like so:
+
+public class MyBehaviors<T, TContext> : StandardBehaviors<T, TContext>
+    where T : class, new()
+    where TContext : DbContext
+{
+    public MyBehaviors(CrudContext<TContext> context) : base(context)
+    {
+    }
+
+    ...
+}
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddCoalesce(b =>
+    {
+        b.AddContext<AppDbContext>();
+        b.UseDefaultBehaviors(typeof(MyBehaviors<,>));
+    });
+Your custom behaviors class must have the same generic type parameters - <T, TContext>. Otherwise, the Microsoft.Extensions.DependencyInjection service provider won't know how to inject it.
+
+One of the primary functions of Coalesce is as a code generation framework. Below, you find an overview of the different components of Coalesce's code generation features.
+
+Contents
+
+Running Code Generation
+CLI Options
+Generated Code
+Server-side C#
+Vue
+Knockout
+Running Code Generation
+Coalesce's code generation is ran via a dotnet CLI tool, dotnet coalesce. In order to invoke this tool, you must have the appropriate references to the package that provides it in your .csproj file:
+
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    ...
+
+    <ItemGroup>
+        <PackageReference Include="IntelliTect.Coalesce" Version="..." />
+    </ItemGroup>
+
+    <ItemGroup>
+        <DotNetCliToolReference Include="IntelliTect.Coalesce.Tools" Version="..." />
+    </ItemGroup>
+</Project>
+CLI Options
+All configuration of the way that Coalesce interacts with your projects, including locating, analyzing, and producing generated code, is done in a json configuration file, coalesce.json. Read more about this file at Code Generation Configuration.
+
+There are a couple of extra options which are only available as CLI parameters to dotnet coalesce. These options do not affect the behavior of the code generation - only the behavior of the CLI itself.
+
+--debug
+When this flag is specified when running dotnet coalesce, Coalesce will wait for a debugger to be attached to its process before starting code generation.
+-v|--verbosity <level>
+Set the verbosity of the output. Options are trace, debug, information, warning, error, critical, and none.
+Generated Code
+Coalesce has the option of two front-end stacks - either Knockout, or Vue. The Vue-based stack is the current focus of all development efforts against Coalesce going forward - the Knockout stack is effectively in maintenance-only mode.
+
+For either stack, Coalesce will generate a variety of different kinds of code for you:
+
+Server-side C#
+API Controllers
+For each of your Entity Models, Custom DTOs, and Services, an API controller is created in the /Api/Generated directory of your web project. These controllers provide a number of endpoints for interacting with your data.
+
+These controllers can be secured at a high level using Security Attributes, and when applicable to the type, with Data Sources and Behaviors.
+
+C# DTOs
+For each of your Entity Models, a C# DTO class is created. These classes are used to hold the data that will be serialized and sent to the client, as well as data that has been received from the client before it has been mapped back to your EF POCO class.
+
+See Generated C# DTOs for more information.
+
+Vue
+An overview of the Vue stack can be found at Vue Overview.
+
+Knockout
+An overview of the Knockout stack can be found at Knockout Overview.Generated C# DTOs
+Data Transfer Objects, or DTOs, allow for transformations of data from the data store into a format more suited for transfer and use on the client side. This often means trimming properties and flattening structures to provide a leaner over-the-wire experience. Coalesce aims to support this as seamlessly as possible.
+
+Coalesce supports two types of DTOs:
+
+DTOs that are automatically generated for each POCO database object. These are controlled via Attributes on the POCO. These are outlined below.
+DTOs that you create with IClassDto and create unique ViewModels. These are outlined at Custom DTOs.
+Automatically Generated DTOs
+Every class that is exposed through Coalesce's generated API will have a corresponding DTO generated for it. These DTOs are used to shuttle data back and forth to the client. They are generated classes that have nullable versions of all the properties on the POCO class.
+
+[DtoIncludes] & [DtoExcludes] and the Includes String infrastructure can be used to indicate which properties should be transferred to the client in which cases, and Include Tree is used to dictate how these DTOs are constructed from POCOs retrieved from the database.
+
+The Vue stack for Coalesce has been designed from the ground up to be used to build modern web applications using current technologies like Webpack, Vue CLI, ES Modules, and more. It enables you to use all of the features of Vue.js, including building a SPA, and the ability to use modern component frameworks like Vuetify.
+
+Contents
+
+Getting Started
+TypeScript Layers
+Metadata Layer
+Model Layer
+API Client Layer
+ViewModel Layer
+Vue Components
+Admin Views
+Getting Started
+Check out Getting Started with Vue if you haven't already to learn how to get a new Coalesce Vue project up and running.
+
+TypeScript Layers
+https://img.shields.io/npm/v/coalesce-vue/dev?color=42b883&label=coalesce-vue@dev
+The generated code for the Vue stack all builds on the coalesce-vue NPM package which contains most of the core functionality of the Vue stack. Its version should generally be kept in sync with the IntelliTect.Coalesce NuGet packages in your project.
+
+Both the generated code and coalesce-vue are split into four layers, with each layer building on the layers underneath. From the bottom, these layers are:
+
+Metadata Layer
+The metadata layer, generated as metadata.g.ts, contains a minimal set of metadata to represent your data model on the front-end. Because Vue applications are typically compiled into a set of static assets, it is necessary for the frontend code to have a representation of your data model as an analog to the ReflectionRepository available at runtime to Knockout apps that utilize .cshtml files.
+
+Read more about the Metadata layer
+
+Model Layer
+The model layer, generated as models.g.ts, contains a set of TypeScript interfaces that represent each client-exposed type in your data model. Each interface declares all the Properties of that type, as well as a $metadata property that references the metadata object for that type. Enums and Data Sources are also represented in the model layer.
+
+Read more about the Model layer
+
+API Client Layer
+The API client layer, generated as api-clients.g.ts, exports a class for each API controller that was generated for your data model. These classes are stateless and provide one method for each API endpoint. This includes both the standard set of endpoints created for Entity Models and Custom DTOs, as well as any custom Methods.
+
+Read more about the API Client layer
+
+ViewModel Layer
+The ViewModel layer, generated as viewmodels.g.ts, exports a ViewModel class for each API-backed type in your data model (Entity Models, Custom DTOs, and Services). It also exports an additional ListViewModel type for Entity Models, Custom DTOs.
+
+These ViewModels contain the majority of functionality that you will use on a day-to-day basis as you build applications with the Coalesce Vue stack. They are all valid implementations of their corresponding model interface, and as such can be used in any place where a model could be used.
+
+Read more about the ViewModel layer
+
+Vue Components
+https://img.shields.io/npm/v/coalesce-vue-vuetify/dev?color=42b883&label=coalesce-vue-vuetify@dev
+The Vue stack for Coalesce provides a set of components based on Vuetify, packaged up in an NPM package coalesce-vue-vuetify. These components are driven primarily by the Metadata Layer, and include both low level input and display components like c-input and c-display that are highly reusable in the custom pages you'll build in your application, as well as high-level components like c-admin-table-page and c-admin-editor-page that constitute entire pages.
+
+Read more about the Vuetify Components here.
+
+Admin Views
+The Vue stack for Coalesce does not generate any admin views for you like the Knockout stack does. Instead, it provides some high level components that provide functionality of whole pages like c-admin-table-page and c-admin-editor-page - these are the analogues of the generated admin Table and CreateEdit views in the Knockout stack.
+
+These components are driven off of the generated layers described above rather than being statically generated like the Knockout admin pages - this allows us to keep bundle size to a minimum.
+
+The template described in Getting Started with Vue comes with routes already in place for these page-level components. For example, /admin/Person for a table, /admin/Person/edit to create a new Person, and /admin/Person/edit/:id to edit a Person.
+
+Read more about the Vuetify Components here.
+
+The quickest and easiest way to create a new Coalesce Vue application is to use the dotnet new template. In your favorite shell:
+
+mkdir MyCompany.MyProject
+cd MyCompany.MyProject
+dotnet new --install IntelliTect.Coalesce.Vue.Template
+dotnet new coalescevue
+cd *.Web
+npm ci
+NuGet • View on GitHub
+
+Project Structure
+Important
+
+The Vue template is based on Vue CLI. You are strongly encouraged to read through at least the first few pages of the Vue CLI Documentation before getting started on any development.
+
+The structure of the Web project follows the conventions of both ASP.NET Core and Vue CLI. The Vue-specific folders are as follows:
+
+/src - Files that should be compiled into your application. CSS/SCSS, TypeScript, Vue SFCs, and so on.
+/public - Static assets that should be served as files. Includes index.html, the root document of the application.
+/tests - Jest unit tests.
+/wwwroot - Target for compiled output.
+During development, no special tooling is required to build your frontend code. WebpackDevMiddleware in ASP.NET Core will take care of that automatically when the application starts.
+
+Tip
+
+If developing with Visual Studio, you are strongly encouraged to disable Visual Studio's built-in automatic NPM package restore functionality (Options > Projects and Solutions > Web Package Management > Package Restore).
+
+This feature of Visual Studio fails to respect your package.lock.json file, and the version of NPM that Visual Studio comes with tends to be quite old and will behave differently from the npm on your system's $PATH.
+
+You should manually restore your packages with npm ci (when you haven't tried to change any versions) or npm i (when installing new packages or upgrading versions).
+
+Data Modeling
+At this point, you can open up the newly-created solution in Visual Studio and run your application. However, your application won't do much without a data model, so you will probably want to do the following before running:
+
+Create an initial Data Model by adding EF entity classes to the data project and the corresponding DbSet<> properties to AppDbContext. You will notice that the starter project includes a single model, ApplicationUser, to start with. Feel free to change this model or remove it entirely. Read Entity Models for more information about creating a data model.
+
+Run dotnet ef migrations add Init (Init can be any name) in the data project to create an initial database migration.
+
+Run Coalesce's code generation by either:
+
+Running dotnet coalesce in the web project's root directory
+Running the coalesce npm script (Vue) or gulp task (Knockout) in the Task Runner Explorer
+You're now at a point where you can start creating your own pages!
+
+Building Pages & Features
+Lets say we've created a model called Person as follows, and we've ran code generation with dotnet coalesce:
+
+namespace MyApplication.Data.Models
+{
+    public class Person
+    {
+        public int PersonId { get; set; }
+        public string Name { get; set; }
+        public DateTimeOffset? BirthDate { get; set; }
+    }
+}
+We can create a details page for a Person by creating a Single File Component in MyApplication.Web/src/views/person-details.vue:
+
+<template>
+  <dl>
+    <dt>Name</dt>
+    <dd>
+      <c-display :model="person" for="name" />
+    </dd>
+
+    <dt>Date of Birth</dt>
+    <dd>
+      <c-display :model="person" for="birthDate" format="M/d/yyyy" />
+    </dd>
+  </dl>
+</template>
+
+<script lang="ts">
+import { Vue, Component, Watch, Prop } from "vue-property-decorator";
+import { PersonViewModel } from "@/viewmodels.g";
+
+@Component({})
+export default class extends Vue {
+  @Prop({ required: true, type: Number })
+  id!: number;
+
+  person = new PersonViewModel();
+
+  created() {
+    this.person.$load(this.id);
+  }
+}
+</script>
+Note
+
+In the code above, c-display is a component that comes from the Vuetify Components for Coalesce.
+
+For simple property types like string and number you can always use simple template interpolation syntax, but for more complex properties like dates, c-display is handy to use because it includes features like built-in date formatting.
+
+Tip
+
+The code above uses vue-class-component and vue-property-decorator to define the component.
+
+These libraries provide an alternative to the default component declaration syntax in Vue. However, you must be aware of the Caveats if you want to use these tools to build your own class-style components.
+
+We then need to add route to this new view. In MyApplication.Web/src/router.ts, add a new item to the routes array:
+
+// At the top of the file, import the component:
+import PersonDetails from '@/views/person-details.vue';
+// In the `routes` array, add the following item:
+{
+  path: '/person/:id',
+  name: 'person-details',
+  component: PersonDetails,
+  props: route => ({ id: +route.params.id }),
+},
+With these pieces in place, we now have a functioning page that will display details about a person. We can start up the application (or, if it was already running, refresh the page) and navigate to /person/1 (assuming a person with ID 1 exists - if not, navigate to /admin/Person and create one).
+
+From this point, you can start adding more fields, more features, and more flair to the page. Check out all the other documentation in the sidebar to see what else Coalesce has to offer, including the Vue Overview.
+
+The metadata layer, generated as metadata.g.ts, contains a minimal set of metadata to represent your data model on the front-end. Because Vue applications are typically statically compiled, it is necessary for the frontend code to have a representation of your data model as an analog to the ReflectionRepository available at runtime to Knockout apps that utilize .cshtml files.
+
+Contents
+
+Concepts
+Metadata
+Type
+Value
+Property
+Domain
+Concepts
+The following is a non-exhaustive list of the general concepts used by the metadata layer. The source code of coalesce-vue provides the most exhaustive set of documentation about the metadata layer:
+
+Metadata
+All objects in the metadata layer that represent any kind of metadata have, at the very least, a name, the name of the metadata element in code (type names, property names, parameter names, etc). and a displayName, the human-readable form of the name that is suitable for presentation when needed. Names follow the casing convention of their corresponding language elements - types are PascalCased, while other things like properties, methods, and parameters are camelCased.
+
+Type
+All custom types exposed by your application's data model will have a Type metadata object generated. This includes both C# classes, and C# enums. Class types include model (for Entity Models and Custom DTOs) and object (for External Types).
+
+Value
+In the metadata layer, a Value is the usage of a type. This could be any type - strings, numbers, enums, classes, or even void. Values can be found in the collection of an object's properties, a method's parameters or return value, or as a data source's parameters.
+
+All values have a:
+
+type
+Type could be a language primitive like string or number, a non-primitive JavaScript type (date, file), or in the case of a custom Type, the type kind of that type (model, enum, object). For custom types, an additional property typeDef will refer to the Type metadata for that type.
+role
+Role represents what purpose the value serves in a relational model. Either value (the default - no relational role), primaryKey, foreignKey, referenceNavigation, or collectionNavigation.
+Property
+A Property is a more refined Value that contains a number of additional fields based on the role of the property. k
+
+Domain
+The type of the default export of the generated metadata. Serves as a single root from which all other metadata can be accessed. Contains fields types, enums, and services as organizing structures for the different kinds of custom types.Model Layer
+The model layer, generated as models.g.ts, contains a set of TypeScript interfaces that represent each client-exposed type in your data model. Each interface contains all the Properties of that type, as well as a $metadata property that references the metadata object for that type. Enums and Data Sources are also represented in the model layer.
+
+The model layer also includes a TypeScript class for each type that can be used to easily instantiate a valid implementation of its corresponding interface. However, it is not necessary for the classes to be used, and all parts of Coalesce that interact with the model layer don't perform any instanceof checks against models - the $metadata property is used to determine type identity.
+
+Contents
+
+Concepts
+Model
+DataSource
+Model Functions
+Advanced Model Functions
+DisplayOptions
+Concepts
+The model layer is fairly simple - the only main concept it introduces on top of the Metadata Layer is the notion of interfaces and enums that mirror the C# types in your data model. As with the Metadata Layer, the source code of coalesce-vue is a great documentation supplement to this page.
+
+Model
+An interface describing an instance of a class type from your application's data model. All Model interfaces contain members for all the Properties of that type, as well as a $metadata property that references the metadata object for that type.
+
+DataSource
+A class-based representation of a Data Source containing properties for any of the Custom Parameters of the data source, as well as a $metadata property that references the metadata object for the data source.
+
+Data sources are generated as concrete classes in a namespace named DataSources that is nested inside a namespace named after their parent model type. For example:
+
+import { Person } from '@/models.g'
+
+const dataSource = new Person.DataSources.NamesStartingWith;
+dataSource.startsWith = "A";
+// Provide the dataSource to an API Client or a ViewModel...
+Model Functions
+The following functions exported from coalesce-vue can be used with your models:
+
+bindToQueryString(vue: Vue, obj: {}, key: string, queryKey: string = key, parse?: (v: any) => any, mode: 'push' | 'replace' = 'replace')
+Binds property key of obj to query string parameter queryKey. When the object's value changes, the query string will be updated using vue-router. When the query string changes, the object's value will be updated.
+
+The query string will be updated using either router.push or router.replace depending on the value of parameter mode.
+
+If the query string contains a value when this is called, the object will be updated with that value immediately.
+
+If the object being bound to has $metadata, information from that metadata will be used to serialize and parse values to and from the query string. Otherwise, String(value) will be used to serialize the value, and the parse parameter (if provided) will be used to parse the value from the query string.
+
+import { bindToQueryString } from 'coalesce-vue';
+
+// In the 'created' Vue lifecycle hook on a component:
+created() {
+    // Bind pagination information to the query string:
+    bindToQueryString(this, this.listViewModel.$params, 'pageSize', 'pageSize', v => +v);
+
+    // Assuming the component has an 'activeTab' data member:
+    bindToQueryString(this, this, 'activeTab');
+}
+bindKeyToRouteOnCreate(vue: Vue, model: Model<ModelType>, routeParamName: string = 'id', keepQuery: boolean = false)
+When model is created (i.e. its primary key becomes non-null), replace the current URL with one that includes uses primary key for the route parameter named by routeParamName.
+
+The query string will not be kept when the route is changed unless true is given to keepQuery.
+
+import { bindKeyToRouteOnCreate } from 'coalesce-vue';
+
+// In the 'created' Vue lifecycle hook on a component:
+created() {
+    if (this.id) {
+        this.viewModel.$load(this.id);
+    } else {
+        bindKeyToRouteOnCreate(this, this.viewModel);
+    }
+}
+Note
+
+The route will be replaced directly via the HTML5 History API such that vue-router will not observe the change as an actual route change, preventing the current view from being recreated if a path-based key is being used on the application's <router-view> component.
+
+Advanced Model Functions
+The following functions exported from coalesce-vue can be used with your models.
+
+Note
+
+These functions are used to implement the higher-order layers in the Vue stack.
+
+While you're absolutely free to use them in your own code and can rely on their interface and behavior to remain consistent, you will find that you seldom need to use them directly - that's why we've split them into their own section here in the documentation.
+
+convertToModel(value: any, metadata: Value | ClassType): any
+Given any JavaScript value value, convert it into a valid implementation of the value or type described by metadata.
+
+For metadata describing a primitive or primitive-like value, the input will be parsed into a valid implementation of the correct JavaScript type. For example, for metadata that describes a boolean, a string "true" will return a boolean true, and ISO 8601 date strings will result in a JavaScript Date object.
+
+For metadata describing a type, the input object will be mutated into a valid implementation of the appropriate model interface. Missing properties will be set to null, and any descendent properties of the provided object will be recursively processed with convertToModel.
+
+If any values are encountered that are fundamentally incompatible with the requested type described by the metadata, an error will be thrown.
+
+mapToModel(value: any, metadata: Value | ClassType): any
+Performs the same operations as convertToModel, except that any objects encountered will not be mutated - instead, a new object or array will always be created.
+mapToDto(value: any, metadata: Value | ClassType): any
+Maps the input to a representation suitable for JSON serialization.
+
+Will not serialize child objects or collections whose metadata includes dontSerialize. Will only recurse to a maximum depth of 3.
+
+modelDisplay(model: Model, options?: DisplayOptions): string
+Returns a string representing the model suitable for display in a user interface.
+
+Uses the displayProp defined on the object's metadata. If no displayProp is defined, the object will be displayed as JSON. The display prop on a model can be defined in C# with [ListText].
+
+See DisplayOptions for available options.
+
+propDisplay(model: Model, prop: Property | string, options?: DisplayOptions): string
+Returns a string representing the specified property of the given object suitable for display in a user interface.
+
+The property can either be a string, representing one of the model's properties, or the actual Property metadata object of the property.
+
+See DisplayOptions for available options.
+
+valueDisplay(value: any, metadata: Value, options?: DisplayOptions): string
+Returns a string representing the given value (described by the given metadata).
+
+See DisplayOptions for available options.
+
+DisplayOptions
+The following options are available to functions in coalesce-vue that render a value or object for display:
+
+format
+Options to be used when formatting a date. One of:
+
+string
+A UTS#35 date format string, to be passed to date-fns's format function.
+
+Defaults to "M/d/yyyy" for date-only dates (specified with [DateType]), or "M/d/yyyy h:mm:ss aaa" otherwise.
+
+{ distance: true; addSuffix?: boolean; includeSeconds?: boolean; }
+Options to be passed to date-fns's formatDistanceToNow function.
+
+Note
+
+Values rendered with formatDistanceToNow function into a Vue component will not automatically be updated in realtime. If this is needed, you should use a strategy like using a key that you periodically update to force a re-render.
+
+collection: { enumeratedItemsMax?: number, enumeratedItemsSeparator?: string }
+Options to be used when formatting a collection.
+API Client Layer
+The API client layer, generated as api-clients.g.ts, exports a class for each API controller that was generated for your data model. These classes are stateless and provide one method for each API endpoint. This includes both the standard set of endpoints created for Entity Models and Custom DTOs, as well as any custom Methods on the aforementioned types, as well as any methods on your Services.
+
+The API clients provided by Coalesce are based on axios. All API clients used a shared axios instance, exported from coalesce-vue as AxiosClient. This instance can be used to configure all HTTP requests made by Coalesce, including things like attaching interceptors to modify the requests being made, or configuring defaults.
+
+As with all the layers, the source code of coalesce-vue is also a great supplement to this documentation.
+
+Contents
+
+Concepts
+API Callers
+Creating and Invoking API Caller
+Properties
+All Callers
+ItemResult-based Callers
+ListResult-based Callers
+Concurrency Mode
+Other Methods
+Concepts
+API Client
+A class, generated for each controller-backed type in your data model as <ModelName>ApiClient and exported from api-clients.g.ts containing one method for each API endpoint.
+
+Each method on the API client takes in the regular parameters of the method as you would expect, as well as an optional AxiosRequestConfig parameter at the end that can be used to provide additional configuration for the single request, if needed.
+
+For the methods that correspond to the standard set of CRUD endpoints that Coalesce provides (get, list, count, save, delete), an additional parameter parameters is available that accepts the set of Standard Parameters appropriate for the endpoint.
+
+Each method returns a Promise<AxiosResponse<TApiResult>> where TApiResult is either ItemResult, ItemResult<T>, or ListResult<T>, depending on the return type of the API endpoint. AxiosResponse is the response object from axios, containing the TApiResult in its data property, as well as other properties like headers. The returned type T is automatically converted into valid Model implementations for you.
+
+API Callers/API States
+A stateful function for invoking an API endpoint, created with the $makeCaller function on an API Client. API Callers provide a wide array of functionality that is useful for working with API endpoints that are utilized by a user interface.
+
+Because they are such an integral part of the overall picture of coalesce-vue, they have their own section below where they are explained in much greater detail.
+
+API Callers
+API Callers (typed with the name ApiState in coalesce-vue, sometimes also referred to as "loaders" or "invokers") are stateful functions for invoking an API endpoint, created with the $makeCaller function on an API Client.
+
+A summary of features:
+
+Endpoint Invocation
+Each API Caller is itself a function, so it can be invoked to trigger an API request to the server.
+State management
+API Callers contain properties about the last request made, including things like wasSuccessful, isLoading, result, and more.
+Concurrency Management
+Using setConcurrency(mode), you can configure how each individual caller handles what happens when multiple requests are made simultaneously
+Argument Binding
+API Callers can be created so that they have an args object that can be bound to, using .invokeWithArgs() to make a request using those arguments as the API endpoint's parameters. The API Callers created for the ViewModel Layer are all created this way.
+Creating and Invoking API Caller
+API Callers can be created with the $makeCaller method of an API Client. The way in which it was created affects how it is invoked, as the parameters that the caller accepts are defined when it is created.
+
+Tip
+
+During typical development, it is unlikely that you'll need to make a custom API Caller - the ones created for you on the generated ViewModel Layer will usually suffice. However, creating your own can allow for some more advanced functionality.
+
+Some examples:
+
+// Preamble for all the examples below:
+import { PersonApiClient } from '@/api-clients.g';
+const client = new PersonApiClient;
+A caller that takes no additional parameters:
+
+const caller = client.$makeCaller(
+    "item",
+    c => c.namesStartingWith("A")
+);
+
+await caller();
+console.log(caller.result)
+A caller that takes custom parameters:
+
+const caller = client.$makeCaller(
+    methods => methods.namesStartingWith,
+    (c, str: string) => c.namesStartingWith(str)
+);
+
+await caller("Rob");
+console.log(caller.result)
+A caller that has an args object that can be bound to. This is how the generated API Callers in the ViewModel Layer are created:
+
+const caller = client.$makeCaller("item",
+    // The parameter-based version is always required, even if it won't be used.
+    (c, str: string) => c.namesStartingWith(str),
+    // A function which creates a blank instance of the args object.
+    // All props should be initialized (i.e. not undefined) to work with Vue's reactivity.
+    () => ({str: null as string | null, }),
+    // The function that accepts the args object and uses it:
+    (c, args) => c.namesStartingWith(args.str)
+);
+
+caller.args.str = "Su";
+await caller.invokeWithArgs();
+console.log(caller.result)
+A caller that performs multiple async operations:
+
+const deleteFirstNameStartingWith = client.$makeCaller(
+    "item",
+    async (c, str: string) => {
+        const namesResult = await c.namesStartingWith(str)
+        return await c.deletePersonByName(namesResult.data.object[0])
+    }
+);
+
+await caller("Rob");
+console.log(caller.result)
+The first parameter, resultType, can either be one of "item" or "list", indicating whether the method returns a ItemResult or ListResult (examples #1 and #3 above). It can also be a function which accepts the set of method metadata for the API Client and which returns the specific method metadata (example #2 above), or it can be a direct reference to a specific method metadata object.
+
+Properties
+The following state properties can be found on API Caller instances. These properties are useful for binding to in a user interface to display errors, results, or indicators of progress.
+
+All Callers
+isLoading: boolean
+True if there is currently a request pending for the API Caller.
+wasSuccessful: boolean | null
+A boolean indicating if the last request made was successful, or null if either no request has been made yet, or if a request has been made but has not yet completed.
+message: string | null
+An error message from the last request, if any. Will be set to null upon successful completion of a request.
+hasResult: boolean
+True if result is non-null. This prop is useful in performance-critical scenarios where checking result directly will cause an overabundance of re-renders in high-churn scenarios.
+args: {}
+Holds an object for the arguments of the function, and will be used if the caller is invoked with its invokeWithArgs() method. Useful for binding the arguments of a caller to inputs in a user interface.
+
+Only exists if the caller was created with the option of being invoked with an args object as described in the sections above.
+
+ItemResult-based Callers
+result: T | null
+The principal data returned by the previous request. Will be set to null if the last response received returned no data (e.g. if the response was an error response)
+validationIssues: ValidationIssue[] | null
+Any validation issues returned by the previous request. This is never populated automatically by Coalesce, and is therefore is only used if you have written custom code to populate it in your Behaviors or Methods.
+ListResult-based Callers
+result: Array<T> | null
+The principal data returned by the previous request. Will be set to null if the last response received returned no data (e.g. if the response was an error response).
+page, pageSize, pageCount, totalCount: number | null
+Properties which contain the pagination information returned by the previous request.
+Concurrency Mode
+API callers have a setConcurrency(mode: string) method that allows you to customize how they behave when additional invocations are performed when there is already a request pending. There are four options available, with "disallow" being the default:
+
+"disallow"
+The default behavior - simply throws an error for any secondary invocations.
+
+Note
+
+Having "disallow" as the default prevents the unexpected behavior that can happen in a number of ways with the other modes:
+
+For requests that are performing data-mutating actions on the server, all other concurrency modes could lead to an unexpected end state of the data due to requests either being abandoned, cancelled, or potentially happening out-of-order.
+Throwing errors for multiple concurrent requests quickly surfaces issues during development where concurrent requests are not being correctly guarded against in a user interface - e.g. not disabling a "Save" or "Submit" button while the request is pending, which would otherwise lead to double-posts.
+"debounce"
+When a secondary invocation is performed, enqueue it after the current pending invocation completes.
+
+If additional invocations are performed while there is already an invocation enqueued and waiting, the already-enqueued invocation is abandoned and replaced by the most recent invocation attempt. The promise of the abandoned invocation will be resolved with undefined (it is NOT rejected).
+
+"cancel"
+When a secondary invocation is performed, cancel the current pending invocation.
+
+This completely aborts the request, propagating all the way back to the server where cancellation can be observed with HttpContext.RequestAborted. The promise of the cancelled invocation will be resolved with undefined (it is NOT rejected).
+
+"allow"
+When a secondary invocation is performed, always continue normally, sending the request to the server.
+
+The state of the properties on the caller at any time will reflect the most recent response received from the server, which is never guaranteed to correlate with the most recent request made to the server - that is, requests are not guaranteed to complete in the order they were made. In particular, the isLoading property will be false after the first response comes back, even if the second response has not yet been received.
+
+Warning
+
+For the reasons outlined above, it is generally not recommended to use "allow" unless you fully understand the drawbacks. This mode mirrors the legacy behavior of the Knockout stack for Coalesce.
+
+Other Methods
+API Callers have a few other methods available as well:
+
+cancel()
+Manually cancel the current request. The promise of the cancelled invocation will be resolved with undefined (it is NOT rejected). If using concurrency mode "allow", only the most recent invocation is cancelled.
+onFulfilled((state: TInvoker) => void | Promise<any>)
+Add a callback to the caller to be invoked when a success response is received from the server. If a promise is returned, this promise will be awaited and will delay the setting of the isLoading prop to false until it completes.
+onRejected((state: TInvoker) => void | Promise<any>)
+Add a callback to the caller to be invoked when a failure response is received from the server. If a promise is returned, this promise will be awaited and will delay the setting of the isLoading prop to false until it completes.
+invoke(...args: TArgs)
+The invoke function is a reference from the caller to itself - that is, caller.invoke === caller. This mirrors the syntax of the Knockout generated method classes.
+invokeWithArgs(args?: {})
+If called a parameter, that parameter will be used as the args object. Otherwise, caller.args will be used.
+
+Only exists if the caller was created with the option of being invoked with an args object as described in the sections above.
+
+ViewModel Layer
+The ViewModel layer, generated as viewmodels.g.ts, exports for each Entity Models and Custom DTOs in your data model both a ViewModel class representing a single instance of the type, and a ListViewModel class that is used to interact with the list functionality in Coalesce. Additionally, each Service also has a ViewModel class generated.
+
+These classes provide a wide array of functionality that is useful when interacting with your data model through a user interface. The generated ViewModels are the primary way that Coalesce is used when developing a Vue application.
+
+Contents
+
+ViewModels
+Model Data Properties
+Other Data Properties & Functions
+API Callers & Parameters
+Auto-save & Dirty Flags
+Rules/Validation
+Generated Members
+ListViewModels
+Data Properties
+Parameters & API Callers
+Auto-Load
+Generated Members
+Service ViewModels
+Generated Members
+ViewModels
+The following members can be found on the generated ViewModels, exported from viewmodels.g.ts as *TypeName*ViewModel.
+
+Model Data Properties
+Each ViewModel class implements the corresponding interface from the Model Layer, meaning that the ViewModel has a data property for each Property on the model. Object-typed properties will be typed as the corresponding generated ViewModel.
+
+Changing the value of a property will automatically flag that property as dirty. See Auto-save & Dirty Flags below for information on how property dirty flags are used.
+
+There are a few special behaviors when assigning to different kinds of data properties on View Models as well:
+
+Model Object Properties
+If the object being assigned to the property is not a ViewModel instance, a new instance will be created automatically and used instead of the incoming object.
+If the model property is a reference navigation, the corresponding foreign key property will automatically be set to the primary key of that object. If the incoming value was null, the foreign key will be set to null.
+If deep auto-saves are enabled on the instance being assigned to, auto-save will be spread to the incoming object, and to all other objects reachable from that object.
+Model Collection Properties
+When assigning an entire array, any items in the array that are not a ViewModel instance will have an instance created for them.
+The same rule goes for pushing items into the existing array for a model collection - a new ViewModel instance will be created and be used instead of the object(s) being pushed.
+Foreign Key Properties
+If the corresponding navigation property contains an object, and that object's primary key doesn't match the new foreign key value being assigned, the navigation property will be set to null.
+
+Other Data Properties & Functions
+readonly $metadata: ModelType
+The metadata object from the Metadata Layer layer for the type represented by the ViewModel.
+readonly $stableId: number
+An immutable number that is unique among all ViewModel instances, regardless of type.
+
+Useful for uniquely identifying instances with :key="vm.$stableId" in a Vue component, especially for instances that lack a primary key.
+
+$primaryKey: string | number
+A getter/setter property that wraps the primary key of the model. Used to interact with the primary key of any ViewModel in a polymorphic way.
+$display(prop?: string | Property): string
+Returns a string representation of the object, or one of its properties if specified, suitable for display.
+$addChild(prop: string | ModelCollectionNavigationProperty)
+Creates a new instance of an item for the specified child model collection, adds it to that collection, and returns the item.
+
+API Callers & Parameters
+$load: ItemApiState
+An API Caller for the /get endpoint. Accepts an optional id argument - if not provided, the ViewModel's $primaryKey is used instead. Uses the instance's $params object for the Standard Parameters.
+$save: ItemApiState
+An API Caller for the /save endpoint. Uses the instance's $params object for the Standard Parameters.
+
+This caller is used for both manually-triggered saves in custom code and for auto-saves. If the Rules/Validation report any errors when the caller is invoked, an error will be thrown.
+
+When a save creates a new record and a new primary key is returned from the server, any entities attached to the current ViewModel via a collection navigation property will have their foreign keys set to the new primary key. This behavior, combined with the usage of deep auto-saves, allows for complex object graphs to be constructed even before any model in the graph has been created.
+
+Saving behavior can be further customized with $loadResponseFromSaves and $saveMode, listed below.
+
+$loadResponseFromSaves: boolean
+Default true - controls if a ViewModel will be loaded with the data from the model returned by the /save endpoint when saved with the $save API caller. There is seldom any reason to disable this.
+$saveMode: "surgical" | "whole"
+Configures which properties of the model are sent to the server during a save.
+
+"surgical" (default)
+By default, only dirty properties (and always the primary key) are sent to the server when performing a save.
+
+This improves the handling of concurrent changes being made by multiple users against different fields of the same entity at the same time - specifically, it prevents a user with a stale value of some field X from overwriting a more recent value of X in the database when the user is only making changes to some other property Y and has no intention of changing X.
+
+Save mode "surgical" doesn't help when multiple users are editing field X at the same time - if such a scenario is applicable to your application, you must implement more advanced handling of concurrency conflicts.
+
+Warning
+
+Surgical saves require DTOs on the server that are capable of determining which of their properties have been set by the model binder, as surgical saves are sent from the client by entirely omitting properties from the x-www-form-urlencoded body that is sent to the server.
+
+The Generated C# DTOs implement the necessary logic for this; however, any Custom DTOs you have written are unlikely to be implementing the same behavior. For Custom DTOs, either implement the same pattern that can be seen in the Generated C# DTOs, or use save mode "whole" instead.
+
+"whole"
+All serializable properties of the object are sent back to the server with every save.
+$delete: ItemApiState
+An API Caller for the /delete endpoint. Uses the instance's $params object for the Standard Parameters.
+
+If the object was loaded as a child of a collection, it will be removed from that collection upon being deleted. Note that ViewModels currently only support tracking of a single parent collection, so if an object is programmatically added to additional collections, it will only be removed from one of them upon delete.
+
+$params: DataSourceParameters
+An object containing the Standard Parameters to be used for the $load, $save, and $delete API callers.
+$dataSource: DataSource
+Getter/setter wrapper around $params.dataSource. Takes an instance of a Data Source class generated in the Model Layer.
+$includes: string | null
+Getter/setter wrapper around $params.includes. See Includes String for more information.
+
+Auto-save & Dirty Flags
+$startAutosave(vue: Vue, options: AutoSaveOptions<this> = {})
+Starts auto-saving of the instance when its savable data properties become dirty. Saves are performed with the $save API Caller (documented below) and will not be performed if the ViewModel has any validation errors - see Rules/Validation below.
+
+Requires a reference to a Vue instance in order to manage lifetime (auto-save hooks will be destroyed when the Vue component provided is destroyed). Options are as follows:
+
+{
+    /** Time, in milliseconds, to debounce saves for.  */
+    wait?: number;
+
+    /** If true, auto-saving will also be enabled for all view models that are
+        reachable from the navigation properties & collections of the current view model. */
+    deep?: boolean;
+
+    /** A function that will be called before autosaving that can return false to prevent a save.
+        Only allowed if not using deep auto-saves.
+    */
+    predicate?: (viewModel: TThis) => boolean;
+}
+$stopAutosave()
+Turns off auto-saving of the instance. Does not recursively disable auto-saves on related instances if deep was used when auto-save was enabled.
+$getPropDirty(propName: string): boolean
+Returns true if the given property is flagged as dirty.
+$setPropDirty(propName: string, dirty: boolean = true, triggerAutosave = true)
+Manually set the dirty flag of the given property to the desired state. This seldom needs to be done explicitly, as mutating a property will automatically flag it as dirty.
+
+If dirty is true and triggerAutosave is false, auto-save (if enabled) will not be immediately triggered for this specific flag change. Note that a future change to any other property's dirty flag will still trigger a save of all dirty properties.
+
+$isDirty: boolean
+Getter/setter that summarizes the model's property-level dirty flags. Returns true if any properties are dirty.
+
+When set to false, all property dirty flags are cleared. When set to true, all properties are marked as dirty.
+
+$loadCleanData(source: {} | TModel)
+Loads data from the provided model into the current ViewModel, and then clears all dirty flags.
+
+Data is loaded recursively into all related ViewModel instances, preserving existing instances whose primary keys match the incoming data.
+
+If auto-save is enabled, only non-dirty properties are updated. This prevents user input that is pending a save from being overwritten by the response from an auto-save /save request.
+
+$loadDirtyData(source: {} | TModel)
+Same as $loadCleanData, but does not clear any existing dirty flags, nor does it clear any dirty flags that will be set while mutating the data properties of any ViewModel instance that gets loaded.
+constructor(initialDirtyData?: {} | TModel | null) (Constructor)
+Create a new instance of the ViewModel, loading the given initial data with $loadDirtyData() if provided.
+
+Rules/Validation
+$addRule(prop: string | Property, identifier: string, rule: (val: any) => true | string)
+Add a custom validation rule to the ViewModel for the specified property. identifier should be a short, unique slug that describes the rule; it is not displayed in the UI, but is used if you wish to later remove the rule with $removeRule().
+
+The function you provide should take a single argument that contains the current value of the property, and should either return true to indicate that the validation rule has succeeded, or a string that will be displayed as an error message to the user.
+
+Any failing validation rules on a ViewModel will prevent that ViewModel's $save caller from being invoked.
+
+$removeRule(prop: string | Property, identifier: string)
+Remove a validation rule from the ViewModel for the specified property with the specified identifier.
+
+This can be used to remove from the ViewModel instance either a rule that was provided by the generated Metadata Layer, or a custom rule that was added by $addRule. Reference your generated metadata file metadata.g.ts to see any generated rules and the identifiers they use.
+
+$getRules(prop: string | Property)
+Returns an array of active rule functions for the specified property, or undefined if the property has no active validation rules.
+$getErrors(prop?: string | Property): Generator<string>
+Returns a generator that provides all error messages for either a specific property (if provided) or the entire model (if no prop argument is provided).
+
+Tip
+
+You can obtain an array from a generator with Array.from(vm.$getErrors()) or [...vm.$getErrors()]
+
+readonly $hasError: boolean
+Indicates if any properties have validation errors.
+
+Generated Members
+Method Callers
+For each of the instance Methods of the type, an API Caller will be generated.
+addTo*()
+For each collection navigation property, a method is generated that will create a new instance of the ViewModel for the collected type, add it to the collection, and then return the new object.
+Many-to-many helper collections
+For each collection navigation property annotated with [ManyToMany], a getter-only property is generated that returns a collection of the object on the far side of the many-to-many relationship. Nulls are filtered from this collection.
+
+ListViewModels
+The following members can be found on the generated ListViewModels, exported from viewmodels.g.ts as *TypeName*ListViewModel.
+
+Data Properties
+$items
+Collection holding the results of the last successful invocation of the $load API Caller.
+
+Parameters & API Callers
+$params: DataSourceParameters
+An object containing the Standard Parameters to be used for the $load and $count API callers.
+$load: ListApiState
+An API Caller for the /list endpoint. Uses the instance's $params object for the Standard Parameters.
+
+Results are available in the $items property. The result property of the $load API Caller contains the raw results and is not recommended for use in general development - $items should always be preferred.
+
+$count: ItemApiState
+An API Caller for the /count endpoint. Uses the instance's $params object for the Standard Parameters.
+
+The result is available in $count.result - this API Caller does not interact with other properties on the ListViewModel like $pageSize or $pageCount.
+
+readonly $hasPreviousPage: boolean, readonly $hasNextPage: boolean
+Properties which indicate if $page can be decremented or incremented, respectively. $pageCount and $page are used to make this determination.
+$previousPage(), $nextPage()
+Methods that will decrement or increment $page, respectively. Each does nothing if there is no previous or next page as returned by $hasPreviousPage and $hasNextPage.
+$page: number
+Getter/setter wrapper for $params.page. Controls the page that will be requested on the next invocation of $load.
+$pageSize: number
+Getter/setter wrapper for $params.pageSize. Controls the page that will be requested on the next invocation of $load.
+readonly $pageCount: number
+Shorthand for $load.pageCount - returns the page count reported by the last successful invocation of $load.
+
+Auto-Load
+$startAutoLoad(vue: Vue, options: AutoLoadOptions<this> = {})
+Starts auto-loading of the list as changes to its parameters occur. Loads are performed with the $load API Caller.
+
+Requires a reference to a Vue instance in order to manage lifetime (auto-load hooks will be destroyed when the Vue component provided is destroyed). Options are as follows:
+
+{
+    /** Time, in milliseconds, to debounce loads for.  */
+    wait?: number;
+
+    /** A function that will be called before loading that can return false to prevent a load.
+    */
+    predicate?: (viewModel: TThis) => boolean;
+}
+$stopAutoLoad()
+Manually turns off auto-loading of the instance.
+
+Generated Members
+Method Callers
+For each of the static Methods on the type, an API Caller will be created.
+
+Service ViewModels
+The following members can be found on the generated Service ViewModels, exported from viewmodels.g.ts as *ServiceName*ViewModel.
+
+Generated Members
+Method Callers
+For each method of the Service, an API Caller will be created.Vuetify Components
+https://img.shields.io/npm/v/coalesce-vue-vuetify/dev?color=42b883&label=coalesce-vue-vuetify@dev
+The Vue stack for Coalesce provides a set of components based on Vuetify, packaged up in an NPM package coalesce-vue-vuetify. These components are driven primarily by the Metadata Layer, and include both low level input and display components like c-input and c-display that are highly reusable in the custom pages you'll build in your application, as well as high-level components like c-admin-table-page and c-admin-editor-page that constitute entire pages.
+
+Contents
+
+Setup
+Display Components
+c-display
+c-loader-status
+c-list-range-display
+c-table
+Input Components
+c-input
+c-select
+c-datetime-picker
+c-select-many-to-many
+c-select-string-value
+c-select-values
+c-list-filters
+c-list-pagination
+c-list-page-size
+c-list-page
+Admin Components
+c-admin-method
+c-admin-methods
+c-admin-display
+c-admin-editor
+c-admin-editor-page
+c-admin-table
+c-admin-table-toolbar
+c-admin-table-page
+Setup
+Tip
+
+The template described in Getting Started with Vue already includes all the necessary setup. You can skip this section if you started from the template.
+
+First, ensure that NPM package coalesce-vue-vuetify is installed in your project.
+
+Then, in your Vue application's main.ts file, you need to add the coalesce-vue-vuetify plugin to your application, like so:
+
+import $metadata from '@/metadata.g';
+// viewmodels.g has side-effects - it populates the global lookup on ViewModel and ListViewModel.
+// It must be imported for c-admin-editor-page and c-admin-table-page to work correctly.
+import '@/viewmodels.g';
+
+import CoalesceVuetify from 'coalesce-vue-vuetify';
+Vue.use(CoalesceVuetify, { metadata: $metadata, });
+Also ensure that you have setup Vuetify correctly in your application as described in Vuetify's documentation.
+
+Note
+
+An important note if you're using Vuetify's A-la-carte builds:
+
+coalesce-vue-vuetify expects that the Vuetify components that c-input can delegate directly to have been registered globally. Currently, vuetify-loader is not capable of picking up these particular references.
+
+To make things work correctly, do the following when you Vue.use(Vuetify):
+
+import Vuetify, { VTextField, VTextarea, VCheckbox, VSwitch, VSelect, VFileInput } from 'vuetify/lib';
+
+Vue.use(Vuetify, {
+    components: { VTextField, VTextarea, VCheckbox, VSwitch, VSelect, VFileInput },
+});
+You're now ready to start using the components that coalesce-vue-vuetify provides! See the list below for a summary of each component and links to dive deeper into each component.
+
+Display Components
+c-display
+A general-purpose component for displaying any Value by rendering the value to a string with the display functions from the Models Layer. For string and number values, usage of this component is largely superfluous. For all other value types including dates, booleans, enums, objects, and collections, it is very handy.
+
+Full Documentation: c-display.
+
+c-loader-status
+A component for displaying progress and error information for one or more API Callers.
+
+Tip
+
+It is highly recommended that all API Callers utilized by your application that don't have any other kind of error handling should be represented by a c-loader-status so that users can be aware of any errors that occur.
+
+Full Documentation: c-loader-status.
+
+c-list-range-display
+Displays pagination information about the current $items of a ListViewModel in the format <start index> - <end index> of <total count>.
+
+Full Documentation: c-list-range-display.
+
+c-table
+A table component for displaying the contents of a ListViewModel. Also supports modifying the list's sort parameters by clicking on column headers. Pairs well with a c-list-pagination.
+
+Full Documentation: c-table.
+
+Input Components
+c-input
+A general-purpose input component for most Values. c-input does not have much functionality of its own - instead, it delegates to the right kind of component based on the type of value to which it is bound. This includes both other Coalesce Vuetify Components as well as direct usages of some Vuetify components.
+
+Full Documentation: c-input.
+
+c-select
+A dropdown component that allows for selecting values fetched from the generated /list API endpoints.
+
+Used both for selecting values for foreign key and navigation properties, and for selecting arbitrary objects or primary keys independent of a parent or owning object.
+
+Full Documentation: c-select.
+
+c-datetime-picker
+A general, all-purpose date/time input component that can be used either with models and metadata or as a standalone component using only v-model.
+
+Full Documentation: c-datetime-picker.
+
+c-select-many-to-many
+A multi-select dropdown component that allows for selecting values fetched from the generated /list API endpoints for collection navigation properties that were annotated with [ManyToMany].
+
+Full Documentation: c-select-many-to-many.
+
+c-select-string-value
+A dropdown component that will present a list of suggested string values from a custom API endpoint. Allows users to input values that aren't provided by the endpoint.
+
+Effectively, this is a server-driven autocomplete list.
+
+Full Documentation: c-select-string-value.
+
+c-select-values
+A multi-select input component for collections of non-object values (primarily strings and numbers).
+
+Full Documentation: c-select-values.
+
+c-list-filters
+A component that provides an interface for modifying the filters prop of a ListViewModel's parameters.
+
+Full Documentation: c-list-filters.
+
+c-list-pagination
+A component that provides an interface for modifying the pagination parameters of a ListViewModel.
+
+This is a composite of c-list-page-size, c-list-range-display, and c-list-page, arranged horizontally. It is designed to be used above or below a table (e.g. c-table).
+
+Full Documentation: c-list-pagination.
+
+c-list-page-size
+A component that provides an dropdown for modifying the pageSize parameter prop of a ListViewModel.
+
+Full Documentation: c-list-page-size.
+
+c-list-page
+A component that provides previous/next buttons and a text field for modifying the page parameter prop of a ListViewModel.
+
+Full Documentation: c-list-page.
+
+Admin Components
+c-admin-method
+Provides an interface for invoking a method and rendering its result, designed to be use in an admin page.
+
+Full Documentation: c-admin-method.
+
+c-admin-methods
+Renders in a Vuetify v-expansion-panels a c-admin-method for each method on a ViewModel or ListViewModel.
+
+Full Documentation: c-admin-methods.
+
+c-admin-display
+Behaves the same as c-display, except any collection navigation properties will be rendered as links to an admin list page, and any models will be rendered as a link to an admin item page.
+
+Full Documentation: c-admin-display.
+
+c-admin-editor
+An editor for a single ViewModel instance. Provides a c-input for each property of the model.
+
+Full Documentation: c-admin-editor.
+
+c-admin-editor-page
+A page for a creating/editing single ViewModel instance. Provides a c-admin-editor and a c-admin-methods for the instance. Designed to be routed to directly with vue-router.
+
+Full Documentation: c-admin-editor-page.
+
+c-admin-table
+An full-featured table for a ListViewModel, including a c-admin-table-toolbar, c-table, and c-list-pagination.
+
+Full Documentation: c-admin-table.
+
+c-admin-table-toolbar
+A full-featured toolbar for a ListViewModel designed to be used on an admin page, including "Create" and "Reload" buttons, a c-list-range-display, a c-list-page, a search field, c-list-filters, and a c-list-page-size.
+
+Full Documentation: c-admin-table-toolbar.
+
+c-admin-table-page
+A full-featured page for interacting with a ListViewModel. Provides a c-admin-table and a c-admin-methods for the list. Designed to be routed to directly with vue-router.
+
+Full Documentation: c-admin-table-page.c-admin-display
+Behaves the same as c-display, except any collection navigation properties will be rendered as links to an admin list page, and any models will be rendered as a link to an admin item page.
+
+Links for collections are resolved from vue-router with a route name of coalesce-admin-list, a type route param containing the name of the collection's type, and a query parameter filter.<foreign key name> with a value of the primary key of the owner of the collection. This route is expected to resolve to a c-admin-table-page, which is setup by default by the template outlined in Getting Started with Vue.
+
+Links for single models are resolved from vue-router with a route name of coalesce-admin-item, a type route param containing the name of the model's type, and a id route param containing the object's primary key. This route is expected to resolve to a c-admin-editor-page, which is setup by default by the template outlined in Getting Started with Vue.
+
+Contents
+
+Examples
+Props
+Slots
+Examples
+<!-- Renders regularly as text: -->
+<c-admin-display :model="person" for="firstName" />
+
+<!-- Renders as a link to an item: -->
+<c-admin-display :model="person" for="company" />
+
+<!-- Renders as a link to a list: -->
+<c-admin-display :model="person" for="casesAssigned" />
+Props
+Same as c-display.
+
+Slots
+Same as c-display.c-admin-editor
+An editor for a single ViewModel instance. Provides a c-input for each property of the model.
+
+Does not automatically enable auto-save - if desired, this must be enabled by the implementor of this component.
+
+Contents
+
+Examples
+Props
+Examples
+<c-admin-editor :model="person" />
+Props
+model: ViewModel | ListViewModel
+The ViewModel to render an editor for.c-admin-editor-page
+A page for a creating/editing single ViewModel instance. Provides a c-admin-editor and a c-admin-methods for the instance. Designed to be routed to directly with vue-router.
+
+Contents
+
+Examples
+Props
+Examples
+// router.ts or main.ts
+
+import { CAdminEditorPage } from 'coalesce-vue-vuetify';
+
+const router = new Router({
+    // ...
+    routes: [
+        // ... other routes
+        {
+            path: '/admin/:type/edit/:id?',
+            name: 'coalesce-admin-item',
+            component: CAdminEditorPage,
+            props: true,
+        },
+    ]
+})
+Props
+type: string
+The PascalCase name of the type to be created/edited.
+id?: number | string
+The primary key of the item being edited. If null or not provided, the page will be creating a new instance of the provided type instead.c-admin-method
+Provides an interface for invoking a method and rendering its result, designed to be use in an admin page.
+
+For each parameter of a method, a c-input will be rendered to accept the input of that parameter. A button is provided to trigger an invocation of the method, progress and errors are rendered with a c-loader-status, and results are rendered with c-display.
+
+Contents
+
+Examples
+Props
+Examples
+<c-admin-method :model="person" for="setTitle" auto-reload-model />
+Props
+for: string | Method
+A metadata specifier for the method. One of:
+
+A string with the name of the method belonging to model.
+A direct reference to a method's metadata object.
+A string in dot-notation that starts with a type name and ending with a method name.
+model: ViewModel | ListViewModel
+An ViewModel or ListViewModel owning the method and API Caller that was specified by the for prop.
+autoReloadModel?: boolean = false
+True if the model should have its $load invoked after a successful invocation of the method.c-admin-methods
+Renders in a Vuetify v-expansion-panels a c-admin-method for each method on a ViewModel or ListViewModel.
+
+Contents
+
+Examples
+Props
+Examples
+<c-admin-methods :model="person" auto-reload-model />
+<c-admin-methods :model="personList" auto-reload-model />
+Props
+model: ViewModel | ListViewModel
+An ViewModel or ListViewModel whose methods should each render as a c-admin-method.
+autoReloadModel?: boolean = false
+True if the model should have its $load invoked after a successful invocation of any method.An full-featured table for a ListViewModel, including a c-admin-table-toolbar, c-table, and c-list-pagination.
+
+The table can be in read mode (default), or toggled into edit mode with the button provided by the c-admin-table-toolbar. When placed into edit mode, auto-save is enabled.
+
+Contents
+
+Examples
+Props
+Examples
+<c-admin-table :list="personList" />
+Props
+list: ListViewModel
+The ListViewModel to render a table for.
+pageSizes?: number[]
+An optional list of available page sizes to offer through the c-list-pagination's c-list-page-size component. Defaults to [10, 25, 100].
+queryBind?: boolean
+If true, the Data Source Standard Parameters of the provided ListViewModel will be read from and written to the window's query string. The "Editable" state of the table will also be bound to the query string.
+c-admin-table-page
+A full-featured page for interacting with a ListViewModel. Provides a c-admin-table and a c-admin-methods for the list. Designed to be routed to directly with vue-router.
+
+Contents
+
+Examples
+Props
+Examples
+// router.ts or main.ts
+
+import { CAdminTablePage } from 'coalesce-vue-vuetify';
+
+const router = new Router({
+    // ...
+    routes: [
+        // ... other routes
+        {
+            path: '/admin/:type',
+            name: 'coalesce-admin-list',
+            component: CAdminTablePage,
+            props: true,
+        },
+    ]
+})
+Props
+type: string
+The PascalCase name of the type to be listed.
+list?: ListViewModel
+An optional ListViewModel that will be used if provided instead of the one the component will otherwise create automatically.c-admin-table-toolbar
+A full-featured toolbar for a ListViewModel designed to be used on an admin page, including "Create" and "Reload" buttons, a c-list-range-display, a c-list-page, a search field, c-list-filters, and a c-list-page-size.
+
+Contents
+
+Examples
+Props
+Examples
+<c-admin-table-toolbar :list="personList" />
+<c-admin-table-toolbar :list="personList" color="pink" :editable.sync="isEditable" />
+Props
+list: ListViewModel
+The ListViewModel to render the toolbar for.
+color: string = "primary"
+The color of the toolbar.
+editable?: boolean
+If provided, adds a button to toggle the value of this prop. Should be bound with the .sync modifier.A general, all-purpose date/time input component that can be used either with models and metadata or as a standalone component using only v-model.
+
+Contents
+
+Examples
+Props
+Slots
+Examples
+<c-datetime-picker :model="person" for="birthDate" />
+
+<c-datetime-picker v-model="standaloneDate" />
+
+<c-datetime-picker
+    v-model="standaloneTime"
+    date-kind="time"
+    date-format="h:mm a"
+/>
+Props
+for?: string | DateProperty | DateValue
+A metadata specifier for the value being bound. One of:
+
+A string with the name of the value belonging to model.
+A direct reference to a metadata object.
+A string in dot-notation that starts with a type name.
+model?: Model | DataSource
+An object owning the value that was specified by the for prop. If provided, the input will be bound to the corresponding property on the model object.
+value?: Date
+If binding the component with v-model, accepts the value part of v-model.
+dateKind?: "date" | "time" | "datetime" = "datetime"
+Whether the date is only a date, only a time, or contains significant date and time information.
+
+If the component was bound with metadata using the for prop, this will default to the kind specified by [DateType].
+
+dateFormat?: string
+The format of the date that will be rendered in the component's text field, and the format that will be attempted first when parsing user input in the text field.
+
+Defaults to:
+
+M/d/yyyy h:mm a if dateKind == 'datetime',
+M/d/yyyy if dateKind == 'date', or
+h:mm a if dateKind == 'time'.
+Important
+
+When parsing a user's text input into the text field, c-datetime-picker will first attempt to parse it with the format specified by dateFormat, or the default as described above if not explicitly specified.
+
+If this fails, the date will be parsed with the Date constructor, but only if the dateKind is datetime or date. This works fairly well on all modern browsers, but can still occasionally have issues. c-datetime-picker tries its best to filter out bad parses from the Date constructor, like dates with a year earlier than 1000.
+
+readonly?: boolean
+True if the component should be read-only.
+disabled?: boolean
+True if the component should be disabled.
+Slots
+A general-purpose component for displaying any Value by rendering the value to a string with the display functions from the Models Layer. For string and number values, usage of this component is largely superfluous. For all other value types including dates, booleans, enums, objects, and collections, it is very handy.
+
+Contents
+
+Examples
+Props
+Slots
+Examples
+Typical usage, providing an object and a property on that object:
+
+<c-display :model="person" for="gender" />
+Customizing date formatting:
+
+<c-display :model="person" for="birthDate" format="M/d/yyyy" />
+A contrived example of using c-display to render the result of an API Caller:
+
+<c-display
+    :value="person.setFirstName.result"
+    :for="person.$metadata.methods.setFirstName.return"
+    element="div"
+/>
+Props
+for: string | Property | Value
+A metadata specifier for the value being bound. Either a direct reference to the metadata object, or a string with the name of the value belonging to model, or a string in dot-notation that starts with a type name.
+model?: Model | DataSource
+An object owning the value that was specified by the for prop.
+format: DisplayOptions["format"]
+Shorthand for :options="{ format: format }", allowing for specification of the format to be used when displaying dates.
+
+See DisplayOptions for details on the options available for format.
+
+format: DisplayOptions
+Specify options for formatting some kinds of values, including dates. See DisplayOptions for details.
+value: any
+Can be provided the value to be displayed in conjunction with the for prop, as an alternative to the model prop.
+
+This is an uncommon scenario - it is generally easier to use the for/model props together.
+
+Slots
+default
+Used to display fallback content if the value being displayed is either null or "" (empty string).c-input
+A general-purpose input component for most Values. c-input does not have much functionality of its own - instead, it delegates to the right kind of component based on the type of value to which it is bound. This includes both other Coalesce Vuetify Components as well as direct usages of some Vuetify components.
+
+All attributes are passed through to the delegated-to component, allowing for full customization of the underlying Vuetify component.
+
+A summary of the components delegated to, by type:
+
+string, number: v-text-field, or v-textarea if flag attribute textarea is provided to c-input.
+boolean: v-switch, or v-checkbox if flag attribute checkbox is provided to c-input.
+enum: v-select
+file: v-file-input
+date: c-datetime-picker
+model: c-select
+[ManyToMany] collection: c-select-many-to-many
+Non-object collection: c-select-values
+Any other unsupported type will simply be displayed with c-display, unless a default slot is provided - in that case, the default slot will be rendered instead.
+
+When bound to a ViewModel, the validation rules for the bound property will be obtained from the ViewModel and passed to Vuetify's rules prop.
+
+Contents
+
+Examples
+Props
+Slots
+Examples
+Typical usage, providing an object and a property on that object:
+
+<c-input :model="person" for="firstName" />
+Customizing the Vuetify component used:
+
+<c-input :model="comment" for="content" textarea solo />
+Binding to API Caller args objects:
+
+<c-input
+    :model="person.setFirstName"
+    for="newName" />
+Or, using a more verbose syntax:
+
+<c-input
+    :model="person.setFirstName.args"
+    for="Person.methods.setFirstName.newName" />
+Binding to Data Source Parameters:
+
+<c-input :model="personList.$dataSource" for="startsWith" />
+Usage with v-model (this scenario is atypical - the model/for pair of props are used in almost all scenarios):
+
+<c-input v-model="person.firstName" for="Person.firstName" />
+Props
+for?: string | Property | Value
+A metadata specifier for the value being bound. One of:
+
+A string with the name of the value belonging to model.
+A direct reference to a metadata object.
+A string in dot-notation that starts with a type name.
+model?: Model | DataSource
+An object owning the value that was specified by the for prop. If provided, the input will be bound to the corresponding property on the model object.
+value?: any
+If binding the component with v-model, accepts the value part of v-model.
+Slots
+default
+Used to display fallback content if c-input does not support the type of the value being bound. Generally this does not need to be used, as you should avoid creating c-input components for unsupported types in the first place.c-list-filters
+A component that provides an interface for modifying the filters prop of a ListViewModel's parameters.
+
+Contents
+
+Examples
+Props
+Examples
+<c-list-filters :list="list" />
+Props
+list: ListViewModel
+The ListViewModel whose filters will be editable.c-list-page
+A component that provides previous/next buttons and a text field for modifying the page parameter prop of a ListViewModel.
+
+Contents
+
+Examples
+Props
+Examples
+<c-list-page :list="list" />
+Props
+list: ListViewModel
+The ListViewModel whose current page will be changeable with the component.c-list-page-size
+A component that provides an dropdown for modifying the pageSize parameter prop of a ListViewModel.
+
+Contents
+
+Examples
+Props
+Examples
+<c-list-page-size :list="list" />
+Props
+list: ListViewModel
+The ListViewModel whose pagination will be editable.
+pageSizes?: number[]
+An optional list of available page sizes to offer through c-list-page-size. Defaults to [10, 25, 100].c-list-pagination
+A component that provides an interface for modifying the pagination parameters of a ListViewModel.
+
+This is a composite of c-list-page-size, c-list-range-display, and c-list-page, arranged horizontally. It is designed to be used above or below a table (e.g. c-table).
+
+Contents
+
+Examples
+Props
+Examples
+<c-list-pagination :list="list" />
+Props
+list: ListViewModel
+The ListViewModel whose pagination will be editable.
+pageSizes?: number[]
+An optional list of available page sizes to offer through c-list-page-size. Defaults to [10, 25, 100].c-list-pagination
+A component that provides an interface for modifying the pagination parameters of a ListViewModel.
+
+This is a composite of c-list-page-size, c-list-range-display, and c-list-page, arranged horizontally. It is designed to be used above or below a table (e.g. c-table).
+
+Contents
+
+Examples
+Props
+Examples
+<c-list-pagination :list="list" />
+Props
+list: ListViewModel
+The ListViewModel whose pagination will be editable.
+pageSizes?: number[]
+An optional list of available page sizes to offer through c-list-page-size. Defaults to [10, 25, 100].

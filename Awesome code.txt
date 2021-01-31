@@ -1,0 +1,56 @@
+TLDR, we forked prettier ruby plugin to provide a better ruby format tool, https://github.com/xinminlabs/plugin-ruby, plus rubocop-config-prettier and rubocop, it’s a total solution to format and lint ruby code.
+One year ago, we tried to add a ruby format tool to awesomecode.io, we explored 3 options: rufo, rubyfmt, and prettier ruby plugin.
+rufo
+is a mature one and is written in pure ruby.
+pros:
+it’s fast.
+it has some configurations, e.g. single quote vs double quote, align and parentheses, include and exclude some files.
+cons:
+it doesn’t format long line code yet. (it has been more than 2 years since the author tried to solve it)
+it doesn’t transform some heredoc and indents well
+
+rubyfmt
+is a young project and is written in rust .
+pros:
+it’s super fast.
+cons:
+you have to deal with rust .
+is has no configuration, that means you need to accept all the rules, like only double quote and method call with args parentheses.
+it doesn’t format long line code well.
+it misses some comments.
+some other minor issues, like weird heredoc indent and empty line
+
+
+
+prettier ruby plugin
+as the name implied, it relies on prettier,
+pros:
+it transforms long line code pretty well, thanks to prettier.
+it also has some configurations like quote style and max line length.
+cons:
+you have to deal with node.js .
+it’s too aggressive, it takes some responsibilities which belong to the lint tool.
+
+Our solution
+As you can see, no tool is perfect, we finally decided to choose prettier ruby plugin because it is the only one to format long line code well, but it’s still not good enough for production.
+We sent some PRs to improve the prettier official ruby plugin, some are merged, but when we tried to take away some linter’s responsibilities, like do not transform string or symbol array and do not transform to ternary operator, the author doesn’t agree, so we have to maintain our own fork here. It has made the following changes so far.
+do not add line break for aref node (array)
+do not transform to ternary operator and vice versa
+do not transform multiline if to inline if and vice versa
+do not transform multiline while to inline while and vice versa
+do not transform to single line block and vice versa
+do not transform string_embexpr
+do not transform to string or symbol array
+do not transform regexp
+do not transform to to_proc
+do not wrap line inside arg_paren for some cases
+do not transform lambda call
+You can get more from the README.
+Our solution is to use both prettier ruby plugin (format tool) and rubocop (lint tool), let them do their own jobs respectively. Then we created rubocop-config-prettier to make them work together, it turns off all rules that are unnecessary or might conflict with prettier plugin ruby. It’s the same solution as prettier + eslint + eslint-config-prettier in javascript world.
+If you don’t want to set up them by yourself, you can try our service https://awesomecode.io
+WRITTEN BY
+
+Awesome Code
+https://awesomecode.io
+Follow
+

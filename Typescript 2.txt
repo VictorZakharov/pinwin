@@ -1,0 +1,1568 @@
+c-list-range-display
+Displays pagination information about the current $items of a ListViewModel in the format <start index> - <end index> of <total count>.
+
+Uses the pagination information returned from the last successful $load call, not the current $params of the ListViewModel.
+
+Contents
+
+Examples
+Props
+Examples
+<c-list-range-display :list="list" />
+Props
+list: ListViewModel
+The ListViewModel to display pagination information for.c-loader-status
+A component for displaying progress and error information for one or more API Callers.
+
+Tip
+
+It is highly recommended that all API Callers utilized by your application that don't have any other kind of error handling should be represented by a c-loader-status so that users can be aware of any errors that occur.
+
+Progress is indicated with a Vuetify v-progress-linear component, and errors are displayed in a v-alert. Transitions are applied to smoothly fade between the different states the the caller can be in.
+
+Note
+
+This component uses the legacy term "loader" to refer to API Callers. A new c-caller-status component may be coming in the future with a few usability improvements - if that happens, c-loader-status will be preserved for backwards compatibility.
+
+Contents
+
+Examples
+Props
+Slots
+Examples
+Wrap contents of a details/edit page:
+
+<h1>Person Details</h1>
+<c-loader-status
+    :loaders="{
+        'no-initial-content no-error-content': [person.$load],
+        '': [person.$save, person.$delete],
+    }"
+    #default
+>
+    First Name: {{ person.firstName }}
+    Last Name: {{ person.lastName }}
+    Employer: {{ person.company.name }}
+</c-loader-status>
+
+Use c-loader-status to render a progress bar and any error messages, but don't use it to control content:
+
+<c-loader-status :loaders="{'': [list.$load]}" />
+
+Wrap a save/submit button:
+
+<c-loader-status
+    :loaders="{ 'no-loading-content': [person.$save] }"
+>
+    <button> Save </button>
+</c-loader-status>
+
+Hides the table before the first load has completed, or if loading the list encountered an error. Don't show the progress bar after we've already loaded the list for the first time (useful for loads that occur without user interaction, e.g. setInterval).:
+
+<c-loader-status
+    :loaders="{
+        'no-secondary-progress no-initial-content no-error-content': [list.$load]
+    }"
+    #default
+>
+    <table>
+        <tr v-for="item in list.$items"> ... </tr>
+    </table>
+</c-loader-status>
+Props
+loaders: { [flags: string]: ApiCaller | ApiCaller[] }
+A dictionary object with entries mapping zero or more flags to one or more API Callers. Multiple entries of flags/caller pairs may be specified in the dictionary to give different behavior to different API callers.
+
+The available flags are as follows. All flags may be prefixed with no- to set the flag to false instead of true. Multiple flags may be specified at once by delimiting them with spaces.
+
+loading-content - default true — Controls whether the default slot is rendered while any API caller is loading (i.e. when caller.isLoading === true).
+error-content - default true — Controls whether the default slot is rendered while any API Caller is in an error state (i.e. when caller.wasSuccessful === false).
+initial-content - default true — Controls whether the default slot is rendered while any API Caller has yet to receive a response for the first time (i.e. when caller.wasSuccessful === null).
+initial-progress - default true — Controls whether the progress indicator is shown when an API Caller is loading for the very first time (i.e. when caller.wasSuccessful === null).
+secondary-progress - default true — Controls whether the progress indicator is shown when an API Caller is loading any time after its first invocation (i.e. when caller.wasSuccessful !== null).
+progressPlaceholder: boolean = true
+Specify if space should be reserved for the progress indicator. If set to false, the content in the default slot may jump up and down slightly as the progress indicator shows and hides.
+height: number = 10
+Specifies the height in pixels of the v-progress-linear used to indicate progress.
+Slots
+default
+Accepts the content whose visibility is controlled by the state of the supplied API Callers. It will be shown or hidden according to the flags defined for each caller.
+
+Important
+
+Define the default slot as a scoped slot (e.g. with #default or v-slot:default on the c-loader-status) to prevent the VNode tree from being created when the content should be hidden. This improves performances and helps avoid null reference errors that can be caused when trying to render objects that haven't been loaded yet.c-select
+A dropdown component that allows for selecting values fetched from the generated /list API endpoints.
+
+Used both for selecting values for foreign key and navigation properties, and for selecting arbitrary objects or primary keys independent of a parent or owning object.
+
+Contents
+
+Examples
+Props
+Slots
+Examples
+Binding to a navigation property or foreign key of a model:
+
+<c-select :model="person" for="company" />
+<!-- OR: -->
+<c-select :model="person" for="companyId" />
+Binding an arbitrary primary key value or an arbitrary object:
+
+<!-- Binding a key: -->
+<c-select for="Person" :key-value.sync="selectedPersonId" />
+
+<!-- Binding an object: -->
+<c-select for="Person" :object-value.sync="selectedPerson" />
+<c-select for="Person" v-model="selectedPerson" />
+Examples of other props:
+
+<c-select
+  for="Person"
+  v-model="selectedPerson"
+  :clearable="false"
+  preselect-first
+  :params="{ pageSize: 42, filter: { isActive: true } }"
+  :create="createMethods"
+  dense
+  outlined
+  color="pink"
+/>
+<!-- `createMethods` is defined in the docs of `create` below -->
+Props
+for: string | ForeignKeyProperty | ModelReferenceNavigationProperty | ModelType
+
+A metadata specifier for the value being bound. One of:
+
+The name of a foreign key or reference navigation property belonging to model.
+The name of a model type.
+A direct reference to a metadata object.
+A string in dot-notation that starts with a type name that resolves to a foreign key or reference navigation property.
+Tip
+
+When binding by a key value, if the corresponding object cannot be found (e.g. there is no navigation property, or the navigation property is null), c-select will automatically attempt to load the object from the server so it can be displayed in the UI.
+
+model?: Model
+An object owning the value that was specified by the for prop. If provided, the input will be bound to the corresponding property on the model object.
+
+If for specifies a foreign key or reference navigation property, both the foreign key and the navigation property of the model will be updated when the selected value is changed.
+
+value?: any
+When binding the component with v-model, accepts the value part of v-model. If for was specified as a foreign key, this will expect a key; likewise, if for was specified as a type or as a navigation property, this will expect an object.
+keyValue?: any
+When bound with :key-value.sync="keyValue", allows binding the primary key of the selected object explicitly.
+objectValue?: any
+When bound with :object-value.sync="objectValue", allows binding the selected object explicitly.
+clearable?: boolean
+Whether the selection can be cleared or not, emitting null as the input value.
+
+If not specified and the component is bound to a foreign key or reference navigation property, defaults to whether or not the foreign key has a required validation rule defined in its Metadata.
+
+preselectFirst?: boolean = false
+If true, then when the first list results for the component are received by the client just after the component is created, c-select will emit the first item in the list as the selected value.
+preselectSingle?: boolean = false
+If true, then when the first list results for the component are received by the client just after the component is created, if the results contained exactly one item, c-select will emit that only item as the selected value.
+params?: ListParameters
+An optional set of Data Source Standard Parameters to pass to API calls made to the server.
+create?
+
+A object containing a pair of methods that allowing users to create new items from directly within the c-select if a matching object is not found.
+
+The object must contain the following two methods. You should define these in your component's script section - don't try to define them inline in your component.
+
+getLabel: (search: string, items: TModel[]) => string | false,
+
+A function that will be called with the user's current search term, as well as the collection of currently loaded items being presented to the user as valid selection options.
+
+It should return either a string that will be presented to the user as an option in the dropdown that can be clicked to invoke the getItem function below, or it should return false to prevent such an option from being shown to the user.
+
+getItem: (search: string, label: string) => Promise<TModel>
+
+A function that will be invoked when the user clicks the option in the dropdown list described by getLabel. It will be given the user's current search term as well as the value of the label returned from getLabel as parameters. It must perform the necessary operations to create the new object on the server and then return a reference to that object.
+For example:
+
+createMethods = {
+  getLabel(search: string, items: Person[]) {
+    const searchLower = search.toLowerCase();
+    if (items.some(a => a.name?.toLowerCase().indexOf(searchLower) == 0)) {
+      return false;
+    }
+    return search;
+  },
+  async getItem(search: string, label: string) {
+    const client = new PersonApiClient();
+    return (await client.addPersonByName(label)).data.object!;
+  }
+}
+Slots
+#item="{ item }" - Slot used to customize the text of both items inside the list, as well as the text of selected items. By default, items are rendered with c-display. Slot is passed a single parameter item containing a model instance.
+
+c-select-many-to-many
+A multi-select dropdown component that allows for selecting values fetched from the generated /list API endpoints for collection navigation properties that were annotated with [ManyToMany].
+
+Tip
+
+It is unlikely that you'll ever need to use this component directly - it is highly recommended that you use c-input instead and let it delegate to c-select-many-to-many for you.
+
+Contents
+
+Examples
+Props
+Examples
+<c-select-many-to-many :model="case" for="caseProducts" />
+<c-select-many-to-many
+    :model="case"
+    for="caseProducts"
+    dense
+    outlined
+
+/>
+<c-select-many-to-many
+    v-model="case.caseProducts"
+    for="Case.caseProducts"
+/>
+Props
+for: string | Property | Value
+A metadata specifier for the value being bound. One of:
+
+A string with the name of the value belonging to model.
+A direct reference to a metadata object.
+A string in dot-notation that starts with a type name.
+Important
+
+c-select-many-to-many expects metadata for the "real" collection collection navigation property on a model. If you provide it the string you passed to [ManyToMany], an error wil be thrown.
+
+model?: Model
+An object owning the value that was specified by the for prop. If provided, the input will be bound to the corresponding property on the model object.
+value: any
+If binding the component with v-model, accepts the value part of v-model.
+params?: ListParameters
+An optional set of Data Source Standard Parameters to pass to API calls made to the server.c-select-string-value
+A dropdown component that will present a list of suggested string values from a custom API endpoint. Allows users to input values that aren't provided by the endpoint.
+
+Effectively, this is a server-driven autocomplete list.
+
+Contents
+
+Examples
+Props
+Examples
+<c-select-string-value
+    :model="person"
+    for="jobTitle"
+    method="getSuggestedJobTitles"
+/>
+class Person
+{
+    public int PersonId { get; set; }
+
+    public string JobTitle { get; set; }
+
+    [Coalesce]
+    public static Task<ICollection<string>> GetSuggestedJobTitles(AppDbContext db, string search)
+    {
+        return db.People
+            .Select(p => p.JobTitle)
+            .Distinct()
+            .Where(t => t.StartsWith(search))
+            .OrderBy(t => t)
+            .Take(100)
+            .ToListAsync()
+    }
+}
+Props
+for: string | Property | Value
+A metadata specifier for the value being bound. One of:
+
+A string with the name of the value belonging to model.
+A direct reference to a metadata object.
+A string in dot-notation that starts with a type name.
+model: Model
+An object owning the value that was specified by the for prop. If provided, the input will be bound to the corresponding property on the model object.
+method: string
+The camel-cased name of the Custom Method to invoke to get the list of valid values. Will be passed a single string parameter search. Must be a static method on the type of the provided model object that returns a collection of strings.
+params?: DataSourceParameters
+An optional set of Data Source Standard Parameters to pass to API calls made to the server.
+listWhenEmpty?: boolean = false
+True if the method should be invoked and the list displayed when the entered search term is blank.
+c-select-values
+A multi-select input component for collections of non-object values (primarily strings and numbers).
+
+Tip
+
+It is unlikely that you'll ever need to use this component directly - it is highly recommended that you use c-input instead and let it delegate to c-select-values for you.
+
+Contents
+
+Examples
+Props
+Examples
+<c-select-values
+    :model="post.setTags.args"
+    for="Post.methods.setTags.params.tagNames"
+/>
+Props
+for: string | CollectionProperty | CollectionValue
+A metadata specifier for the value being bound. One of:
+
+A string with the name of the value belonging to model.
+A direct reference to a metadata object.
+A string in dot-notation that starts with a type name.
+model?: Model
+An object owning the value that was specified by the for prop.
+value: any
+If binding the component with v-model, accepts the value part of v-model.c-table
+A table component for displaying the contents of a ListViewModel. Also supports modifying the list's sort parameters by clicking on column headers. Pairs well with a c-list-pagination.
+
+Contents
+
+Examples
+Props
+Slots
+Examples
+A simple table, rendering the items of a ListViewModel:
+
+<c-table :list="list" />
+A more complex example using more of the available options:
+
+<c-table
+  :list="list"
+  :props="['firstName', 'lastName']"
+  :extra-headers="['Actions']"
+>
+  <template #item.append="{item}">
+    <td>
+      <v-btn
+        title="Edit"
+        text icon
+        :to="{name: 'edit-person', params: { id: item.$primaryKey }}"
+      >
+        <i class="fa fa-edit"></i>
+      </v-btn>
+    </td>
+  </template>
+</c-table>
+Props
+list: ListViewModel
+The ListViewModel to display pagination information for.
+props?: string[]
+If provided, specifies which properties, and their ordering, should be given a column in the table.
+
+If not provided, all non-key columns that aren't annotated with [Hidden(HiddenAttribute.Areas.List)] are given a column.
+
+extraHeaders?: string[]
+The text contents of one or more extra th elements to render in the table. Should be used in conjunction with the item.append slot.
+editable: boolean = false
+If true, properties in each table cell will be rendered with c-input. Non-editable properties will be rendered in accordance with the value of the admin prop.
+admin: boolean = false
+If true, properties in each table cell will be rendered with c-admin-display instead of c-display.
+Slots
+item.append
+A slot rendered after the td elements on each row that render the properties of each item in the table. Should be provided zero or more additional td elements. The number should match the number of additional headers provided to the extraHeaders prop.Knockout Overview
+The Knockout stack for Coalesce offers the ability to build pages with the time-tested Knockout JavaScript library using all of the features of the Coalesce generated APIs and ViewModels. It can be used for anything between adding simple interactive augmentations of MVC pages to building a full MPA-SPA hybrid application.
+
+Contents
+
+Getting Started
+Generated Code
+TypeScript
+View Controllers
+Admin Views
+Getting Started
+Check out Getting Started with Knockout if you haven't already to learn how to get a new Coalesce Knockout project up and running.
+
+Generated Code
+Below you will find a brief overview of each of the different pieces of code that Coalesce will generate for you when you choose the Knockout stack.
+
+TypeScript
+Coalesce generates a number of different types of TypeScript classes to support your data through the generated API.
+
+ViewModels
+One view model class is generated for each of your Entity Models and Custom DTOs. These models contain fields for your model Properties, and functions and other members for your model Methods. They also contain a number of standard fields & functions inherited from BaseViewModel which offer basic loading & saving functionality, as well as other handy utility members for use with Knockout.
+
+See TypeScript ViewModels for more details.
+
+List ViewModels
+One ListViewModel is generated for each of your Entity Models and Custom DTOs. These classes contain functionality for loading sets of objects from the server. They provide searching, paging, sorting, and filtering functionality.
+
+See TypeScript ListViewModels for more details.
+
+External Type ViewModels
+Any non-primitive types which are not themselves a Entity Models or Custom DTOs which are accessible through the aforementioned types, either through one of its Properties, or return value from one of its Methods, will have a corresponding TypeScript ViewModel generated for it. These ViewModels only provide a KnockoutObservable field for each property on the C# class.
+
+see TypeScript External ViewModels for more details.
+
+View Controllers
+For each of your Entity Models and Custom DTOs, a controller is created in the /Controllers/Generated directory of your web project. These controllers provide routes for the generated admin views.
+
+As you add your own pages to your application, you should add additional partial classes in the /Controllers that extend these generated partial classes to expose those pages.
+
+Admin Views
+For each of your Entity Models and Custom DTOs, a number of views are generated to provide administrative-level access to your data.
+
+Table
+Provides a basic table view with sorting, searching, and paging of your data.
+TableEdit
+Provides the table view, but with inline editing in the table.
+Cards
+Provides a card-based view of your data with searching and paging.
+CreateEdit
+Provides an editor view which can be used to create new entities or edit existing ones.
+EditorHtml
+Provides a minimal amount of HTML to display an editor for the object type. This is used by the showEditor method on the generated TypeScript ViewModels.Getting Started with Knockout
+Creating a Project
+The quickest and easiest way to create a new Coalesce Knockout application is to use the dotnet new template. In your favorite shell:
+
+dotnet new --install IntelliTect.Coalesce.KnockoutJS.Template
+dotnet new coalesceko
+NuGet • View on GitHub
+
+Data Modeling
+At this point, you can open up the newly-created solution in Visual Studio and run your application. However, your application won't do much without a data model, so you will probably want to do the following before running:
+
+Create an initial Data Model by adding EF entity classes to the data project and the corresponding DbSet<> properties to AppDbContext. You will notice that the starter project includes a single model, ApplicationUser, to start with. Feel free to change this model or remove it entirely. Read Entity Models for more information about creating a data model.
+
+Run dotnet ef migrations add Init (Init can be any name) in the data project to create an initial database migration.
+
+Run Coalesce's code generation by either:
+
+Running dotnet coalesce in the web project's root directory
+Running the coalesce npm script (Vue) or gulp task (Knockout) in the Task Runner Explorer
+You're now at a point where you can start creating your own pages!
+
+Building Pages & Features
+Lets say we've created a model called Person as follows, and we've ran code generation with dotnet coalesce:
+
+namespace MyApplication.Data.Models
+{
+    public class Person
+    {
+        public int PersonId { get; set; }
+        public string Name { get; set; }
+        public DateTimeOffset? BirthDate { get; set; }
+    }
+}
+We can create a details page for a Person by creating:
+
+A controller in src/MyApplication.Web/Controllers/PersonController.cs:
+
+namespace MyApplication.Web.Controllers
+{
+    public partial class PersonController
+    {
+        public IActionResult Details() => View();
+    }
+}
+A view in src/MyApplication.Web/Views/Person/Details.cshtml:
+
+<h1>Person Details</h1>
+
+<div data-bind="with: person">
+    <dl class="dl-horizontal">
+        <dt>Name </dt>
+        <dd data-bind="text: name"></dd>
+
+        <dt>Date of Birth </dt>
+        <dd data-bind="moment: birthDate, format: 'MM/DD/YYYY hh:mm a'"></dd>
+    </dl>
+</div>
+
+@section Scripts
+{
+<script src="~/js/person.details.js"></script>
+<script>
+    $(function () {
+        var vm = new MyApplication.PersonDetails();
+        ko.applyBindings(vm);
+        vm.load();
+    });
+</script>
+}
+And a script in src/MyApplication.Web/Scripts/person.details.ts:
+
+/// <reference path="viewmodels.generated.d.ts" />
+
+module MyApplication {
+    export class PersonDetails {
+        public person = new ViewModels.Person();
+
+        load() {
+            var id = Coalesce.Utilities.GetUrlParameter("id");
+            if (id != null && id != '') {
+                this.person.load(id);
+            }
+        }
+    }
+}
+With these pieces in place, we now have a functioning page that will display details about a person. We can start up the application and navigate to /Person/Details?id=1 (assuming a person with ID 1 exists - if not, navigate to /Person/Table and create one).
+
+From this point, one can start adding more fields, more features, and more flair to the page. Check out all the other documentation in the sidebar to see what else Coalesce has to offer, including the Knockout Overview.TypeScript ViewModels
+For each database-mapped type in your model, Coalesce will generate a TypeScript class that provides a multitude of functionality for interacting with the data on the client.
+
+These ViewModels are dependent on Knockout, and are designed to be used directly from Knockout bindings in your HTML. All data properties on the generated model are Knockout observables.
+
+Base Members
+includes: string
+String that will be passed to the server when loading and saving that allows for data trimming via C# Attributes. See Includes String for more information.
+isChecked: KnockoutObservable<boolean>
+Flag to use to determine if this item is checked. Only provided for convenience.
+isSelected: KnockoutObservable<boolean>
+Flag to use to determine if this item is selected. Only provided for convenience.
+isEditing: KnockoutObservable<boolean>
+Flag to use to determine if this item is being edited. Only provided for convenience.
+toggleIsEditing () => void
+Toggles the isEditing flag.
+isExpanded: KnockoutObservable<boolean>
+Flag to use to determine if this item is expanded. Only provided for convenience.
+toggleIsExpanded: () => void
+Toggles the isExpanded flag.
+isVisible: KnockoutObservable<boolean>
+Flag to use to determine if this item is shown. Only provided for convenience.
+toggleIsSelected () => void
+Toggles the isSelected flag.
+selectSingle: (): boolean
+Sets isSelected(true) on this object and clears on the rest of the items in the parent collection.
+isDirty: KnockoutObservable<boolean>
+Dirty Flag. Set when a value on the model changes. Reset when the model is saved or reloaded.
+isLoaded: KnockoutObservable<boolean>
+True once the data has been loaded.
+isLoading: KnockoutObservable<boolean>
+True if the object is loading.
+isSaving: KnockoutObservable<boolean>
+True if the object is currently saving.
+isThisOrChildSaving: KnockoutComputed<boolean>
+Returns true if the current object, or any of its children, are saving.
+load: id: any, callback?: (self: T) => void): JQueryPromise<any> | undefined
+Loads the object from the server based on the id specified. If no id is specified, the current id, is used if one is set.
+loadChildren: callback?: () => void) => void
+Loads any child objects that have an ID set, but not the full object. This is useful when creating an object that has a parent object and the ID is set on the new child.
+loadFromDto: data: any, force?: boolean, allowCollectionDeletes?: boolean) => void
+Loads this object from a data transfer object received from the server.
+
+force - Will override the check against isLoading that is done to prevent recursion.
+allowCollectionDeletes - Set true when entire collections are loaded. True is the default. In some cases only a partial collection is returned, set to false to only add/update collections.
+deleteItem: callback?: (self: T) => void): JQueryPromise<any> | undefined
+Deletes the object without any prompt for confirmation.
+deleteItemWithConfirmation: callback?: () => void, message?: string): JQueryPromise<any> | undefined
+Deletes the object if a prompt for confirmation is answered affirmatively.
+errorMessage: KnockoutObservable<string>
+Contains the error message from the last failed call to the server.
+onSave: callback: (self: T) => void): boolean
+Register a callback to be called when a save is done. Returns true if the callback was registered, or false if the callback was already registered.
+saveToDto: () => any
+Saves this object into a data transfer object to send to the server.
+save: callback?: (self: T) => void): JQueryPromise<any> | boolean | undefined
+Saves the object to the server and then calls a callback. Returns false if there are validation errors.
+parent: any
+Parent of this object, if this object was loaded as part of a hierarchy.
+parentCollection: KnockoutObservableArray<T>
+Parent of this object, if this object was loaded as part of list of objects.
+editUrl: KnockoutComputed<string>
+URL to a stock editor for this object.
+showEditor: callback?: any): JQueryPromise<any>
+Displays an editor for the object in a modal dialog.
+validate: (): boolean
+Triggers any validation messages to be shown, and returns a bool that indicates if there are any validation errors.
+validationIssues: any
+ValidationIssues returned from the server when trying to persist data
+warnings: KnockoutValidationErrors
+List of warnings found during validation. Saving is still allowed with warnings present.
+errors: KnockoutValidationErrors
+List of errors found during validation. Any errors present will prevent saving.
+Model-Specific Members
+Configuration
+A static configuration object for configuring all instances of the ViewModel's type is created, as well as an instance configuration object for configuring specific instances of the ViewModel. See (see ViewModel Configuration) for more information.
+
+public static coalesceConfig: Coalesce.ViewModelConfiguration<Person>
+    = new Coalesce.ViewModelConfiguration<Person>(Coalesce.GlobalConfiguration.viewModel);
+
+public coalesceConfig: Coalesce.ViewModelConfiguration<Person>
+    = new Coalesce.ViewModelConfiguration<Person>(Person.coalesceConfig);
+DataSources
+For each of the Data Sources for a model, a class will be added to a namespace named ListViewModels.<ClassName>DataSources. This namespace can always be accessed on both ViewModel and ListViewModel instances via the dataSources property, and class instances can be assigned to the dataSource property.
+
+public dataSources = ListViewModels.PersonDataSources;
+public dataSource: DataSource<Person> = new this.dataSources.Default();
+Data Properties
+For each exposed property on the underlying EF POCO, a KnockoutObservable<T> property will exist on the TypeScript model. For navigation properties, these will be typed with the corresponding TypeScript ViewModel for the other end of the relationship. For collections (including collection navigation properties), these properties will be KnockoutObservableArray<T> objects.
+
+public personId: KnockoutObservable<number> = ko.observable(null);
+public fullName: KnockoutObservable<string> = ko.observable(null);
+public gender: KnockoutObservable<number> = ko.observable(null);
+public companyId: KnockoutObservable<number> = ko.observable(null);
+public company: KnockoutObservable<ViewModels.Company> = ko.observable(null);
+public addresses: KnockoutObservableArray<ViewModels.Address> = ko.observableArray([]);
+public birthDate: KnockoutObservable<moment.Moment> = ko.observable(moment());
+Computed Text Properties
+For each reference navigation property and each Enum property on your POCO, a KnockoutComputed<string> property will be created that will provide the text to display for that property. For navigation properties, this will be the property on the class annotated with [ListText].
+
+public companyText: () => string;
+public genderText: () => string;
+Collection Navigation Property Helpers
+For each collection navigation property on the POCO, the following members will be created:
+
+A method that will add a new object to that collection property. If autoSave is specified, the auto-save behavior of the new object will be set to that value. Otherwise, the inherited default will be used (see ViewModel Configuration)
+public addToAddresses: (autoSave?: boolean) => ViewModels.Address;
+A KnockoutComputed<string> that evaluates to a relative url for the generated table view that contains only the items that belong to the collection navigation property.
+public addressesListUrl: KnockoutComputed<string>;
+Reference Navigation Property Helpers
+For each reference navigation property on the POCO, the following members will be created:
+
+A method that will call showEditor on that current value of the navigation property, or on a new instance if the current value is null.
+public showCompanyEditor: (callback?: any) => void;
+Instance Method Members
+For each Instance Method on your POCO, the members outlined in Methods - Generated TypeScript will be created.
+Enum Members
+For each enum property on your POCO, the following will be created:
+
+A static array of objects with properties id and value that represent all the values of the enum.
+public genderValues: Coalesce.EnumValue[] = [
+    { id: 1, value: 'Male' },
+    { id: 2, value: 'Female' },
+    { id: 3, value: 'Other' },
+];
+A TypeScript enum that mirrors the C# enum directly. This enum is in a sub-namespace of ViewModels named the same as the class name.
+export namespace Person {
+    export enum GenderEnum {
+        Male = 1,
+        Female = 2,
+        Other = 3,
+    };
+}
+TypeScript ListViewModels
+In addition to TypeScript ViewModels for interacting with instances of your data classes in TypeScript, Coalesce will also generated a List ViewModel for loading searched, sorted, paginated data from the server.
+
+These ListViewModels, like the ViewModels, are dependent on Knockout and are designed to be used directly from Knockout bindings in your HTML.
+
+Base Members
+The following members are defined on BaseListViewModel<> and are available to the ListViewModels for all of your model types:
+
+modelKeyName: string
+Name of the primary key of the model that this list represents.
+includes: string
+String that is used to control loading and serialization on the server. See Includes String for more information.
+items: KnockoutObservableArray<TItem>
+The collection of items that have been loaded from the server.
+addNewItem: (): TItem
+Adds a new item to the items collection.
+deleteItem: (item: TItem): JQueryPromise<any>
+Deletes an item and removes it from the items collection.
+queryString: string
+Query string to append to the API call when loading the list of items. If query is non-null, this value will not be used. See below for more information about query.
+search: KnockoutObservable<string>
+Search criteria for the list. This can be easily bound to with a text box for easy search behavior. See [Search] for a detailed look at how searching works in Coalesce.
+isLoading: KnockoutObservable<boolean>
+True if the list is loading.
+isLoaded: KnockoutObservable<boolean>
+True once the list has been loaded.
+load: (callback?: any): JQueryPromise<any>
+Load the list using current parameters for paging, searching, etc Result is placed into the items property.
+message: KnockoutObservable<string>
+If a load failed, this is a message about why it failed.
+getCount: (callback?: any): JQueryPromise<any>
+Gets the count of items without getting all the items. Result is placed into the count property.
+count: KnockoutObservable<number>
+The result of getCount(), or the total on this page.
+totalCount: KnockoutObservable<number>
+Total count of items, even ones that are not on the page.
+nextPage: (): void
+Change to the next page.
+nextPageEnabled: KnockoutComputed<boolean>
+True if there is another page after the current page.
+previousPage: (): void
+Change to the previous page.
+previousPageEnabled: KnockoutComputed<boolean>
+True if there is another page before the current page.
+page: KnockoutObservable<number>
+Page number. This can be set to get a new page.
+pageCount: KnockoutObservable<number>
+Total page count
+pageSize: KnockoutObservable<number>
+Number of items on a page.
+orderBy: KnockoutObservable<string>
+Name of a field by which this list will be loaded in ascending order.
+
+If set to "none", default sorting behavior, including behavior defined with use of [DefaultOrderBy] in C# POCOs, is suppressed.
+
+orderByDescending: KnockoutObservable<string>
+Name of a field by which this list will be loaded in descending order.
+orderByToggle: (field: string): void
+Toggles sorting between ascending, descending, and no order on the specified field.
+Model-Specific Members
+Configuration
+A static configuration object for configuring all instances of the ListViewModel's type is created, as well as an instance configuration object for configuring specific instances of the ListViewModel. See (see ViewModel Configuration) for more information.
+
+public static coalesceConfig = new Coalesce.ListViewModelConfiguration<PersonList, ViewModels.Person>(Coalesce.GlobalConfiguration.listViewModel);
+
+public coalesceConfig = new Coalesce.ListViewModelConfiguration<PersonList, ViewModels.Person>(PersonList.coalesceConfig);
+Filter Object
+For each exposed value type instance property on the underlying EF POCO, a property named filter will have a property declaration generated for that property. If the filter object is set, requests made to the server to retrieve data will be passed all the values in this object via the URL's query string. These parameters will filter the resulting data to only rows where the parameter values match the row's values. For example, if filter.companyId is set to a value, only people from that company will be returned.
+
+public filter: {
+    personId?: string
+    firstName?: string
+    lastName?: string
+    gender?: string
+    companyId?: string
+} = null;
+var list = new ListViewModels.PersonList();
+list.filter = {
+    lastName: "Erickson",
+};
+list.load();
+These parameters all allow for freeform string values, allowing the server to implement any kind of filtering logic desired. The Standard Data Source will perform simple equality checks, but also the following:
+
+Enum properties may have a filter that contains either enum names or integer values. There may be a single such value, or multiple, comma-delimited values where the actual value may match any of the filter values.
+The same goes for numeric properties - you can specify a comma-delimited list of numbers to match on any of those values.
+Date properties can specify an exact time, or a date with no time component. In the latter case, any times that fall within that day will be matched.
+Static Method Members
+For each exposed Static Method on your POCO, the members outlined in Methods - Generated TypeScript will be created.
+DataSources
+For each of the Data Sources on the class, a corresponding class will be added to a namespace named ListViewModels.<ClassName>DataSources. This namespace can always be accessed on both ViewModel and ListViewModel instances via the dataSources property, and class instances can be assigned to the dataSource property.
+
+module ListViewModels {
+    export namespace PersonDataSources {
+
+        export class WithoutCases extends Coalesce.DataSource<ViewModels.Person> { }
+        export const Default = WithoutCases;
+
+        export class NamesStartingWithAWithCases extends Coalesce.DataSource<ViewModels.Person> { }
+
+        /** People whose last name starts with B or c */
+        export class BorCPeople extends Coalesce.DataSource<ViewModels.Person> { }
+    }
+
+    export class PersonList extends Coalesce.BaseListViewModel<PersonList, ViewModels.Person> {
+        public dataSources = PersonDataSources;
+        public dataSource: PersonDataSources = new this.dataSources.Default();
+    }
+}
+TypeScript External ViewModels
+For all External Types in your model, Coalesce will generate a TypeScript class that provides a barebones representation of that type's properties.
+
+These ViewModels are dependent on Knockout, and are designed to be used directly from Knockout bindings in your HTML. All data properties on the generated model are Knockout observables.
+
+Base Members
+The TypeScript ViewModels for external types do not have a common base class, and do not have any of the behaviors or convenience properties that the regular TypeScript ViewModels for database-mapped classes have.
+
+Model-Specific Members
+Data Properties
+For each exposed property on the underlying EF POCO, a KnockoutObservable<T> property will exist on the TypeScript model. For POCO properties, these will be typed with the corresponding TypeScript ViewModel for the other end of the relationship. For collections, these properties will be KnockoutObservableArray<T> objects.
+
+public personId: KnockoutObservable<number> = ko.observable(null);
+public fullName: KnockoutObservable<string> = ko.observable(null);
+public gender: KnockoutObservable<number> = ko.observable(null);
+public companyId: KnockoutObservable<number> = ko.observable(null);
+public company: KnockoutObservable<ViewModels.Company> = ko.observable(null);
+public addresses: KnockoutObservableArray<ViewModels.Address> = ko.observableArray([]);
+public birthDate: KnockoutObservable<moment.Moment> = ko.observable(moment());
+Computed Text Properties
+For each Enum property on your POCO, a KnockoutComputed<string> property will be created that will provide the text to display for that property.
+
+public genderText: () => string;TypeScript Method Objects
+For each Custom Method you define, a class will be created on the corresponding TypeScript ViewModel (instance methods) or ListViewModel (static methods) that contains the properties and functions for interaction with the method. This class is accessible through a static property named after the method. An instance of this class will also be created on each instance of its parent - this instance is in a property with the camel-cased name of the method.
+
+Here's an example for a method called Rename that takes a single parameter 'string name' and returns a string.
+
+public string Rename(string name)
+{
+    FirstName = name;
+    return FullName; // Return the new full name of the person.
+}
+Method-specific Members
+public static Rename = class Rename extends Coalesce.ClientMethod<Person, string> { ... }
+Declaration of class that provides invocation methods and status properties for the method.
+public readonly rename = new Person.Rename(this)
+Default instance of the method for easy calling of the method without needing to manually instantiate the class.
+public invoke: (name: string, callback: (result: string) => void = null, reload: boolean = true): JQueryPromise<any>
+Function that takes all the method parameters and a callback. If reload is true, the ViewModel or ListViewModel that owns the method will be reloaded after the call is complete, and only after that happens will the callback be called.
+The following members are only generated for methods with arguments:
+
+public static Args = class Args { public name: KnockoutObservable<string> = ko.observable(null); }
+Class with one observable member per method argument for binding method arguments to user input.
+public args = new Rename.Args()
+Default instance of the args class.
+public invokeWithArgs: (args = this.args, callback?: (result: string) => void, reload: boolean = true) => JQueryPromise<any>
+Function for invoking the method using the args class. The default instance of the args class will be used if none is provided.
+public invokeWithPrompts: (callback: (result: string) => void = null, reload: boolean = true) => JQueryPromise<any>
+Simple interface using browser prompt() input boxes to prompt the user for the required data for the method call. The call is then made with the data provided.
+Base Class Members
+public result: KnockoutObservable<string>
+Observable that will contain the results of the method call after it is complete.
+public rawResult: KnockoutObservable<Coalesce.ApiResult>
+Observable with the raw, deserialized JSON result of the method call. If the method call returns an object, this will contain the deserialized JSON object from the server before it has been loaded into ViewModels and its properties loaded into observables.
+public isLoading: KnockoutObservable<boolean>
+Observable boolean which is true while the call to the server is pending.
+public message: KnockoutObservable<string>
+If the method was not successful, this contains exception information.
+public wasSuccessful: KnockoutObservable<boolean>
+Observable boolean that indicates whether the method call was successful or not.
+ListResult<T> Method Members
+public page: KnockoutObservable<number>
+Page number of the results.
+public pageSize: KnockoutObservable<number>
+Page size of the results.
+public pageCount: KnockoutObservable<number>
+Total number of possible result pages.
+public totalCount: KnockoutObservable<number>
+Total number of results.
+
+ViewModel Configuration
+A crucial part of the generated TypeScript ViewModels that Coalesce creates for you is the hierarchical configuration system that allows coarse-grained or fine-grained control over their behaviors.
+
+Hierarchy
+The configuration system has four levels where configuration can be performed, structured as follows:
+
+Root Configuration
+Coalesce.GlobalConfiguration
+Coalesce.GlobalConfiguration.app
+
+The root configuration contains all configuration properties which apply to class category (TypeScript ViewModels, TypeScript ListViewModels, and Services). The app property contains global app configuration that exists independent of any models. Then, for each class kind, the following are available:
+
+Root ViewModel/ListViewModel Configuration
+Coalesce.GlobalConfiguration.viewModel
+Coalesce.GlobalConfiguration.listViewModel
+Coalesce.GlobalConfiguration.serviceClient
+
+Additional root configuration objects exist, one for each class kind. These configuration objects govern behavior that applies to only objects of these types. Root configuration can be overridden using these objects, although the practicality of doing so is dubious.
+
+Class Configuration
+ViewModels.<ClassName>.coalesceConfig
+ListViewModels.<ClassName>List.coalesceConfig
+Services.<ServiceName>Client.coalesceConfig
+
+Each class kind has a static property named coalesceConfig that controls behavior for all instances of that class.
+
+Instance Configuration
+instance.coalesceConfig
+
+Each instance of these classes also has a coalesceConfig property that controls behaviors for that instance only.
+
+Evaluation
+All configuration properties are Knockout ComputedObservable<T> objects. These observables behave like any other observable - call them with no parameter to obtain the value, call with a parameter to set their value.
+
+Whenever a configuration property is read from, it first checks its own configuration object for the value of that property. If the explicit value for that configuration object is null, the parent's configuration will be checked for a value. This continues until either a value is found or the root configuration object is reached.
+
+When a configuration property is given a value, that value is established on that configuration object only. Any dependent configuration objects will not be modified, and if those dependent configuration objects already have a value for that property, their existing value will be used unless that value is later set to null.
+
+To obtain the raw value for a specific configuration property, call the raw() method on the observable: model.coalesceConfig.autoSaveEnabled.raw().
+
+Available Properties & Defaults
+The following configuration properties are available. Their default values are also listed.
+
+Root Configuration
+These properties on Coalesce.GlobalConfiguration are available to both ViewModelConfiguration, ListViewModelConfiguration, and ServiceClientConfiguration.
+
+baseApiUrl - "/api"
+The relative url where the API may be found.
+baseViewUrl - ""
+The relative url where the admin views may be found.
+showFailureAlerts - true
+Whether or not the callback specified for onFailure will be called or not.
+onFailure - (obj, message) => alert(message)
+A callback to be called when a failure response is received from the server.
+onStartBusy - obj => Coalesce.Utilities.showBusy()
+A callback to be called when an AJAX request begins.
+onFinishBusy - obj => Coalesce.Utilities.hideBusy()
+A callback to be called when an AJAX request completes.
+App Configuration
+These properties on Coalesce.GlobalConfiguration.app are not hierarchical - they govern the entire Coalesce application:
+
+select2Theme - null
+The theme parameter to select2's constructor when called by Coalesce's select2 Knockout Bindings.
+ViewModelConfiguration
+saveTimeoutMs - 500
+Time to wait after a change is seen before auto-saving (if autoSaveEnabled is true). Acts as a debouncing timer for multiple simultaneous changes.
+autoSaveEnabled - true
+Determines whether changes to a model will be automatically saved after saveTimeoutMs milliseconds have elapsed.
+autoSaveCollectionsEnabled - true
+Determines whether or not changes to many-to-many collection properties will automatically trigger a save call to the server or not.
+showBusyWhenSaving - false
+Whether to invoke onStartBusy and onFinishBusy during saves.
+loadResponseFromSaves - true
+Whether or not to reload the ViewModel with the state of the object received from the server after a call to .save().
+validateOnLoadFromDto - true
+Whether or not to validate the model after loading it from a DTO from the server. Disabling this can improve performance in some cases.
+setupValidationAutomatically - true
+Whether or not validation on a ViewModel should be setup in its constructor, or if validation must be set up manually by calling viewModel.setupValidation(). Turning this off can improve performance in read-only scenarios.
+onLoadFromDto - null
+An optional callback to be called when an object is loaded from a response from the server. Callback will be called after all properties on the ViewModel have been set from the server response.
+initialDataSource = null
+The dataSource (either an instance or a type) that will be used as the initial dataSource when a new object of this type is created. Not valid for global configuration; recommended to be used on class-level configuration. E.g. ViewModels.MyModel.coalesceConfig.initialDataSource(MyModel.dataSources.MyDataSource);
+ListViewModelConfiguration
+No special configuration is currently available for ListViewModels.
+ServiceClientConfiguration
+No special configuration is currently available for ServiceClients.
+Knockout Bindings
+Coalesce provides a number of knockout bindings that make common model binding activities much easier.
+
+Editors Note: On this page, some bindings are split into their requisite HTML component with their data-bind component listed immediately after. Keep this in mind when reading.
+
+Contents
+
+Input Bindings
+select2Ajax
+select2AjaxMultiple
+select2AjaxText
+select2
+datePicker
+saveImmediately
+delaySave
+Display Bindings
+tooltip
+fadeVisible
+slideVisible
+moment
+momentFromNow
+Utility Bindings
+let
+Knockout Binding Defaults
+DefaultLabelCols
+DefaultInputCols
+DefaultDateFormat
+DefaultTimeFormat
+DefaultDateTimeFormat
+Input Bindings
+select2Ajax
+<select data-bind="..."></select>
+select2Ajax: personId, url: '/api/Person/list', idField: 'personId', textField: 'Name', object: person, allowClear: true
+
+Creates a select2 dropdown using the specified url and fields that can be used to select an object from the endpoint specified. Additional complimentary bindings include:
+
+idField (required)
+The name of the field on each item in the results of the AJAX call which contains the ID of the option. The value of this field will be set on the observable specified for the main select2Ajax binding.
+textField (required)
+The name of the field on each item in the results of the AJAX call which contains the text to be displayed for each option.
+url (required)
+The Coalesce List API url to call to populate the contents of the dropdown.
+pageSize
+The number of items to request in each call to the server.
+format
+A string containing the substring {0}, which will be replaced with the text value of an option in the dropdown list when the option is displayed.
+selectionFormat
+A string containing the substring {0}, which will be replaced with the text value of the selected option of the dropdown list.
+object
+An observable that holds the full object corresponding to the foreign key property being bound to. If the selected value changes, this will be set to null to avoid representation of incorrect data (unless setObject is used - see below).
+setObject
+If true, the observable specified by the object binding will be set to the selected data when an option is chosen in the dropdown. Binding itemViewModel is required if this binding is set.
+
+Additionally, requests to the API to populate the dropdown will request the entire object, as opposed to only the two fields specified for idField and textField like is normally done when this binding is missing or set to false. To override this behavior and continue requesting only specific fields even when setObject is true, add fields=field1,field2,... to the query string of the url binding.
+
+itemViewModel
+A reference to the class that represents the type of the object held in the object observable. This is used when constructing new objects from the results of the API call. Not used if setObject is false or unspecified. For example, setObject: true, itemViewModel: ViewModels.Person
+selectOnClose
+Directly maps to select2 option selectOnClose
+allowClear
+Whether or not to allow the current select to be set to null. Directly maps to select2 option allowClear
+placeholder
+Placeholder when nothing is selected. Directly maps to select2 option placeholder
+openOnFocus
+If true, the dropdown will open when tabbed to. Browser support may be incomplete in some versions of IE.
+cache
+Controls caching behavior of the AJAX request. Defaults to false. Seems to only affect IE - Chrome will never cache JSON ajax requests.
+select2AjaxMultiple
+<select multiple="multiple" data-bind="..."></select>
+select2AjaxMultiple: people, url: '/api/Person/list', idField: 'personId', textField: 'Name', itemViewModel: ViewModels.PersonCase
+
+Creates a select2 multi-select input for choosing objects that participate as the foreign object in a many-to-many relationship with the current object. The primary select2AjaxMultiple binding takes the collection of items that make up the foreign side of the relationship. This is NOT the collection of the join objects (a.k.a. middle table objects) in the relationship.
+
+Additional complimentary bindings include:
+
+idField (required)
+The name of the field on each item in the results of the AJAX call which contains the ID of the option. The value of this field will be set as the key of the foreign object in the many-to-many relationship.
+textField (required)
+The name of the field on each item in the results of the AJAX call which contains the text to be displayed for each option.
+url (required)
+The Coalesce List API url to call to populate the contents of the dropdown. In order to only receive specific fields from the server, add fields=field1,field2,... to the query string of the url, ensuring that at least the idField and textField are included in that collection.
+itemViewModel (required)
+A reference to the class that represents the types in the supplied collection. For example, a many-to-many between Person and Case objects where Case is the object being bound to and Person is the type represented by a child collection, the correct value is :ts:ViewModels.Person. This is used when constructing new objects representing the relationship when a new item is selected.
+pageSize
+The number of items to request in each call to the server.
+format
+A string containing the substring {0}, which will be replaced with the text value of an option in the dropdown list when the option is displayed.
+selectionFormat
+A string containing the substring {0}, which will be replaced with the text value of the selected option of the dropdown list.
+selectOnClose
+Directly maps to select2 option selectOnClose
+allowClear
+Whether or not to allow the current select to be set to null. Directly maps to select2 option allowClear
+placeholder
+Placeholder when nothing is selected. Directly maps to select2 option placeholder
+openOnFocus
+If true, the dropdown will open when tabbed to. Browser support may be incomplete in some versions of IE.
+cache
+Controls caching behavior of the AJAX request. Defaults to false. Seems to only affect IE - Chrome will never cache JSON ajax requests.
+select2AjaxText
+<select data-bind="..."></select>
+select2AjaxText: schoolName, url: '/api/Person/SchoolNames'
+
+Creates a select2 dropdown against the specified url where the url returns a collection of string values that are potential selection candidates. The dropdown also allows the user to input any value they choose - the API simply serves suggested values.
+
+url
+The url to call to populate the contents of the dropdown. This should be an endpoint that returns one of the following:
+
+A raw string[]
+An object that conforms to { list: string[] }
+An object that conforms to { object: string[] }
+An object that conforms to { list: { [prop: string]: string } } where the value given to resultField is a valid property of the returned objects.
+An object that conforms to { object: { [prop: string]: string } } where the value given to resultField is a valid property of the returned objects.
+The url will also be passed a search parameter and a page parameter appended to the query string. The chosen endpoint is responsible for implementing this functionality. Page size is expected to be some fixed value. Implementer should anticipate that the requested page may be out of range.
+
+The cases listed above that accept arrays of objects (as opposed to arrays of strings) require that the resultField binding is also used. These are designed for obtaining string values from objects obtained from the standard list endpoint.
+
+resultField
+If provided, specifies a field on the objects returned from the API to pull the string values from. See examples in url above.
+selectOnClose
+Directly maps to select2 option selectOnClose
+openOnFocus
+If true, the dropdown will open when tabbed to. Browser support may be incomplete in some versions of IE.
+allowClear
+Whether or not to allow the current select to be set to null. Directly maps to select2 option allowClear
+placeholder
+Placeholder when nothing is selected. Directly maps to select2 option placeholder
+cache
+Controls caching behavior of the AJAX request. Defaults to false. Seems to only affect IE - Chrome will never cache JSON ajax requests.
+select2
+<select data-bind="..."></select>
+select2: personId
+
+Sets up a basic select2 dropdown on an HTML select element. Dropdown contents should be populated through other means - either using stock Knockout bindings or server-side static contents (via cshtml).
+
+selectOnClose
+Directly maps to select2 option selectOnClose
+openOnFocus
+If true, the dropdown will open when tabbed to. Browser support may be incomplete in some versions of IE.
+allowClear
+Whether or not to allow the current select to be set to null. Directly maps to select2 option allowClear
+placeholder
+Placeholder when nothing is selected. Directly maps to select2 option placeholder
+datePicker
+<div class="input-group date">
+    <input data-bind="datePicker: birthDate" type="text" class="form-control" />
+    <span class="input-group-addon">
+        <span class="fa fa-calendar"></span>
+    </span>
+</div>
+Creates a date/time picker for changing a moment.Moment property. The control used is bootstrap-datetimepicker
+
+preserveDate
+If true, the date portion of the moment.Moment object will be preserved by the date picker. Only the time portion will be changed by user input.
+preserveTime
+If true, the time portion of the moment.Moment object will be preserved by the date picker. Only the date portion will be changed by user input.
+format
+Specify the moment-compatible format string to be used as the display format for the text value shown on the date picker. Defaults to M/D/YY h:mm a. Direct pass-through to bootstrap-datetimepicker.
+sideBySide
+if true, places the time picker next to the date picker, visible at the same time. Direct pass-through to corresponding bootstrap-datetimepicker option.
+stepping
+Direct pass-through to corresponding bootstrap-datetimepicker option.
+timeZone
+Direct pass-through to corresponding bootstrap-datetimepicker option.
+keyBinds
+Override key bindings of the date picker. Direct pass-through to corresponding bootstrap-datetimepicker option. Defaults to { left: null, right: null, delete: null }, which disables the default binding for these keys.
+updateImmediate
+If true, the datePicker will update the underlying observable on each input change. Otherwise, the observable will only be changed when the datePicker loses focus (on blur).
+saveImmediately
+<div data-bind="with: product">
+    <input type="text" data-bind="textValue: description, saveImmediately: true" />
+</div>
+When used in a context where $data is a Coalesce.BaseViewModel, that object's saveTimeoutMs configuration property (see ViewModel Configuration) will be set to 0 when the element it is placed on gains focus. This value will be reverted to its previous value when the element loses focus. This will cause any changes to the object, including any observable bound as input on the element, to trigger a save immediately rather than after a delay (defaults to 500ms).
+
+delaySave
+<div data-bind="with: product">
+    <input type="text" data-bind="textValue: description, delaySave: true" />
+</div>
+When used in a context where $data is a Coalesce.BaseViewModel, that object's autoSaveEnabled configuration property (see ViewModel Configuration) will be set to false when the element it is placed on gains focus. This will cause any changes to the object, including any observable bound as input on the element, to not trigger auto saves while the element has focus. When the element loses focus, the autoSaveEnabled flag will be reverted to its previous value and an attempt will be made to save the object.
+
+Display Bindings
+tooltip
+tooltip: tooltipText
+tooltip: {title: note, placement: 'bottom', animation: false}
+
+Wrapper around the Bootstrap tooltip component. Binding can either be simply a string (or observable string), or it can be an object that will be passed directly to the Bootstrap tooltip component.
+fadeVisible
+fadeVisible: isVisible
+
+Similar to the Knockout visible, but uses jQuery fadeIn/fadeOut calls to perform the transition.
+slideVisible
+slideVisible: isVisible
+
+Similar to the Knockout visible, but uses jQuery slideIn/slideOut calls to perform the transition.
+moment
+<span data-bind="moment: momentObservable"></span>
+moment: momentObservable
+moment: momentObservable, format: 'MM/DD/YYYY hh:mm a'
+
+Controls the text of the element by calling the format method on a moment object.
+momentFromNow
+<span data-bind="momentFromNow: momentObservable"></span>
+momentFromNow: momentObservable
+momentFromNow: momentObservable, shorten: true
+
+Controls the text of the element by calling the fromNow method on a moment object. If shorten is true, certain phrases will be slightly shortened.
+Utility Bindings
+let
+let: {variableName: value}
+
+The let binding is a somewhat common construct used in Knockout applications, but isn't part of Knockout itself. It effectively allows the creation of variables in the binding context, allowing complex statements which may be used multiple times to be aliased for both clarity of code and better performance.
+
+<div class="item">
+    <!-- ko let: { showControls: $data.isEditing() || $parent.editingChildren() } -->
+    <button data-bind="click: $root.editItem, visible: showControls">Edit</button>
+    <span data-bind="text: name"></span>
+    <button data-bind="click: $root.deleteItem, visible: showControls">Delete</button>
+    <!-- /ko -->
+</div>
+Knockout Binding Defaults
+These are static properties on IntelliTect.Coalesce.Knockout.Helpers.Knockout you can assign to somewhere in the app lifecycle startup to change the default markup generated server-side when using @Knockout.* methods to render Knockout bindings in your .cshtml files. Currently, there are defaults for the Bootstrap grid system width of <label> and <input> tags, as well as default formats for the date pickers.
+
+The date/time picker properties can be coupled with DateTimeOffset model properties to display time values localized for the current user's locale. If you want to make the localization static, simply include a script block in your _Layout.cshtml or in a specific view that sets the default for Moment.js:
+
+<script>
+    moment.tz.setDefault("America/Chicago");
+</script>
+Note
+
+This needs to happen after Moment is loaded, but before the bootstrap-datetimepicker script is loaded.
+
+DefaultLabelCols
+public static int DefaultLabelCols { get; set; } = 3;
+
+The default number of Bootstrap grid columns a field label should span across.
+DefaultInputCols
+public static int DefaultInputCols { get; set; } = 9;
+
+The default number of Bootstrap grid columns a form input should span across.
+DefaultDateFormat
+public static string DefaultDateFormat { get; set; } = "M/D/YYYY";
+
+Sets the default date-only format to be used by all date/time pickers. This only applies to models with a date-only [DateType] attribute.
+DefaultTimeFormat
+public static string DefaultTimeFormat { get; set; } = "h:mm a";
+
+Sets the default time-only format to be used by all date/time pickers. This only applies to models with a time-only [DateType] attribute.
+DefaultDateTimeFormat
+public static string DefaultDateTimeFormat { get; set; } = "M/D/YYYY h:mm a"
+
+Sets the default date/time format to be used by all date/time pickers. This only applies to DateTimeOffset model properties that do not have a limiting [DateType] attribute.
+Note
+
+DefaultDateFormat, DefaultTimeFormat and DefaultDateTimeFormat all take various formatting strings from the Moment.js library. A full listing can be found on the Moment website.Include Tree
+When Coalesce maps from the your POCO objects that are returned from EF Core queries, it will follow a structure called an IncludeTree to determine what relationships to follow and how deep to go in re-creating that structure in the mapped DTOs.
+
+Contents
+
+Purpose
+Usage
+Custom Data Sources
+Model Methods
+External Type Caveats
+Purpose
+Without an IncludeTree present, Coalesce will map the entire object graph that is reachable from the root object. This can often spiral out of control if there aren't any rules defining how far to go while turning this graph into a tree.
+
+For example, suppose you had the following model with a many-to-many relationship (key properties omitted for brevity):
+
+public class Employee
+{
+    [ManyToMany("Projects")]
+    public ICollection<EmployeeProject> EmployeeProjects { get; set; }
+
+    public static IQueryable<Employee> WithProjectsAndMembers(AppDbContext db, ClaimsPrincipal user)
+    {
+        // Load all projects of an employee, as well as all members of those projects.
+        return db.Employees.Include(e => e.EmployeeProjects)
+                            .ThenInclude(ep => ep.Project.EmployeeProjects)
+                            .ThenInclude(ep => ep.Employee);
+    }
+}
+
+public class Project
+{
+    [ManyToMany("Employees")]
+    public ICollection<EmployeeProject> EmployeeProjects { get; set; }
+}
+
+public class EmployeeProject
+{
+    public Employee Employee { get; set; }
+    public Project Project { get; set; }
+}
+Now, imagine that you have five employees and five projects, with every employee being a member of every project (i.e. there are 25 EmployeeProject rows).
+
+Your client code makes a call to the Coalesce-generated API to load Employee #1 using the custom data source:
+
+import { Employee } from '@/viewmodels.g'
+import { EmployeeViewModel } from '@/viewmodels.g'
+
+var employee = new EmployeeViewModel();
+employee.$dataSource = new Employee.DataSources.WithProjectsAndMembers();
+employee.$load(1);
+If you're already familiar with the fact that an IncludeTree is implicitly created in this scenario, then imagine for a moment that this is not the case (if you're not familiar with this fact, then keep reading!).
+
+After Coalesce has called your Data Sources and evaluated the EF IQueryable returned, there are now 35 objects loaded into the current DbContext being used to handle this request - the 5 employees, 5 projects, and 25 relationships.
+
+To map these objects to DTOs, we start with the root (employee #1) and expand outward from there until the entire object graph has been faithfully re-created with DTO objects, including all navigation properties.
+
+The root DTO object (employee #1) then eventually is passed to the JSON serializer by ASP.NET Core to formulate the response to the request. As the object is serialized to JSON, the only objects that are not serialized are those that were already serialized as an ancestor of itself. What this ultimately means is that the structure of the serialized JSON with our example scenario ends up following a pattern like this (the vast majority of items have been omitted):
+
+Employee#1
+    EmployeeProject#1
+        Project#1
+            EmployeeProject#6
+                Employee#2
+                    EmployeeProject#7
+                        Project#2
+                            ... continues down through all remaining employees and projects.
+                    ...
+            EmployeeProject#11
+                Employee#3
+            ...
+    EmployeeProject#2
+        Project#2
+    ...
+See how the structure includes the EmployeeProjects of Employee#2? We didn't write our custom data source calls to .Include in such a way that indicated that we wanted the root employee, their projects, the employees of those projects, and then the projects of those employees. But, because the JSON serializer blindly follows the object graph, that's what gets serialized. It turns out that the depth of the tree increases on the order of O(n^2), and the total size increases on the order of O(n!).
+
+This is where IncludeTree comes in. When you use a custom data source like we did above, Coalesce automatically captures the structure of the calls to .Include and .ThenInclude, and uses this to perform trimming during creation of the DTO objects.
+
+With an IncludeTree in place, our new serialized structure looks like this:
+
+Employee#1
+    EmployeeProject#1
+        Project#1
+            EmployeeProject#6
+                Employee#2
+            EmployeeProject#11
+                Employee#3
+            ...
+    EmployeeProject#2
+        Project#2
+    ...
+No more extra data trailing off the end of the projects' employees!
+
+Usage
+Custom Data Sources
+In most cases, you don't have to worry about creating an IncludeTree. When using the Standard Data Source (or a derivative), the structure of the .Include and .ThenInclude calls will be captured automatically and be turned into an IncludeTree.
+
+However, there are sometimes cases where you perform complex loading in these methods that involves loading data into the current DbContext outside of the IQueryable that is returned from the method. The most common situation for this is needing to conditionally load related data - for example, load all children of an object where the child has a certain value of a Status property.
+
+In these cases, Coalesce provides a pair of extension methods, .IncludedSeparately and .ThenIncluded, that can be used to merge in the structure of the data that was loaded separately from the main IQueryable.
+
+For example:
+
+public override IQueryable<Employee> GetQuery()
+{
+    // Load all projects that are complete, and their members, into the db context.
+    Db.Projects
+        .Include(p => p.EmployeeProjects).ThenInclude(ep => ep.Employee)
+        .Where(p => p.Status == ProjectStatus.Complete)
+        .Load();
+
+    // Return an employee query, and notify Coalesce that we loaded the projects in a different query.
+    return Db.Employees.IncludedSeparately(e => e.EmployeeProjects)
+                        .ThenIncluded(ep => ep.Project.EmployeeProjects)
+                        .ThenIncluded(ep => ep.Employee);
+}
+You can also override the GetIncludeTree method of the Standard Data Source to achieve the same result:
+
+public override IncludeTree GetIncludeTree(IQueryable<T> query, IDataSourceParameters parameters)
+    => Db.Employees.IncludedSeparately(e => e.EmployeeProjects)
+                    .ThenIncluded(ep => ep.Project.EmployeeProjects)
+                    .ThenIncluded(ep => ep.Employee)
+                    .GetIncludeTree();
+Model Methods
+If you have instance or static methods on your models that return objects, you may also want to control the structure of the returned data when it is serialized. Fortunately, you can also use IncludeTree in these situations. Without an IncludeTree, the entire object graph is traversed and serialized without limit.
+
+To tell Coalesce about the structure of the data returned from a model method, simply add out IncludeTree includeTree to the signature of the method. Inside your method, set includeTree to an instance of an IncludeTree. Obtaining an IncludeTree is easy - take a look at this example:
+
+public class Employee
+{
+    public ICollection<Employee> GetChainOfCommand(AppDbContext db, out IncludeTree includeTree)
+    {
+        var ret = new List<Employee>();
+        var current = this;
+        while (current.Supervisor != null)
+        {
+            ret.Push(current);
+            current = db.Employees
+                .Include(e => e.Supervisor)
+                .FirstOrDefault(e => e.EmployeeId == current.SupervisorId);
+        }
+
+        includeTree = db.Employees
+            .IncludedSeparately(e => e.Supervisor)
+            .GetIncludeTree();
+
+        return ret;
+    }
+}
+Tip
+
+An IncludeTree can be obtained from any IQueryable by calling the GetIncludeTree extension method (using IntelliTect.Coalesce.Helpers.IncludeTree).
+
+In situations where your root object isn't on your DbContext (see External Types), you can use Enumerable.Empty<MyNonDbClass>().AsQueryable() to get an IQueryable to start from. When you do this, you must use IncludedSeparately - the regular EF Include method won't work without a DbSet.
+
+Without the outputted IncludeTree in this scenario, the object graph received by the client would have ended up looking like this:
+
+- Steve's manager
+    - District Supervisor
+        - VP
+            - CEO
+
+- District Supervisor
+    - VP
+        - CEO
+
+- VP
+    - CEO
+
+- CEO
+Instead, with the IncludeTree, we get the following, which is only the data we actually wanted:
+
+- Steve's manager
+    - District Supervisor
+
+- District Supervisor
+    - VP
+
+- VP
+    - CEO
+
+- CEO
+If you wanted to get even simpler, you could simply set the out includeTree to a new IncludeTree(), which would give you only the top-most level of data:
+
+- Steve's manager
+- District Supervisor
+- VP
+- CEO
+External Type Caveats
+One important point remains regarding IncludeTree - it is not used to control the serialization of objects which are not mapped to the database, known as External Types. External Types are always put into the DTOs when encountered (unless otherwise prevented by [DtoIncludes] & [DtoExcludes] or Security Attributes), with the assumption that because these objects are created by you (as opposed to Entity Framework), you are responsible for preventing any undesired circular references.
+
+By not filtering unmapped properties, you as the developer don't need to account for them in every place throughout your application where they appear - instead, they 'just work' and show up on the client as expected.
+
+Note also that this statement does not apply to database-mapped objects that hang off of unmapped objects - any time a database-mapped object appears, it will be controlled by your include tree. If no include tree is present (because nothing was specified for the unmapped property), these mapped objects hanging off of unmapped objects will be serialized freely and with all circular references, unless you include some calls to .IncludedSeparately(m => m.MyUnmappedProperty.MyMappedProperty) to limit those objects down.
+
+Includes String
+Coalesce provides a number of extension points for loading & serialization which make use of a concept called an "includes string" (also referred to as "include string" or just "includes").
+
+Contents
+
+Includes String
+Special Values
+DtoIncludes & DtoExcludes
+Example Usage
+Properties
+Includes String
+The includes string is simply a string which can be set to any arbitrary value. It is passed from the client to the server in order to control data loading and serialization. It can be set on both the TypeScript ViewModels and the ListViewModels.
+
+import { PersonViewModel, PersonListViewModel } from '@/viewmodels.g'
+
+var person = new PersonViewModel();
+person.$includes = "details";
+
+var personList = new PersonListViewModel();
+personList.$includes = "details";
+The default value (i.e. no action) is the empty string.
+
+Special Values
+There are a few values of includes that are either set by default in the auto-generated views, or otherwise have special meaning:
+
+none
+Setting includes to none suppresses the Default Loading Behavior provided by the Standard Data Source - The resulting data will be the requested object (or list of objects) and nothing more.
+Editor
+Used when loading an object in the generated Knockout CreateEdit views.
+<ModelName>ListGen
+Used when loading a list of objects in the generated Knockout Table and Cards views. For example, PersonListGen
+
+DtoIncludes & DtoExcludes
+Main document: [DtoIncludes] & [DtoExcludes].
+
+There are two C# attributes, DtoIncludes and DtoExcludes, that can be used to annotate your data model in order to control what data gets put into the DTOs and ultimately serialized to JSON and sent out to the client.
+
+When the database entries are returned to the client they will be trimmed based on the requested includes string and the values in DtoExcludes and DtoIncludes.
+
+Caution
+
+These attributes are not security attributes - consumers of your application's API can set the includes string to any value when making a request.
+
+Do not use them to keep certain data private - use the Security Attributes family of attributes for that.
+
+It is important to note that the value of the includes string will match against these attributes on any of your models that appears in the object graph being mapped to DTOs - it is not limited only to the model type of the root object.
+
+Example Usage
+public class Person
+{
+    // Don't include CreatedBy when editing - will be included for all other views
+    [DtoExcludes("Editor")]
+    public AppUser CreatedBy { get; set; }
+
+    // Only include the Person's Department when :ts:`includes == "details"` on the TypeScript ViewModel.
+    [DtoIncludes("details")]
+    public Department Department { get; set; }
+
+    // LastName will be included in all views
+    public string LastName { get; set; }
+}
+
+public class Department
+{
+    [DtoIncludes("details")]
+    public ICollection<Person> People { get; set; }
+}
+In TypeScript:
+
+import { PersonListViewModel } from '@/viewmodels.g'
+
+const personList = new PersonListViewModel();
+personList.$includes = "Editor";
+await personList.$load();
+// Objects in personList.$items will not contain CreatedBy nor Department objects.
+
+const personList2 = new PersonListViewModel();
+personList2.$includes = "details";
+await personList.$load();
+// Objects in personList2.items will be allowed to contain both CreatedBy and Department objects.
+// Department will be allowed to include its other Person objects.
+Properties
+public string ContentViews { get; set; } 1
+A comma-delimited list of values of includes on which to operate.
+
+For DtoIncludes, this will be the values of includes for which this property will be allowed to be serialized and sent to the client.
+
+Important
+
+DtoIncludes does not ensure that specific data will be loaded from the database. Only data loaded into current EF DbContext can possibly be returned from the API. See Data Sources for more information.
+
+For DtoExcludes, this will be the values of includes for which this property will never be serialized and sent to the client.
+
+Application Configuration
+In order for Coalesce to work in your application, you must register the needed services in your Startup.cs file. Doing so is simple:
+
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddCoalesce<AppDbContext>();
+    ...
+}
+This registers all the basic services that Coalesce needs in order to work with your EF DbContext. However, there are many more options available. Here's a more complete invocation of AddCoalesce that takes advantage of many of the options available:
+
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddCoalesce(builder => builder
+        .AddContext<AppDbContext>()
+        .UseDefaultDataSource(typeof(MyDataSource<,>))
+        .UseDefaultBehaviors(typeof(MyBehaviors<,>))
+        .UseTimeZone(TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time"))
+        .Configure(o =>
+        {
+            o.DetailedExceptionMessages = true;
+            o.ExceptionResponseFactory = ctx =>
+            {
+                if (ctx.Exception is FileNotFoundException)
+                {
+                    ctx.HttpContext.Response.StatusCode = 404; // Optional - set a specific response code.
+                    return new IntelliTect.Coalesce.Models.ApiResult(false, "File not found");
+                }
+                return null;
+            };
+        });
+    );
+}
+A summary is as follows:
+
+.AddContext<AppDbContext>()
+Register services needed by Coalesce to use the specified context. This is done automatically when calling the services.AddCoalesce<AppDbContext>(); overload.
+.UseDefaultDataSource(typeof(MyDataSource<,>))
+Overrides the default data source used, replacing the Standard Data Source. See Data Sources for more details.
+.UseDefaultBehaviors(typeof(MyBehaviors<,>))
+Overrides the default behaviors used, replacing the Standard Behaviors. See Behaviors for more details.
+.UseTimeZone(TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time"))
+Specify a static time zone that should be used when Coalesce is performing operations on dates/times that lack timezone information. For example, when a user inputs a search term that contains only a date, Coalesce needs to know what timezone's midnight to use when performing the search.
+.UseTimeZone<ITimeZoneResolver>()
+Specify a service implementation to use to resolve the current timezone. This should be a scoped service, and will be automatically registered if it is not already. This allows retrieving timezone information on a per-request basis from HTTP headers, Cookies, or any other source.
+.Configure(...)
+Configure additional options for Coalesce runtime behavior. Current options include those around exception handling. See individual members for details.
+Code Generation Configuration
+In Coalesce, all configuration of the code generation is done in a JSON file. This file is typically named coalesce.json and is typically placed in the solution root.
+
+File Resolution
+When the code generation is run by invoking dotnet coalesce, Coalesce will try to find a configuration file via the following means:
+
+If an argument is specified on the command line, it will be used as the location of the file. E.g. dotnet coalesce C:/Projects/MyProject/config.json
+If no argument is given, Coalesce will try to use a file in the working directory named coalesce.json
+If no file is found in the working directory, Coalesce will crawl up the directory tree from the working directory until a file named coalesce.json is found. If such a file is never found, an error will be thrown.
+Contents
+A full example of a coalesce.json file, along with an explanation of each property, is as follows:
+
+{
+    "webProject": {
+        // Required: Path to the csproj of the web project. Path is relative to location of this coalesce.json file.
+        "projectFile": "src/Coalesce.Web/Coalesce.Web.csproj",
+
+        // Optional: Framework to use when evaluating & building dependencies.
+        // Not needed if your project only specifies a single framework - only required for multi-targeting projects.
+        "framework": "netcoreapp2.0",
+
+        // Optional: Build configuration to use when evaluating & building dependencies.
+        // Defaults to "Debug".
+        "configuration": "Debug",
+
+        // Optional: Override the namespace prefix for generated C# code.
+        // Defaults to MSBuild's `$(RootNamespace)` for the project.
+        "rootNamespace": "MyCompany.Coalesce.Web",
+    },
+
+    "dataProject": {
+        // Required: Path to the csproj of the data project. Path is relative to location of this coalesce.json file.
+        "projectFile": "src/Coalesce.Domain/Coalesce.Domain.csproj",
+
+        // Optional: Framework to use when evaluating & building dependencies.
+        // Not needed if your project only specifies a single framework - only required for multi-targeting projects.
+        "framework": "netstandard2.0",
+
+        // Optional: Build configuration to use when evaluating & building dependencies.
+        // Defaults to "Release".
+        "configuration": "Debug",
+    },
+
+    // The name of the root generator to use. Defaults to "Knockout".
+    // Available values are "Vue" and "Knockout".
+    "rootGenerator": "Vue",
+
+    // If set, specifies a list of whitelisted root type names that will restrict
+    // which types Coalesce will use for code generation.
+    // Root types are those that must be annotated with [Coalesce].
+    // Useful if want to segment a single data project into multiple web projects,
+    // or into different areas/directories within a single web project.
+    "rootTypesWhitelist": [
+        "MyDbContext", "MyCustomDto"
+    ],
+
+    "generatorConfig": {
+        // A set of objects keyed by generator name.
+        // Generator names may optionally be qualified by their full namespace.
+        // All generators are listed when running 'dotnet coalesce' with '--verbosity debug'.
+        // For example, "Views" or "IntelliTect.Coalesce.CodeGeneration.Knockout.Generators.Views".
+        "GeneratorName": {
+            // Optional: true if the generator should be disabled.
+            "disabled": true,
+            // Optional: Configures a path relative to the default output path for the generator
+            // where that generator's output should be placed instead.
+            "targetDirectory": "../DifferentFolder"
+        },
+        // Indentation for generated C# is configurable by type (API controllers, DTO classes and regular View controllers)
+        // It defaults to 4 spaces
+        "ApiController": {
+            "indentationSize": 2
+        },
+        "ClassDto": {
+            "indentationSize": 2
+        },
+        "ViewController" : {
+            "indentationSize": 2
+        }
+    }
+}
+Additional CLI Options
+There are a couple of extra options which are only available as CLI parameters to dotnet coalesce. These options do not affect the behavior of the code generation - only the behavior of the CLI itself.
+
+--debug
+When this flag is specified when running dotnet coalesce, Coalesce will wait up to 60 seconds for a debugger to be attached to its process before starting code generation.
+-v|--verbosity <level>
+Set the verbosity of the output. Options are trace, debug, information, warning, error, critical, and none.

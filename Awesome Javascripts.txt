@@ -1,0 +1,112 @@
+Netflix uses the same platform to test their web apps.
+
+It's even listed as a Required Skill for some of their jobs.
+
+Endtest does have some really nice features, such as:
+• Cross-browser grid, running on Windows and macOS machines
+• Codeless Editor for Automated Tests
+• Support for Web Applications
+• Support for both native and hybrid Android and iOS apps
+• Unlimited Video Recordings for your test runs
+• Screenshot Comparison
+• Geolocation
+• If Statements
+• Loops
+• Upload files in your tests
+• An Endtest API, for easy integration with your CI/CD system
+• Advanced Assertions
+• Mobile Tests on real mobile devices
+• Email testing with Endtest Mailbox
+
+You should check out the docs.
+
+Below are 9 extremely powerful JavaScript hacks.
+
+1. Replace All
+We know that the string.replace() function replaces only the first occurrence.
+You can replace all the occurrences by adding /g at the end of the regex.
+var example = "potato potato";
+console.log(example.replace(/pot/, "tom")); 
+// "tomato potato"
+console.log(example.replace(/pot/g, "tom")); 
+// "tomato tomato"
+2. Extract Unique Values
+We can create a new array only with the unique values by using the Set object and the Spread operator.
+var entries = [1, 2, 2, 3, 4, 5, 6, 6, 7, 7, 8, 4, 2, 1]
+var unique_entries = [...new Set(entries)];
+console.log(unique_entries);
+// [1, 2, 3, 4, 5, 6, 7, 8]
+3. Convert number to string
+We just have to use the concatenation operator with an empty set of quotation marks.
+var converted_number = 5 + "";
+console.log(converted_number);
+// 5
+console.log(typeof converted_number); 
+// string
+4. Convert string to number
+All we need is the + operator.
+
+Be careful with this one since it only works with 'string numbers'.
+the_string = "123";
+console.log(+the_string);
+// 123
+
+the_string = "hello";
+console.log(+the_string);
+// NaN
+5. Shuffle elements from array
+Every day I'm shufflin'
+var my_list = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+console.log(my_list.sort(function() {
+    return Math.random() - 0.5
+})); 
+// [4, 8, 2, 9, 1, 3, 6, 5, 7]
+6. Flatten multidimensional array
+Simply by using the Spread operator.
+var entries = [1, [2, 5], [6, 7], 9];
+var flat_entries = [].concat(...entries); 
+// [1, 2, 5, 6, 7, 9]
+7. Short Circuit Conditionals
+Let's take this example:
+if (available) {
+    addToCart();
+}
+And shorten it by simply using the variable together with the function:
+available && addToCart()
+8. Dynamic Property Names
+I always thought that I first had to declare an object before being able to assign a dynamic property.
+const dynamic = 'flavour';
+var item = {
+    name: 'Coke',
+    [dynamic]: 'Cherry'
+}
+console.log(item); 
+// { name: "Coke", flavour: "Cherry" }
+9. Use length to resize/empty an array
+We basically overwrite the length of the array.
+
+If we want to resize the array:
+var entries = [1, 2, 3, 4, 5, 6, 7];  
+console.log(entries.length); 
+// 7  
+entries.length = 4;  
+console.log(entries.length); 
+// 4  
+console.log(entries); 
+// [1, 2, 3, 4]
+If we want to empty the array:
+var entries = [1, 2, 3, 4, 5, 6, 7]; 
+console.log(entries.length); 
+// 7  
+entries.length = 0;   
+console.log(entries.length); 
+// 0 
+console.log(entries); 
+// []
+I think it's really cool that you're looking for JavaScript hacks, but are you sure your Web Application is working correctly on all browsers and devices?
+
+You can use Endtest to quickly create Automated Tests and execute them on the cross-browser cloud.
+
+You don't even have to code in order to use it.
+
+Seriously, just read the docs.
