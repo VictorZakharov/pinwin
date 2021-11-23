@@ -52,6 +52,11 @@ namespace PinWin
         /// </summary>
         private string GetWelcomeHint()
         {
+            if (this._settings.ShortcutPinWindowPrompt == Keys.None)
+            {
+                return String.Empty;
+            }
+
             var keyHint = KeysStringConverter.ToString(this._settings.ShortcutPinWindowPrompt);
             return $@"Use {keyHint} to trigger window selection when minimized to tray";
         }

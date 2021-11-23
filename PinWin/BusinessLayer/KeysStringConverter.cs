@@ -43,6 +43,11 @@
         public static Keys FromString(string keys)
         {
             Keys retValue = Keys.None;
+            if (keys == null)
+            {
+                return retValue;
+            }
+
             string[] parts = keys.Split('+'); //modifier separator
 
             for (int i = 0; i < parts.Length; i++)
