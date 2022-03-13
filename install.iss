@@ -39,6 +39,7 @@ Name: "StartMenuEntry"; Description: "Start PinWin with Windows"; GroupDescripti
 Source: "PinWin.exe"; DestDir: "{app}";
 Source: "PinWin.pdb"; DestDir: "{app}";
 Source: "*.dll"; DestDir: "{app}";
+Source: ".\Images\*"; DestDir: "{app}\Images";
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

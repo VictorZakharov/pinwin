@@ -13,7 +13,7 @@ namespace PinWin
 
         private Point? _mouseClickPoint = null;
 
-        public Point? MouseClickPoint => _mouseClickPoint;
+        public Point? MouseClickPoint => this._mouseClickPoint;
 
         #endregion
 
@@ -21,7 +21,7 @@ namespace PinWin
 
         public DesktopOverlayForm()
         {
-            InitializeComponent();
+            this.InitializeComponent();
 
             //clear initial text, it only helps find the label at design time
             this.lbl_DebugInfo.Text = string.Empty;
@@ -31,9 +31,6 @@ namespace PinWin
 
             //set desktop overlay image
             this.BackgroundImage = ScreenCapture.CreateBitmapFromDesktop();
-
-            //apply custom cursor - make interface more user-friendly
-            this.Cursor = new Cursor(EmbeddedResource.TargetWindowIcon.Handle);
 
             //appear on top of all windows, including those pinned earlier
             this.TopMost = true;
@@ -52,9 +49,14 @@ namespace PinWin
         /// <returns>
         ///  Point that was selected by user. Null if selection was cancelled.
         /// </returns>
-        public static Point? SelectPoint(Form parentForm)
+        public static Point? SelectPoint(Form parentForm, string captureIconPath = null)
         {
             var desktopOverlayForm = new DesktopOverlayForm();
+
+            //apply custom cursor - make interface more user-friendly
+            var customCursor = ApiCursor.LoadFromPath(captureIconPath);
+            desktopOverlayForm.Cursor = customCursor ?? new Cursor(EmbeddedResource.TargetWindowIcon.Handle);
+
             desktopOverlayForm.ShowDialog(parentForm);
             return desktopOverlayForm.MouseClickPoint;
         }
@@ -79,7 +81,7 @@ namespace PinWin
         /// </summary>
         private void DesktopOverlayForm_MouseMove(object sender, MouseEventArgs e)
         {
-            lbl_DebugInfo.Text = $@"Mouse - X: {e.X}, Y: {e.Y}";
+            this.lbl_DebugInfo.Text = $@"Mouse - X: {e.X}, Y: {e.Y}";
         }
 
         /// <summary>

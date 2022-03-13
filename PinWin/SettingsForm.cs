@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using PinWin.BusinessLayer;
 
 namespace PinWin
@@ -13,10 +12,10 @@ namespace PinWin
         /// </summary>
         public SettingsForm()
         {
-            InitializeComponent();
+            this.InitializeComponent();
 
-            txt_ShortcutPinWindowPrompt.PreviewKeyDown += txt_PreviewKeyDown;
-            txt_ShortcutPinWindowUnderCursor.PreviewKeyDown += txt_PreviewKeyDown;
+            this.txt_ShortcutPinWindowPrompt.PreviewKeyDown += this.txt_PreviewKeyDown;
+            this.txt_ShortcutPinWindowUnderCursor.PreviewKeyDown += this.txt_PreviewKeyDown;
         }
 
         /// <summary>
@@ -27,11 +26,13 @@ namespace PinWin
         {
             this._settings = initialSettings;
 
-            //TODO: implement data binding
-            txt_ShortcutPinWindowPrompt.Text = KeysStringConverter.ToString(initialSettings.ShortcutPinWindowPrompt);
-            txt_ShortcutPinWindowUnderCursor.Text = KeysStringConverter.ToString(initialSettings.ShortcutPinWindowUnderCursor);
+            this.txt_ShortcutPinWindowPrompt.Text = KeysStringConverter.ToString(initialSettings.ShortcutPinWindowPrompt);
+            this.txt_ShortcutPinWindowUnderCursor.Text = KeysStringConverter.ToString(initialSettings.ShortcutPinWindowUnderCursor);
+
+            this.selector_TrayIcon.CurrentPath = initialSettings.TrayIconPath;
+            this.selector_CaptureIcon.CurrentPath = initialSettings.CaptureIconPath;
         }
-        
+
         private void txt_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
             if (!(sender is TextBox senderTextBox))
@@ -55,12 +56,14 @@ namespace PinWin
             senderTextBox.Text = shortcutString;
         }
 
-        private void button1_Click(object sender, System.EventArgs e)
+        private void btn_SaveSettings_Click(object sender, System.EventArgs e)
         {
             //save key combinations
             //TODO: implement data binding
-            this._settings.ShortcutPinWindowPrompt = KeysStringConverter.FromString(txt_ShortcutPinWindowPrompt.Text);
-            this._settings.ShortcutPinWindowUnderCursor = KeysStringConverter.FromString(txt_ShortcutPinWindowUnderCursor.Text);
+            this._settings.ShortcutPinWindowPrompt = KeysStringConverter.FromString(this.txt_ShortcutPinWindowPrompt.Text);
+            this._settings.ShortcutPinWindowUnderCursor = KeysStringConverter.FromString(this.txt_ShortcutPinWindowUnderCursor.Text);
+            this._settings.TrayIconPath = this.selector_TrayIcon.CurrentPath;
+            this._settings.CaptureIconPath = this.selector_CaptureIcon.CurrentPath;
             this.DialogResult = DialogResult.OK;
             this.Close();
         }

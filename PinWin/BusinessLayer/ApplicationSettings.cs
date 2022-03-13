@@ -6,6 +6,8 @@
     {
         public Keys ShortcutPinWindowPrompt = Keys.Control | Keys.F11;
         public Keys ShortcutPinWindowUnderCursor = Keys.Control | Keys.F12;
+        public string TrayIconPath = "";
+        public string CaptureIconPath = "";
 
         /// <summary>
         ///  Default constructor.
@@ -22,6 +24,8 @@
         {
             this.ShortcutPinWindowPrompt = settings.ShortcutPinWindowPrompt;
             this.ShortcutPinWindowUnderCursor = settings.ShortcutPinWindowUnderCursor;
+            this.TrayIconPath = settings.TrayIconPath;
+            this.CaptureIconPath = settings.CaptureIconPath;
         }
     }
 }

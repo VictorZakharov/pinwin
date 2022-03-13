@@ -26,7 +26,7 @@ namespace PinWin
         /// </summary>
         public MainForm()
         {
-            InitializeComponent();
+            this.InitializeComponent();
 
             // Replace default tooltip text of tray icon with application name
             this.notifyIcon_Main.Text = Application.ProductName;
@@ -36,13 +36,27 @@ namespace PinWin
 
             // register hot keys in the application
             this.RegisterHotKeys();
+            this.ApplyCustomIcons();
         }
 
         #endregion
 
-        protected void RegisterHotKeys()
+        private void ApplyCustomIcons()
         {
-            lbl_message.Text = this.GetWelcomeHint();
+            try
+            {
+                // Custom capture icon is applied when DesktopOverlayForm is instantiated
+                this.notifyIcon_Main.Icon = new Icon(this._settings.TrayIconPath);
+            }
+            catch (ArgumentException)
+            {
+                // invalid image file - default icon will be used
+            }
+        }
+
+        private void RegisterHotKeys()
+        {
+            this.lbl_message.Text = this.GetWelcomeHint();
             this.RegisterHotKey(this._settings.ShortcutPinWindowPrompt, this.PinWindowPrompt);
             this.RegisterHotKey(this._settings.ShortcutPinWindowUnderCursor, this.PinWindowUnderCursor);
         }
@@ -91,7 +105,7 @@ namespace PinWin
 
         private void notifyIcon_Main_DoubleClick(object sender, EventArgs e)
         {
-            contextMenu_OpenApplication.PerformClick();
+            this.contextMenu_OpenApplication.PerformClick();
         }
 
         #endregion
@@ -123,7 +137,7 @@ namespace PinWin
             this._isDesktopOverlayShown = true;
             try
             {
-                Point? mouseClickPoint = DesktopOverlayForm.SelectPoint(ParentForm);
+                Point? mouseClickPoint = DesktopOverlayForm.SelectPoint(this.ParentForm, this._settings.CaptureIconPath);
                 if (mouseClickPoint == null)
                 {
                     //no point was selected by user, do nothing
