@@ -84,7 +84,7 @@ namespace PinWin
             // 
             this.pinnedWindowListControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pinnedWindowListControl.Location = new System.Drawing.Point(165, 4);
-            this.pinnedWindowListControl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pinnedWindowListControl.Margin = new System.Windows.Forms.Padding(4);
             this.pinnedWindowListControl.Name = "pinnedWindowListControl";
             this.pinnedWindowListControl.Size = new System.Drawing.Size(443, 181);
             this.pinnedWindowListControl.TabIndex = 9;
@@ -142,12 +142,12 @@ namespace PinWin
             this.btnChangeKeyMap.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btnChangeKeyMap.AutoSize = true;
             this.btnChangeKeyMap.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnChangeKeyMap.Location = new System.Drawing.Point(20, 192);
+            this.btnChangeKeyMap.Location = new System.Drawing.Point(50, 192);
             this.btnChangeKeyMap.Name = "btnChangeKeyMap";
-            this.btnChangeKeyMap.Size = new System.Drawing.Size(121, 18);
+            this.btnChangeKeyMap.Size = new System.Drawing.Size(61, 18);
             this.btnChangeKeyMap.TabIndex = 12;
             this.btnChangeKeyMap.TabStop = true;
-            this.btnChangeKeyMap.Text = "Change Key Map";
+            this.btnChangeKeyMap.Text = "Settings";
             this.btnChangeKeyMap.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.btnChangeKeyMap_LinkClicked);
             // 
             // MainForm
